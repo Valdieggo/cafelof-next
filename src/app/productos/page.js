@@ -1,7 +1,7 @@
+import Products from '../components/products/Products';
+
 export default function Home() {
     return (
-    <h1>
-        Productos
-    </h1>
+        <Products />
     )
 }
