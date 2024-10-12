@@ -4,8 +4,8 @@ import { useState } from 'react';
 import ProductList from './ProductList';
 import CategoryFilter from './CategoryFilter';
 import SortOptions from './SortOptions';
-import mug from '../../mug.jpg';
-import cafeDeGrano from '../../cafe-de-grano.jpg';
+import mug from '../../../../public/mug.jpg';
+import cafeDeGrano from '../../../../public/cafe-de-grano.jpg';
 
 export default function MainPage() {
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -14,10 +14,10 @@ export default function MainPage() {
   const products = [
     {
       id: 1,
-      title: 'Mug Cilindro 250 Ml.',
-      category: 'mugs y vasos',
-      size: '250 ml',
-      price: '$13.500',
+      title: 'Café Arábico',
+      category: 'Café de grano',
+      size: '1Kg',
+      price: '$28990',
       image: mug,
     },
     {
@@ -30,8 +30,7 @@ export default function MainPage() {
     },
   ];
   
-
-  const categories = ['mugs y vasos', 'Tote bags'];
+  const categories = ['Café de grano', 'Accesorios'];
   const sortOptions = ['Orden predeterminado', 'Precio ascendente', 'Precio descendente'];
 
   const handleCategoryChange = (category) => {
