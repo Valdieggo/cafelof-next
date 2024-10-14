@@ -1,0 +1,136 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Country {
+  country_id   Int      @id @default(autoincrement())
+  country_name String   @unique
+
+  regions      Region[]  // Relación con Region (1 país tiene muchas regiones)
+}
+
+model Region {
+  region_id   Int      @id @default(autoincrement())
+  region_name String
+  country_id  Int
+  country     Country  @relation(fields: [country_id], references: [country_id])
+
+  cities      City[]    // Relación con City (1 región tiene muchas ciudades)
+}
+
+model City {
+  city_id   Int      @id @default(autoincrement())
+  city_name String
+  region_id Int
+  region    Region   @relation(fields: [region_id], references: [region_id])
+
+  addresses UserAddress[] // Relación con UserAddress (1 ciudad tiene muchas direcciones)
+}
+
+model UserAddress {
+  user_address_id Int      @id @default(autoincrement())
+  user_address_street String
+  city_id Int
+  city    City   @relation(fields: [city_id], references: [city_id])
+
+  users   User[] // Relación con User (1 dirección puede tener muchos usuarios)
+}
+
+model User {
+  user_id         Int      @id @default(autoincrement())
+  user_firstname  String
+  user_lastname   String
+  user_address    String?
+  user_email      String   @unique
+  user_phone_number String?
+  user_address_id Int
+  address         UserAddress @relation(fields: [user_address_id], references: [user_address_id])
+
+  carts           Cart[]   // Relación con Cart (1 usuario tiene muchos carritos)
+  orders          Order[]  // Relación con Order (1 usuario puede tener muchas órdenes)
+}
+
+model ProductCategorie {
+  product_categorie_id    Int      @id @default(autoincrement())
+  product_categorie_name  String
+  product_categorie_description String?
+
+  products Product[] // Relación con Product (1 categoría tiene muchos productos)
+}
+
+model Product {
+  product_id         Int      @id @default(autoincrement())
+  product_name       String
+  product_price      Float
+  product_discount   Float    @default(0)
+  product_categorie_id Int
+  category           ProductCategorie @relation(fields: [product_categorie_id], references: [product_categorie_id])
+
+  carts    Cart[]   // Relación con Cart (1 producto puede estar en muchos carritos)
+  orderDetails OrderDetail[] // Relación con OrderDetail (1 producto puede estar en muchas órdenes)
+}
+
+model Cart {
+  cart_id       Int      @id @default(autoincrement())
+  cart_quantity Int
+  user_id       Int
+  product_id    Int
+  user          User     @relation(fields: [user_id], references: [user_id])
+  product       Product  @relation(fields: [product_id], references: [product_id])
+
+  orderDetails  OrderDetail[] // Relación con OrderDetail (1 carrito puede estar asociado a varias órdenes)
+}
+
+model Payment {
+  payment_id     Int      @id @default(autoincrement())
+  payment_method String
+  payment_status String
+  payment_amount Float
+
+  orders Order[] // Relación con Order (1 pago puede estar asociado a muchas órdenes)
+}
+
+model Discount {
+  discount_id   Int      @id @default(autoincrement())
+  discount_amount Int
+  discount_description String?
+
+  orders Order[] // Relación con Order (1 descuento puede estar asociado a muchas órdenes)
+}
+
+model Order {
+  order_id           Int      @id @default(autoincrement())
+  order_date         DateTime
+  order_total_price  Float
+  user_id            Int
+  payment_id         Int
+  discount_id        Int?
+  user               User     @relation(fields: [user_id], references: [user_id])
+  payment            Payment  @relation(fields: [payment_id], references: [payment_id])
+  discount           Discount? @relation(fields: [discount_id], references: [discount_id])
+
+  orderDetails       OrderDetail[] // Relación con OrderDetail (1 orden tiene muchos detalles)
+}
+
+model OrderDetail {
+  order_detail_id   Int      @id @default(autoincrement())
+  order_detail_name String
+  order_id          Int
+  cart_id           Int
+  product_id        Int
+  quantity          Int
+  order             Order    @relation(fields: [order_id], references: [order_id])
+  cart              Cart     @relation(fields: [cart_id], references: [cart_id])
+  product           Product  @relation(fields: [product_id], references: [product_id])
+}
