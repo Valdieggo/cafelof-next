@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,69 +10,76 @@ datasource db {
 model Country {
   country_id   Int      @id @default(autoincrement())
   country_name String   @unique
-
-  regions      Region[]  // Relación con Region (1 país tiene muchas regiones)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  regions      Region[]
 }
 
 model Region {
-  region_id   Int      @id @default(autoincrement())
-  region_name String
-  country_id  Int
-  country     Country  @relation(fields: [country_id], references: [country_id])
-
-  cities      City[]    // Relación con City (1 región tiene muchas ciudades)
+  region_id     Int      @id @default(autoincrement())
+  region_name   String
+  country_id    Int
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  country       Country  @relation(fields: [country_id], references: [country_id])
+  cities        City[]
 }
 
 model City {
-  city_id   Int      @id @default(autoincrement())
-  city_name String
-  region_id Int
-  region    Region   @relation(fields: [region_id], references: [region_id])
-
-  addresses UserAddress[] // Relación con UserAddress (1 ciudad tiene muchas direcciones)
+  city_id       Int      @id @default(autoincrement())
+  city_name     String
+  region_id     Int
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  region        Region   @relation(fields: [region_id], references: [region_id])
+  addresses     UserAddress[]
 }
 
 model UserAddress {
   user_address_id Int      @id @default(autoincrement())
   user_address_street String
-  city_id Int
-  city    City   @relation(fields: [city_id], references: [city_id])
-
-  users   User[] // Relación con User (1 dirección puede tener muchos usuarios)
+  city_id          Int
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+  city             City     @relation(fields: [city_id], references: [city_id])
+  users            User[]
 }
 
 model User {
-  user_id         Int      @id @default(autoincrement())
-  user_firstname  String
-  user_lastname   String
-  user_address    String?
-  user_email      String   @unique
+  user_id          Int      @id @default(autoincrement())
+  user_firstname   String
+  user_lastname    String
+  user_address     String?
+  user_email       String   @unique
   user_phone_number String?
-  user_address_id Int
-  address         UserAddress @relation(fields: [user_address_id], references: [user_address_id])
-
-  carts           Cart[]   // Relación con Cart (1 usuario tiene muchos carritos)
-  orders          Order[]  // Relación con Order (1 usuario puede tener muchas órdenes)
+  user_address_id  Int
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+  address          UserAddress @relation(fields: [user_address_id], references: [user_address_id])
+  carts            Cart[]
+  orders           Order[]
 }
 
 model ProductCategorie {
-  product_categorie_id    Int      @id @default(autoincrement())
-  product_categorie_name  String
+  product_categorie_id       Int      @id @default(autoincrement())
+  product_categorie_name     String
   product_categorie_description String?
-
-  products Product[] // Relación con Product (1 categoría tiene muchos productos)
+  created_at                 DateTime @default(now())
+  updated_at                 DateTime @updatedAt
+  products                   Product[]
 }
 
 model Product {
   product_id         Int      @id @default(autoincrement())
   product_name       String
   product_price      Float
-  product_discount   Float    @default(0)
+  product_image_url  String?
   product_categorie_id Int
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
   category           ProductCategorie @relation(fields: [product_categorie_id], references: [product_categorie_id])
-
-  carts    Cart[]   // Relación con Cart (1 producto puede estar en muchos carritos)
-  orderDetails OrderDetail[] // Relación con OrderDetail (1 producto puede estar en muchas órdenes)
+  carts              Cart[]
+  inventories        Inventory[]
 }
 
 model Cart {
@@ -86,10 +87,29 @@ model Cart {
   cart_quantity Int
   user_id       Int
   product_id    Int
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
   user          User     @relation(fields: [user_id], references: [user_id])
   product       Product  @relation(fields: [product_id], references: [product_id])
+  orderDetails  OrderDetail[]
+}
 
-  orderDetails  OrderDetail[] // Relación con OrderDetail (1 carrito puede estar asociado a varias órdenes)
+model Inventory {
+  inventory_id      Int      @id @default(autoincrement())
+  inventory_quantity Int
+  product_id        Int
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  product           Product  @relation(fields: [product_id], references: [product_id])
+}
+
+model Discount {
+  discount_id         Int      @id @default(autoincrement())
+  discount_amount     Int
+  discount_description String
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  orders              Order[]
 }
 
 model Payment {
@@ -97,16 +117,9 @@ model Payment {
   payment_method String
   payment_status String
   payment_amount Float
-
-  orders Order[] // Relación con Order (1 pago puede estar asociado a muchas órdenes)
-}
-
-model Discount {
-  discount_id   Int      @id @default(autoincrement())
-  discount_amount Int
-  discount_description String?
-
-  orders Order[] // Relación con Order (1 descuento puede estar asociado a muchas órdenes)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  orders         Order[]
 }
 
 model Order {
@@ -116,21 +129,31 @@ model Order {
   user_id            Int
   payment_id         Int
   discount_id        Int?
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
   user               User     @relation(fields: [user_id], references: [user_id])
   payment            Payment  @relation(fields: [payment_id], references: [payment_id])
   discount           Discount? @relation(fields: [discount_id], references: [discount_id])
+  orderDetails       OrderDetail[]
+  shipments          Shipment[]
+}
 
-  orderDetails       OrderDetail[] // Relación con OrderDetail (1 orden tiene muchos detalles)
+model Shipment {
+  shipment_id     Int      @id @default(autoincrement())
+  shipment_status String
+  order_id        Int
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  order           Order    @relation(fields: [order_id], references: [order_id])
 }
 
 model OrderDetail {
   order_detail_id   Int      @id @default(autoincrement())
   order_detail_name String
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
   order_id          Int
   cart_id           Int
-  product_id        Int
-  quantity          Int
   order             Order    @relation(fields: [order_id], references: [order_id])
   cart              Cart     @relation(fields: [cart_id], references: [cart_id])
-  product           Product  @relation(fields: [product_id], references: [product_id])
 }
