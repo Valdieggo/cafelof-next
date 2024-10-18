@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
         <NavBar />
         <div className="flex-grow pt-20 flex flex-col">
           <main className="flex-grow">
-            <div className="container mx-auto px-6 py-8">
+            <div className="container mx-auto px-6">
               {children}
             </div>
           </main>

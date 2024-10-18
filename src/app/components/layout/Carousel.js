@@ -12,6 +12,8 @@ const images = [imagen1,
   imagen3,
 ]
 
+const carouselProducts = [...images, ...images, ...images]
+
 export default function PhotoCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -30,12 +32,12 @@ export default function PhotoCarousel() {
   }
 
   return (
-    <div className="relative w-full max-w-6xl mx-auto overflow-hidden">
+    <div className="relative w-full max-w-8xl mx-auto overflow-hidden">
       <div 
         className="flex transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
-        {images.map((img, index) => (
+        {carouselProducts.map((img, index) => (
           <div key={index} className="w-full flex-shrink-0">
             <div className="relative h-[300px] md:h-[400px] w-full">
               <Image
