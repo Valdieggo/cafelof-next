@@ -4,8 +4,8 @@ import { useState } from 'react';
 import ProductList from './ProductList';
 import CategoryFilter from './CategoryFilter';
 import SortOptions from './SortOptions';
-import mug from '../../../../public/mug.jpg';
-import cafeDeGrano from '../../../../public/cafe-de-grano.jpg';
+import mug from '../../../public/mug.jpg';
+import cafeDeGrano from '../../../public/cafe-de-grano.jpg';
 
 export default function MainPage() {
   const [selectedCategories, setSelectedCategories] = useState([]);
