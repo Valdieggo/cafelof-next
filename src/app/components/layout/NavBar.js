@@ -31,7 +31,7 @@ export default function NavBar() {
           <nav className="hidden md:flex space-x-6">
             <a href="/productos" className="text-gray-600 hover:text-gray-800">Productos</a>
             <a href="#" className="text-gray-600 hover:text-gray-800">Nosotros</a>
-            <a href="#" className="text-gray-600 hover:text-gray-800">Contacto</a>
+            <a href="/contacto" className="text-gray-600 hover:text-gray-800">Contacto</a>
           </nav>
 
           <div className="flex justify-between">
@@ -52,7 +52,7 @@ export default function NavBar() {
             <div className="container mx-auto px-6 py-4 flex flex-col space-y-4">
               <a href="/productos" className="text-gray-600 hover:text-gray-800">Productos</a>
               <a href="#" className="text-gray-600 hover:text-gray-800">Nosotros</a>
-              <a href="#" className="text-gray-600 hover:text-gray-800">Contacto</a>
+              <a href="/contacto" className="text-gray-600 hover:text-gray-800">Contacto</a>
             </div>
           </nav>
         )}
