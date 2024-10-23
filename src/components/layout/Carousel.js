@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5'
-import imagen1 from '/public/descafeinado_web.jpg'
-import imagen2 from '/public/beneficios-del-cafe-en-grano_.jpg'
-import imagen3 from '/public/63e51e0602b22__KIWXSp9o.webp'
+import imagen1 from '../../../public/descafeinado_web.jpg'
+import imagen2 from '../../../public/beneficios-del-cafe-en-grano_.jpg'
+import imagen3 from '../../../public/63e51e0602b22__KIWXSp9o.webp'
 
 const images = [imagen1,
   imagen2,

@@ -1,5 +1,5 @@
-import PhotoCarousel from "./components/layout/Carousel";
-import ProductCategories from "../app/components/ProductCategories";
+import PhotoCarousel from "../components/layout/Carousel";
+import ProductCategories from "../components/products/ProductCategories";
 
 export default async function Page() {
   return (

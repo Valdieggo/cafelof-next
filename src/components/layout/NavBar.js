@@ -5,7 +5,7 @@ import { TiShoppingCart } from "react-icons/ti";
 import { FaBars } from "react-icons/fa"; // Icono de hamburguesa
 import { useState } from 'react';
 import ShoppingCartPanel from '../shoppingCart/ShoppingCartPanel';
-import logo from '../../../../public/logo.png';
+import logo from '../../../public/logo.png';
 
 export default function NavBar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
