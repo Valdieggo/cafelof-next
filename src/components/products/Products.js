@@ -13,7 +13,7 @@ export default function MainPage() {
   
   const products = [
     {
-      id: 1,
+      product_id: 1,
       title: 'Café Arábico',
       category: 'Café de grano',
       size: '1Kg',
@@ -21,7 +21,7 @@ export default function MainPage() {
       image: mug,
     },
     {
-      id: 2,
+      product_id: 2,
       title: 'Café De Grano',
       category: 'café de grano',
       size: '250 grs.',

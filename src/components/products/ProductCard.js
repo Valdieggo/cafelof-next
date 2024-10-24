@@ -1,9 +1,10 @@
 import Image from 'next/image';
 
 export default function ProductCard({ product }) {
+  console.log("product en card: ",product);
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105">
-      <a href={`/productos/${product.id}`}>
+      <a href={`/productos/${product.product_id}`}>
         <Image src={product.image} alt={product.title} className="object-cover w-full h-48" />
       </a>
       <div className="p-4">
