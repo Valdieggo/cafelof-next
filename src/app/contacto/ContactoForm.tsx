@@ -74,7 +74,9 @@ export function ContactoForm() {
                 </FormItem>
               )}
             />
-        <Button type="submit">Enviar</Button>
+            <div className="flex justify-center">
+              <Button type="submit">Enviar</Button>
+            </div>
       </form>
     </Form>
   )
