@@ -62,7 +62,7 @@ model User {
 
 model ProductCategorie {
   product_categorie_id       Int      @id @default(autoincrement())
-  product_categorie_name     String
+  product_categorie_name     String @unique
   product_categorie_description String?
   created_at                 DateTime @default(now())
   updated_at                 DateTime? @updatedAt
