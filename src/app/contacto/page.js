@@ -2,10 +2,12 @@ import { ContactoForm } from "./ContactoForm";
 
 export default async function Page() {
     return (
-        <div>
-            <h1>Contacto</h1>
-            <p>¡Hola! ¿En qué podemos ayudarte?</p>
-            <ContactoForm />
+        <div className="flex flex-col items-center pt-4 min-h-screen">
+            <h1 className="text-4xl">Contáctanos</h1>
+            <p className="text-xl">¿Tienes alguna pregunta o sugerencia? Nos encantaría escucharla</p>
+            <div className="px-10 w-full max-w-md">
+                <ContactoForm />
+            </div>
         </div>
     );
   }

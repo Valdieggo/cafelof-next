@@ -33,7 +33,6 @@ export function ContactoForm() {
   return (
     <Form {...form}>
       <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            
             <FormField
               control={form.control}
               name="username"
@@ -46,7 +45,7 @@ export function ContactoForm() {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+              />
             
             <FormField
               control={form.control}
@@ -60,7 +59,7 @@ export function ContactoForm() {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+              />
             
             <FormField
               control={form.control}
@@ -75,7 +74,7 @@ export function ContactoForm() {
                 </FormItem>
               )}
             />
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Enviar</Button>
       </form>
     </Form>
   )
