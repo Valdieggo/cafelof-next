@@ -1,4 +1,5 @@
 import { PrismaClient, Prisma } from '@prisma/client';
+import { validateRequiredFields } from '../../../../../../utils/validateFields';
 
 const prisma = new PrismaClient();
 
@@ -6,11 +7,14 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { product_categorie_name, product_categorie_description } = body;
 
-    if (!product_categorie_name || !product_categorie_description) {
+    const missingFields = validateRequiredFields(body, ['product_categorie_name', 'product_categorie_description']);
+
+    if (missingFields.length > 0) {
         return new Response(JSON.stringify({
-            status: 400,
-            message: 'Missing required fields',
+            message: 'Faltan campos por llenar',
+            missingFields: missingFields
         }), {
+            status: 400,
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -31,6 +35,7 @@ export async function POST(request: Request) {
             message: 'Categoría creada con exito',
             data: productCategorie,
         }), {
+            status: 201,
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -43,6 +48,7 @@ export async function POST(request: Request) {
                     status: 400,
                     message: 'La categoria del producto ya existe',
                 }), {
+                    status: 400,
                     headers: {
                         'Content-Type': 'application/json',
                     },
