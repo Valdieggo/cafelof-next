@@ -181,3 +181,11 @@ model OrderDetail {
   @@index([cart_id], map: "OrderDetail_cart_id_fkey")
   @@index([order_id], map: "OrderDetail_order_id_fkey")
 }
+
+model ContactForm {
+  contact_form_id      Int      @id @default(autoincrement())
+  contact_form_name    String
+  contact_form_message String
+  contact_form_email   String
+  created_at           DateTime @default(now())
+}
