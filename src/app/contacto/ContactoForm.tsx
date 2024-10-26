@@ -14,20 +14,34 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-const formSchema = z.object({"username":z.string().min(1).max(255),"email":z.string().email().min(1).max(9999),"message":z.string().min(1).max(255)})
+const formSchema = z.object({"name":z.string().min(1).max(255),"email":z.string().email().min(1).max(9999),"message":z.string().min(1).max(255)})
 
 export function ContactoForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      name: "",
       email: "",
       message: "",
       },
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    fetch("/api/contactForm", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    }).then((response) => {
+      if (response.ok) {
+        alert("Mensaje enviado con exito")
+        form.reset()
+      } else {
+        alert("Error al enviar mensaje")
+      }
+    }
+    )
   }
 
   return (
@@ -35,7 +49,7 @@ export function ContactoForm() {
       <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="username"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nombre</FormLabel>
