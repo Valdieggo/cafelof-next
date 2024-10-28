@@ -1,6 +1,4 @@
-const { PrismaClient, Prisma } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request){
     const body = await request.json();
