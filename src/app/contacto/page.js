@@ -1,4 +1,5 @@
 import { ContactoForm } from "./ContactoForm";
+import SignIn from "@/components/auth/signIn";
 
 export default async function Page() {
     return (
@@ -8,6 +9,7 @@ export default async function Page() {
             <div className="px-10 w-full max-w-md">
                 <ContactoForm />
             </div>
+            <SignIn />
         </div>
     );
   }
