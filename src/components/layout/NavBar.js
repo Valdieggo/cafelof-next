@@ -3,13 +3,18 @@
 import Image from 'next/image';
 import { TiShoppingCart } from "react-icons/ti";
 import { FaBars } from "react-icons/fa"; // Icono de hamburguesa
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ShoppingCartPanel from '../shoppingCart/ShoppingCartPanel';
 import logo from '../../../public/logo.png';
 
 export default function NavBar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false); // Estado de montaje para el carrito
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []); // Ejecuta solo en el montaje
 
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
@@ -55,9 +60,10 @@ export default function NavBar() {
         )}
       </header>
 
-
-      {/* Panel del carrito con animación */}
-      <ShoppingCartPanel onClose={toggleCart} isOpen={isCartOpen} />
+      {/* Renderiza el panel del carrito solo si se ha montado */}
+      {hasMounted && (
+        <ShoppingCartPanel onClose={toggleCart} isOpen={isCartOpen} />
+      )}
     </div>
   );
 }

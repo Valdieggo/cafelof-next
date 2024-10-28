@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function ShoppingCartPanel({ onClose, isOpen }) {
-  // Simulando productos en el carrito
-  const [cartItems, setCartItems] = useState([]); // Aquí puedes usar tu lógica de carrito de compras
+  const [cartItems, setCartItems] = useState([]);
 
   return (
     <>
