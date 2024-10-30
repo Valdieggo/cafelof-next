@@ -17,12 +17,16 @@ export default function Footer() {
           <h3 className="font-bold mb-4">Acceso rápido</h3>
           <ul className="space-y-2">
             <li className="flex items-center space-x-2">
-              <FaInstagram className="hover:text-[var(--highlight)]" />
-              <a href="https://www.instagram.com/cafelof/" className="hover:text-[var(--highlight)]">cafelof</a>
+              <a href="https://www.instagram.com/cafelof/" className="hover:text-[var(--highlight)] flex items-center space-x-2">
+                <FaInstagram className="hover:text-[var(--highlight)]" />
+                <span>cafelof</span>
+              </a>
             </li>
             <li className="flex items-center space-x-2">
-              <FaWhatsapp className="hover:text-[var(--highlight)]" />
-              <a href="https://api.whatsapp.com/message/74ZVVMQFTMTXG1?autoload=1&app_absent=0" className="hover:text-[var(--highlight)]">+569 75655315</a>
+              <a href="https://api.whatsapp.com/message/74ZVVMQFTMTXG1?autoload=1&app_absent=0" className="hover:text-[var(--highlight)] flex items-center space-x-2">
+                <FaWhatsapp className="hover:text-[var(--highlight)]" />
+                <span>+569 75655315</span>
+              </a>
             </li>
           </ul>
         </div>

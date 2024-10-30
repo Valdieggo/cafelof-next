@@ -6,6 +6,7 @@ import { FaBars } from "react-icons/fa"; // Icono de hamburguesa
 import { useState, useEffect } from 'react';
 import ShoppingCartPanel from '../shoppingCart/ShoppingCartPanel';
 import logo from '../../../public/logo.png';
+import { FaRegUser } from "react-icons/fa";
 
 export default function NavBar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -38,12 +39,20 @@ export default function NavBar() {
             <a href="/contacto" className="hover:text-[var(--highlight)]">Contacto</a>
           </nav>
 
-          <div className="flex justify-between">
-            <button onClick={toggleCart} className="hover:text-[var(--highlight)]">
-              <TiShoppingCart size={24} />
+          <div className="flex justify-between space-x-2 relative">
+            <button onClick={toggleCart} className="hover:text-[var(--highlight)] relative">
+            <TiShoppingCart size={24} />
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                0
+              </span>
             </button>
             <button onClick={toggleMenu} className="md:hidden hover:text-[var(--highlight)]">
               <FaBars size={18} />
+            </button>
+            <button className="hover:text-[var(--highlight)]">
+              <a href="/login">
+                <FaRegUser size={20}/>
+              </a>
             </button>
           </div>
         </div>

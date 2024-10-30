@@ -1,12 +1,11 @@
 import Link from "next/link"
-import { FaTshirt, FaLaptop, FaHome, FaFootballBall, FaLeaf } from "react-icons/fa"
+import { CiCoffeeBean, CiCoffeeCup} from "react-icons/ci";
+import { GiCoffeePot } from "react-icons/gi";
 
 const categories = [
-  { name: "Electronics", icon: FaLaptop },
-  { name: "Clothing", icon: FaTshirt },
-  { name: "Home & Garden", icon: FaHome },
-  { name: "Sports", icon: FaFootballBall },
-  { name: "Beauty", icon: FaLeaf },
+  { name: "Café de grano", icon: CiCoffeeBean },
+  { name: "Cafeteras", icon: GiCoffeePot },
+  { name: "Accesorios", icon: CiCoffeeCup },
 ]
 
 export default function ProductCategories() {
