@@ -1,5 +1,6 @@
 import { signIn } from "../../../auth"
 import { Button } from "@/components/ui/button"
+import { FaGoogle } from "react-icons/fa";
  
 export default function SignIn() {
   return (
@@ -9,7 +10,10 @@ export default function SignIn() {
         await signIn("google")
       }}
     >
-      <Button type="submit" variant="default">Signin with Google</Button>
+      <Button type="submit" variant="secondary">
+      <FaGoogle />
+      Entrar con Google
+      </Button>
     </form>
   )
 } 
