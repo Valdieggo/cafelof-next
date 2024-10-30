@@ -15,11 +15,11 @@ body {
 :root {
   --background: #D7C0A7; /* Tono beige claro */
   --foreground: #000000; /* Negro para el texto */
-  --navbar-bg: #B19B8D; /* Tono marrón claro */
+  --navbar-bg: #8A6752;
   --navbar-text: #ffffff; /* Blanco para el texto de la barra */
-  --footer-bg: #8A6752; /* Tono marrón oscuro */
+  --footer-bg: #45342a; /* Tono marrón oscuro */
   --footer-text: #ffffff; /* Blanco para el texto del footer */
-  --highlight: #8A6752; /* Tono marrón oscuro para resaltar */
+  --highlight: #934311; /* Tono marrón oscuro para resaltar */
   --card: #ffffff;
   --card-foreground: #000000;
   --popover: #ffffff;
