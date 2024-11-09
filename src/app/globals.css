@@ -16,7 +16,8 @@ body {
   --background: #D7C0A7; /* Tono beige claro */
   --foreground: #000000; /* Negro para el texto */
   --navbar-bg: #8A6752;
-  --navbar-text: #ffffff; /* Blanco para el texto de la barra */
+  --navbar-text: #ffffff;
+  --categories-bar: #F3E9DD;
   --footer-bg: #45342a; /* Tono marrón oscuro */
   --footer-text: #ffffff; /* Blanco para el texto del footer */
   --highlight: #934311; /* Tono marrón oscuro para resaltar */
