@@ -46,13 +46,13 @@ export default function NavBar() {
                 0
               </span>
             </button>
-            <button onClick={toggleMenu} className="md:hidden hover:text-[var(--highlight)]">
-              <FaBars size={18} />
-            </button>
             <button className="hover:text-[var(--highlight)]">
               <a href="/login">
                 <FaRegUser size={20}/>
               </a>
+            </button>
+            <button onClick={toggleMenu} className="md:hidden hover:text-[var(--highlight)]">
+              <FaBars size={18} />
             </button>
           </div>
         </div>
