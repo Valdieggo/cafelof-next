@@ -19,6 +19,8 @@ import GoogleSignIn from './GoogleSignIn'
 import { useState } from 'react'
 import { LoginSchema } from '../../../schemas'
 import { login } from '@/actions/login'
+import FormError from '../ui/form-error'
+import FormSuccess from '../ui/form-success'
 
 export default function LoginForm() {
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -33,7 +35,6 @@ export default function LoginForm() {
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     login(values);
-    // Aquí iría la lógica para manejar el login
   }
 
   return (
@@ -92,7 +93,8 @@ export default function LoginForm() {
                 </FormItem>
               )}
             />
-
+            <FormError message="" />
+            <FormSuccess message="" />
             <Button type="submit" className="w-full">Entrar</Button>
           </form>
         </Form>
