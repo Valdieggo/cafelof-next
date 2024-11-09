@@ -1,6 +1,8 @@
 import './globals.css';
 import NavBar from '../components/layout/NavBar';
 import Footer from '../components/layout/Footer';
+import SessionProvider from '../components/auth/SessionProvider';
+import { auth } from "../../auth"
 
 export const metadata = {
   title: 'Café Lof',
@@ -30,19 +32,24 @@ export const metadata = {
   ],
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+
+  const session = await auth();
+
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col relative">
+        <SessionProvider session={session}>
         <NavBar />
         <div className="flex-grow pt-20 flex flex-col">
           <main className="flex-grow">
-            <div className="container mx-auto px-6">
+            <div className="mx-auto">
               {children}
             </div>
           </main>
         </div>
         <Footer />
+        </SessionProvider >
       </body>
     </html>
   );
