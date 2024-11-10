@@ -55,19 +55,18 @@ model User {
   user_id             Int         @id @default(autoincrement())
   user_firstname      String
   user_lastname       String
-  user_address        String?
   user_email          String      @unique
-  user_password       String?
   user_phone_number   String?
-  user_address_id     Int
+  user_address_id     Int?
   created_at          DateTime    @default(now())
   updated_at          DateTime?   @updatedAt
   user_email_verified DateTime?
+  user_password       String
   Account             Account?
   carts               Cart[]
   orders              Order[]
   Session             Session[]
-  address             UserAddress @relation(fields: [user_address_id], references: [user_address_id])
+  address             UserAddress? @relation(fields: [user_address_id], references: [user_address_id])
 
   @@index([user_address_id], map: "User_user_address_id_fkey")
 }
