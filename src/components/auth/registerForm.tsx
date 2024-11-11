@@ -17,47 +17,78 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription }
 import { HiEye, HiEyeSlash } from 'react-icons/hi2'
 import GoogleSignIn from './GoogleSignIn'
 import { useState } from 'react'
-import { LoginSchema } from '../../../schemas'
-import { login } from '@/actions/login'
+import { RegisterSchema } from '../../../schemas'
+import { register } from '@/actions/register'
 import FormError from '../ui/form-error'
 import FormSuccess from '../ui/form-success'
 import { useTransition } from 'react'
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const [error, setError] = useState<string | undefined>("")
   const [success, setSuccess] = useState<string | undefined>("")
   const [isPending, startTransition] = useTransition()
 
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof RegisterSchema>>({
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: "",
       password: "",
+      name: "",
+      lastname: "",
     },
   })
 
   const [showPassword, setShowPassword] = useState(false)
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
     setError("")
     setSuccess("")
     
     startTransition(() => {
-      login(values).then((response) => {
-        setError(response.error)
-        setSuccess(response.success)
+      register(values).then((response) => {
+        if(response.status == 400){
+          setError(response.message)
+        }else{
+          setSuccess(response.message)
+        }
     })})
   };
 
   return (
     <Card className="w-full max-w-md mx-auto mt-8 mb-8">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">Iniciar sesión</CardTitle>
-        <CardDescription className="text-center">Ingresa tus datos para iniciar</CardDescription>
+        <CardTitle className="text-2xl font-bold text-center">Crea una cuenta</CardTitle>
+        <CardDescription className="text-center">Comienza ingresando tus datos</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nombre</FormLabel>
+                  <FormControl>
+                    <Input disabled={isPending} placeholder="Juan" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          <FormField
+              control={form.control}
+              name="lastname"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Apellido</FormLabel>
+                  <FormControl>
+                    <Input disabled={isPending} placeholder="Perez" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
@@ -109,7 +140,7 @@ export default function LoginForm() {
             />
             <FormError message={error} />
             <FormSuccess message={success} />
-            <Button type="submit" className="w-full">Entrar</Button>
+            <Button type="submit" className="w-full">Crear</Button>
           </form>
         </Form>
       </CardContent>
