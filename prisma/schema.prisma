@@ -52,14 +52,14 @@ model UserAddress {
 }
 
 model User {
-  user_id             Int         @id @default(autoincrement())
+  user_id             Int          @id @default(autoincrement())
   user_firstname      String
   user_lastname       String
-  user_email          String      @unique
+  user_email          String       @unique
   user_phone_number   String?
   user_address_id     Int?
-  created_at          DateTime    @default(now())
-  updated_at          DateTime?   @updatedAt
+  created_at          DateTime     @default(now())
+  updated_at          DateTime?    @updatedAt
   user_email_verified DateTime?
   user_password       String
   Account             Account?
