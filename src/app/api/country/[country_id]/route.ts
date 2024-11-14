@@ -5,8 +5,19 @@ const prisma = new PrismaClient()
 // get a country with specific id
 export async function GET(request: Request) {
     const url = new URL(request.url);
-    const id = url.pathname.split('/').pop();
+    const id = url.searchParams.get('country_id');
     
+    if (!id) {
+        return new Response(JSON.stringify({
+            status: 400,
+            message: 'country_id query parameter is required',
+        }), {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    }
+
     const countryWanted = await prisma.country.findUnique({
         where: {
             country_id: parseInt(id),
