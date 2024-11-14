@@ -1,14 +1,37 @@
 "use server"
 import * as z from 'zod';
 import { LoginSchema } from '../../schemas';
+import { signIn } from '../../auth';
+import { DEFAULT_ADMIN_LOGIN_REDIRECT } from '../../routes';
+import { AuthError } from 'next-auth';
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
     const validatedFields = LoginSchema.safeParse(values);
-    console.log("validatedFields: ",validatedFields)
+
     if (!validatedFields.success) {
-        console.error("Error validating fields: ", validatedFields.error);
         return { error: "Invalid fields" };
     }
-    console.log("Login successful with values: ", values);
-    return { success: "Success" };
+
+    const { email, password } = validatedFields.data;
+
+    try {
+        await signIn("credentials", {
+            email,
+            password,
+            redirectTo: DEFAULT_ADMIN_LOGIN_REDIRECT, 
+        });
+        return { success: "Inicio de sesión exitoso" };
+    } catch (error) {
+        if (error instanceof AuthError) {
+            switch(error.type){
+                case "CredentialsSignin":
+                    return { error: "La contraseña no es correcta" };
+                case "CallbackRouteError":
+                    return { error: "Error redirecting" };
+                default:
+                    return { error: "Error signing in" };
+            }
+        }
+        throw error;
+    }
 }
