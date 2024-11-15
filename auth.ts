@@ -5,9 +5,6 @@ import authConfig from "./auth.config";
 
 declare module "next-auth" {
   interface User {
-    user_email: string;
-    user_firstname: string;
-    user_lastname: string;
     user_role: "USER" | "ADMIN";
   }
 
@@ -23,11 +20,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.email = user.user_email;
-        token.name = `${user.user_firstname} ${user.user_lastname}`;
         token.role = user.user_role;
       }
-      console.log({ token, user });
       return token;
     },
     async session({ session, token }) {
@@ -40,7 +34,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           role: token.role as "USER" | "ADMIN",
         };
       }
-      console.log({ token, user: session.user });
       return session;
     },
   },
