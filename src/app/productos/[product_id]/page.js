@@ -1,6 +1,5 @@
 export default async function Page( product ) {
 
-    console.log('product', product);
     return (
         <div>
             <h1>Productos</h1>

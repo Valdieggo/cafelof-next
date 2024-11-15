@@ -20,9 +20,7 @@ export async function POST(request: Request) {
             }
         });
 
-    } catch (error: any) {
-        console.log("el error es: ", error.code);
-        // Si es un error de unicidad, lo manejamos específicamente
+    } catch (error: any) {;
         if (error.code === 'P2002') {
             return new Response(JSON.stringify({
                 status: 400,

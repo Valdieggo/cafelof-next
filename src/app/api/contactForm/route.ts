@@ -27,7 +27,6 @@ export async function POST(request: Request){
             },
         });
         
-        console.log("contacto: ", contactForm);
         return new Response(JSON.stringify({
                 status: 201,
                 message: 'Mensaje enviado con exito',
@@ -38,7 +37,6 @@ export async function POST(request: Request){
                 },
             });
     }catch(error){
-        console.log(error);
         return new Response(JSON.stringify({
             status: 400,
             message: 'Error al enviar mensaje',

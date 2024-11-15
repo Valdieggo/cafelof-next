@@ -29,7 +29,6 @@ export async function POST(request: Request) {
             },
         });
 
-        console.log("productCategorie: ", productCategorie);
         return new Response(JSON.stringify({
             status: 201,
             message: 'Categoría creada con exito',
