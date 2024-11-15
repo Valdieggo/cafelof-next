@@ -3,9 +3,9 @@ import { Prisma } from '@prisma/client';
 
 export async function POST(request: Request){
     const body = await request.json();
-    const { user_firstname, user_lastname, user_email, user_password } = body;
+    const { name, email, user_password } = body;
 
-    if (!user_firstname || !user_lastname || !user_email || !user_password) {
+    if (!name || !email || !user_password) {
         return new Response(JSON.stringify({
             status: 400,
             message: 'Missing required fields',
@@ -20,14 +20,12 @@ export async function POST(request: Request){
     try{
         const user = await prisma.user.create({
             data: {
-                user_firstname,
-                user_lastname,
-                user_email,
+                name,
+                email,
                 user_password,
             },
         });
         
-        console.log("user: ", user);
         return new Response(JSON.stringify({
                 status: 201,
                 message: 'User created successfully',

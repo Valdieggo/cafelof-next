@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(req: NextRequest, { params }: { params: { user_email: string } }) {
-    const { user_email } = params;
+export async function GET(req: NextRequest, { params }: { params: { email: string } }) {
+    const { email } = params;
 
-    if (!user_email) {
+    if (!email) {
         return NextResponse.json({ message: 'Email is required' }, { status: 400 });
     }
 
     try {
         const user = await prisma.user.findUnique({
             where: {
-                user_email,
+                email,
             },
         });
 
