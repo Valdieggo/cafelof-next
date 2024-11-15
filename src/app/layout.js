@@ -1,7 +1,7 @@
 import './globals.css';
 import NavBar from '../components/layout/NavBar';
 import Footer from '../components/layout/Footer';
-//import SessionProvider from '../components/auth/SessionProvider';
+import SessionProvider from '../components/auth/SessionProvider';
 import { auth } from "../../auth"
 
 export const metadata = {
@@ -34,12 +34,12 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
 
-  //const session = await auth();
+  const session = await auth();
 
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col relative">
-        {/* <SessionProvider session={session}> */}
+        <SessionProvider session={session}>
         <NavBar />
         <div className="flex-grow pt-20 flex flex-col">
           <main className="flex-grow">
@@ -49,7 +49,7 @@ export default async function RootLayout({ children }) {
           </main>
         </div>
         <Footer />
-        {/* </SessionProvider > */}
+        </SessionProvider >
       </body>
     </html>
   );

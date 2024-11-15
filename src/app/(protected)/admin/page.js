@@ -2,7 +2,6 @@ import { auth, signOut } from "../../../../auth";
 
 export default async function Page() {
     const session = await auth();
-    console.log("lawea: ",session.user.name)
 
     return (
         <div>
