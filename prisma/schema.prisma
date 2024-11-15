@@ -56,13 +56,13 @@ model User {
   user_address_id     Int?
   created_at          DateTime     @default(now())
   updated_at          DateTime?    @updatedAt
-  user_email_verified DateTime?
-  user_password       String
+  emailVerified       DateTime?    
+  user_password       String?
   id                  String       @id @default(cuid())
   user_role           UserRole     @default(USER)
-  user_email          String       @unique
-  user_firstname      String
-  user_lastname       String
+  email               String       @unique 
+  name                String?
+  image               String?
   Account             Account?
   carts               Cart[]
   orders              Order[]

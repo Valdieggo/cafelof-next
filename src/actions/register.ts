@@ -11,9 +11,8 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     }
 
     const requestValues = {
-        user_firstname: values.name,
-        user_lastname: values.lastname,
-        user_email: values.email,
+        name: values.name + " " + values.lastname,
+        email: values.email,
         user_password: values.password,
     };
 
