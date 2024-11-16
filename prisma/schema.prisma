@@ -113,10 +113,10 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model ProductCategorie {
-  product_categorie_id          Int       @id @default(autoincrement())
-  product_categorie_name        String    @unique
-  product_categorie_description String?
+model ProductCategory {
+  product_category_id          Int       @id @default(autoincrement())
+  product_category_name        String    @unique
+  product_category_description String?
   created_at                    DateTime  @default(now())
   updated_at                    DateTime? @updatedAt
   products                      Product[]
@@ -127,14 +127,14 @@ model Product {
   product_name         String
   product_price        Float
   product_image_url    String?
-  product_categorie_id Int
+  product_category_id Int
   created_at           DateTime         @default(now())
   updated_at           DateTime?        @updatedAt
   carts                Cart[]
   inventories          Inventory[]
-  category             ProductCategorie @relation(fields: [product_categorie_id], references: [product_categorie_id])
+  category             ProductCategory @relation(fields: [product_category_id], references: [product_category_id])
 
-  @@index([product_categorie_id], map: "Product_product_categorie_id_fkey")
+  @@index([product_category_id], map: "Product_product_category_id_fkey")
 }
 
 model Cart {

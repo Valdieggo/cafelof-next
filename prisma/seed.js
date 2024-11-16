@@ -88,6 +88,18 @@ async function main() {
     await prisma.city.createMany({
         data: citiesData
     })
+
+    // Creation of product categories
+    const categories = [
+        {product_category_name: "Café de grano"},
+        {product_category_name: "Café molido"},
+        {product_category_name: "Café instantáneo"},
+        {product_category_name: "Accesorios"}
+    ]
+
+    await prisma.productCategory.createMany({
+        data: categories
+    })
 }
 
 main()
