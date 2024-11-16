@@ -1,13 +1,10 @@
 /**
- * An array of routes that are accessible to everyone
- * @type {string[]}
+ * Prefix for the admin routes
+ * Routes that start with this prefix are used for admin routes
+ * @type {string}
  */
-export const publicRoutes: string[] = [
-    "/",
-    "/login",
-    "/productos",
-    "/contacto",
-];
+export const adminRoutePrefix: string = "/admin";
+
 
 /**
  * An array of routes that are used for authentication
