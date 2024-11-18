@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { TiShoppingCart } from "react-icons/ti";
 import { FaBars } from "react-icons/fa"; // Icono de hamburguesa
 import { useState, useEffect } from 'react';
-import ShoppingCartPanel from '../shoppingCart/ShoppingCartPanel';
+import ShoppingCartPanel from "../shoppingCart/ShoppingCartPanel";
 import logo from '../../../public/logo.png';
 import { FaRegUser } from "react-icons/fa";
 
