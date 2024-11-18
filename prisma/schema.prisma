@@ -52,22 +52,22 @@ model UserAddress {
 }
 
 model User {
-  user_phone_number   String?
-  user_address_id     Int?
-  created_at          DateTime     @default(now())
-  updated_at          DateTime?    @updatedAt
-  emailVerified       DateTime?    
-  user_password       String?
-  id                  String       @id @default(cuid())
-  user_role           UserRole     @default(USER)
-  email               String       @unique 
-  name                String?
-  image               String?
-  Account             Account?
-  carts               Cart[]
-  orders              Order[]
-  Session             Session[]
-  address             UserAddress? @relation(fields: [user_address_id], references: [user_address_id])
+  user_phone_number String?
+  user_address_id   Int?
+  created_at        DateTime     @default(now())
+  updated_at        DateTime?    @updatedAt
+  user_password     String?
+  id                String       @id @default(cuid())
+  user_role         UserRole     @default(USER)
+  name              String?
+  image             String?
+  email             String       @unique
+  emailVerified     DateTime?
+  Account           Account?
+  carts             Cart[]
+  orders            Order[]
+  Session           Session[]
+  address           UserAddress? @relation(fields: [user_address_id], references: [user_address_id])
 
   @@index([user_address_id], map: "User_user_address_id_fkey")
 }
@@ -117,22 +117,22 @@ model ProductCategory {
   product_category_id          Int       @id @default(autoincrement())
   product_category_name        String    @unique
   product_category_description String?
-  created_at                    DateTime  @default(now())
-  updated_at                    DateTime? @updatedAt
-  products                      Product[]
+  created_at                   DateTime  @default(now())
+  updated_at                   DateTime? @updatedAt
+  products                     Product[]
 }
 
 model Product {
-  product_id           Int              @id @default(autoincrement())
-  product_name         String
-  product_price        Float
-  product_image_url    String?
+  product_id          Int             @id @default(autoincrement())
+  product_name        String
+  product_price       Float
+  product_image_url   String?
+  created_at          DateTime        @default(now())
+  updated_at          DateTime?       @updatedAt
   product_category_id Int
-  created_at           DateTime         @default(now())
-  updated_at           DateTime?        @updatedAt
-  carts                Cart[]
-  inventories          Inventory[]
-  category             ProductCategory @relation(fields: [product_category_id], references: [product_category_id])
+  carts               Cart[]
+  inventories         Inventory[]
+  category            ProductCategory @relation(fields: [product_category_id], references: [product_category_id])
 
   @@index([product_category_id], map: "Product_product_category_id_fkey")
 }

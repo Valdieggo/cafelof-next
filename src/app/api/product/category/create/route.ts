@@ -5,9 +5,9 @@ const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
     const body = await request.json();
-    const { product_categorie_name, product_categorie_description } = body;
+    const { product_category_name, product_category_description } = body;
 
-    const missingFields = validateRequiredFields(body, ['product_categorie_name', 'product_categorie_description']);
+    const missingFields = validateRequiredFields(body, ['product_category_name', 'product_category_description']);
 
     if (missingFields.length > 0) {
         return new Response(JSON.stringify({
@@ -22,17 +22,17 @@ export async function POST(request: Request) {
     }
 
     try {
-        const productCategorie = await prisma.productCategorie.create({
+        const productCategory = await prisma.productCategory.create({
             data: {
-                product_categorie_name,
-                product_categorie_description,
+                product_category_name,
+                product_category_description,
             },
         });
 
         return new Response(JSON.stringify({
             status: 201,
             message: 'Categoría creada con exito',
-            data: productCategorie,
+            data: productCategory,
         }), {
             status: 201,
             headers: {

@@ -1,3 +1,4 @@
+"use client";
 export default function CategoryFilter({ categories, selectedCategories, onCategoryChange }) {
     return (
       <div className="flex space-x-4">

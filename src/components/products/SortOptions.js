@@ -1,3 +1,4 @@
+"use client";
 export default function SortOptions({ options, selectedOption, onSortChange }) {
     return (
       <div>
