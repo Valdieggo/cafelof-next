@@ -26,7 +26,7 @@ export const apiPrefix: string = "/api";
  * Default redirect path after logging in
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT: string = "/";
+export const DEFAULT_LOGIN_REDIRECT: string = "/profile";
 
 /**
  * Default redirect path for admin users after logging in
