@@ -13,7 +13,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     }
 
     const { email, password } = validatedFields.data;
-
+    
     try {
         await signIn("credentials", {
             email,

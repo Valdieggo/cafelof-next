@@ -17,7 +17,7 @@ export default {
             if(validatedFields.success){
                 const { email, password } = validatedFields.data;
 
-                const user = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/${email}`).then(res => res.json());
+                const user = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/get/${email}`).then(res => res.json());
 
                 if(!user || !user.user_password) return null;
 
