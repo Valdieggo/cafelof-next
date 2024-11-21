@@ -21,7 +21,7 @@ export default function ProductDetails({
 
   const handleAddToCart = () => {
     addToCart(
-      { id: product_id, title: product_name, price: product_price },
+      { id: product_id, title: product_name, price: product_price, image: product_image_url },
       quantity
     );
   };
