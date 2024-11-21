@@ -7,11 +7,13 @@ import { useState, useEffect } from 'react';
 import ShoppingCartPanel from "../shoppingCart/ShoppingCartPanel";
 import logo from '../../../public/logo.png';
 import { FaRegUser } from "react-icons/fa";
+import { useCart } from '@/context/CartContext';
 
 export default function NavBar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hasMounted, setHasMounted] = useState(false); // Estado de montaje para el carrito
+  const { getTotalItems } = useCart();
 
   useEffect(() => {
     setHasMounted(true);
@@ -43,7 +45,7 @@ export default function NavBar() {
             <button onClick={toggleCart} className="hover:text-[var(--highlight)] relative">
             <TiShoppingCart size={24} />
               <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                0
+                {getTotalItems()}
               </span>
             </button>
             <button className="hover:text-[var(--highlight)]">
