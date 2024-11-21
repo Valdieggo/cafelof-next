@@ -6,10 +6,11 @@ interface CartItemProps {
   title: string;
   price: number;
   image: string; // Nueva propiedad para la imagen del producto
+  quantity: number;
   onRemove: (id: number) => void;
 }
 
-export default function CartItem({ id, title, price, image, onRemove }: CartItemProps) {
+export default function CartItem({ id, title, price, image, quantity, onRemove }: CartItemProps) {
   return (
     <li className="mb-4">
       <div className="flex items-center">
@@ -18,8 +19,7 @@ export default function CartItem({ id, title, price, image, onRemove }: CartItem
           <Image 
             src={image} 
             alt={title} 
-            layout="fill" 
-            objectFit="cover" 
+            layout="fill"
             className="rounded-md" 
             priority // Opcional: Si quieres priorizar la carga de estas imágenes
           />
@@ -27,6 +27,7 @@ export default function CartItem({ id, title, price, image, onRemove }: CartItem
         <div className="flex-1">
           <p className="text-lg font-semibold">{title}</p>
           <p className="text-sm text-gray-600">{formatCurrency(price)}</p>
+          <p className="text-sm text-gray-600">Cantidad: {quantity}</p>
         </div>
         <button 
           onClick={() => onRemove(id)} 

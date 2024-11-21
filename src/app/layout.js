@@ -3,6 +3,7 @@ import NavBar from '../components/layout/NavBar';
 import Footer from '../components/layout/Footer';
 import SessionProvider from '../components/auth/SessionProvider';
 import { auth } from "../../auth"
+import { CartProvider } from '@/context/CartContext';
 
 export const metadata = {
   title: 'Café Lof',
@@ -39,6 +40,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col relative">
+        <CartProvider>
         <SessionProvider session={session}>
         <NavBar />
         <div className="flex-grow pt-20 flex flex-col">
@@ -50,6 +52,7 @@ export default async function RootLayout({ children }) {
         </div>
         <Footer />
         </SessionProvider >
+        </CartProvider>
       </body>
     </html>
   );

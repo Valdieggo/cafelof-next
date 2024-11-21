@@ -1,27 +1,10 @@
 import { useState } from 'react';
 import CartItem from './CartItem';
 import formatCurrency from '../../../utils/formatCurrency';
-
-interface CartItemData {
-  id: number;
-  title: string;
-  price: number;
-}
+import { useCart } from '../../context/CartContext';
 
 export default function ShoppingCartPanel({ onClose, isOpen }: { onClose: () => void; isOpen: boolean }) {
-  const [cartItems, setCartItems] = useState<CartItemData[]>([
-    { id: 1, title: 'Producto 1', price: 10000 },
-    { id: 2, title: 'Producto 2', price: 20000 },
-    { id: 3, title: 'Producto 3', price: 15000 },
-  ]);
-
-  const removeItem = (id: number) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
-  };
-
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price, 0);
-  };
+  const { cartItems, removeFromCart, getTotalPrice } = useCart();
 
   return (
     <>
@@ -47,17 +30,18 @@ export default function ShoppingCartPanel({ onClose, isOpen }: { onClose: () => 
             <p className="text-gray-600">Comienza a agregar tus productos</p>
           ) : (
             <ul>
-              {cartItems.map((item) => (
-                <CartItem 
-                  key={item.id} 
-                  id={item.id} 
-                  title={item.title} 
-                  price={item.price} 
-                  image={`/product-${item.id}.jpg`} // Ruta de la imagen del producto
-                  onRemove={removeItem} 
-                />
-              ))}
-            </ul>
+        {cartItems.map((item) => (
+          <CartItem
+            key={item.id}
+            id={item.id}
+            title={item.title}
+            price={item.price * item.quantity}
+            quantity={item.quantity}
+            image={`/product-${item.id}.jpg`}
+            onRemove={removeFromCart}
+          />
+        ))}
+      </ul>
           )}
         </div>
         
@@ -65,11 +49,14 @@ export default function ShoppingCartPanel({ onClose, isOpen }: { onClose: () => 
           <div className="border-t border-gray-200 pt-4">
             <div className="flex justify-between items-center mb-4">
               <span className="text-lg font-semibold">Subtotal</span>
-              <span className="text-lg font-bold">{formatCurrency(calculateTotal())}</span>
+              <span className="text-lg font-bold">{formatCurrency(getTotalPrice())}</span>
             </div>
-            <button className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">
+            <a
+              href="/checkout"
+              className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 text-center block"
+            >
               Proceder al pago
-            </button>
+            </a>
           </div>
         )}
       </div>
