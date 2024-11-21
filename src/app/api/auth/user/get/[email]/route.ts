@@ -5,14 +5,14 @@ export async function GET(req: NextRequest, { params }: { params: { email: strin
     const { email } = params;
 
     if (!email) {
-        return NextResponse.json({ message: 'Email is required' }, { status: 400 });
+        return NextResponse.json({ message: 'Id is required' }, { status: 400 });
     }
 
     try {
         const user = await prisma.user.findUnique({
             where: {
                 email,
-            },
+            }
         });
 
         if (!user) {
