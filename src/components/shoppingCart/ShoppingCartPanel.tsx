@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import CartItem from './CartItem';
 import formatCurrency from '../../../utils/formatCurrency';
 import { useCart } from '../../context/CartContext';
@@ -37,7 +36,7 @@ export default function ShoppingCartPanel({ onClose, isOpen }: { onClose: () => 
             title={item.title}
             price={item.price * item.quantity}
             quantity={item.quantity}
-            image={`/product-${item.id}.jpg`}
+            image={item.image}
             onRemove={removeFromCart}
           />
         ))}
