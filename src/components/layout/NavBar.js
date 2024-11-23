@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { TiShoppingCart } from "react-icons/ti";
 import { FaBars } from "react-icons/fa"; // Icono de hamburguesa
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import ShoppingCartPanel from "../shoppingCart/ShoppingCartPanel";
 import logo from '../../../public/logo.png';
 import { FaRegUser } from "react-icons/fa";
@@ -12,12 +12,7 @@ import { useCart } from '@/context/CartContext';
 export default function NavBar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [hasMounted, setHasMounted] = useState(false); // Estado de montaje para el carrito
-  const { getTotalItems } = useCart();
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []); // Ejecuta solo en el montaje
+  const { getTotalItems, isCartLoaded } = useCart();
 
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
@@ -26,6 +21,8 @@ export default function NavBar() {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const totalItems = isCartLoaded ? getTotalItems() : null; // Mostrar solo cuando los datos estén cargados.
 
   return (
     <div>
@@ -43,10 +40,12 @@ export default function NavBar() {
 
           <div className="flex justify-between space-x-2 relative">
             <button onClick={toggleCart} className="hover:text-[var(--highlight)] relative">
-            <TiShoppingCart size={24} />
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                {getTotalItems()}
-              </span>
+              <TiShoppingCart size={24} />
+              {totalItems !== null && ( // Solo mostrar cuando `isCartLoaded` sea true.
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                  {totalItems}
+                </span>
+              )}
             </button>
             <button className="hover:text-[var(--highlight)]">
               <a href="/login">
@@ -59,7 +58,6 @@ export default function NavBar() {
           </div>
         </div>
 
-        {/* Menú hamburguesa en pantallas pequeñas */}
         {isMenuOpen && (
           <nav className="md:hidden bg-[var(--navbar-bg)] shadow-lg">
             <div className="container mx-auto px-6 py-4 flex flex-col space-y-4">
@@ -71,10 +69,10 @@ export default function NavBar() {
         )}
       </header>
 
-      {/* Renderiza el panel del carrito solo si se ha montado */}
-      {hasMounted && (
+      {isCartLoaded && (
         <ShoppingCartPanel onClose={toggleCart} isOpen={isCartOpen} />
       )}
     </div>
   );
 }
+

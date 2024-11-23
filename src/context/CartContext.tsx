@@ -16,31 +16,28 @@ interface CartContextProps {
   removeFromCart: (id: number) => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
+  isCartLoaded: boolean; // Añadimos un estado de carga.
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isMounted, setIsMounted] = useState(false);
+  const [cartItems, setCartItems] = useState<CartItem[] | null>(null);
+  const [isCartLoaded, setIsCartLoaded] = useState(false);
 
-  // Solo ejecutamos efectos relacionados con localStorage en el cliente
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
       setCartItems(JSON.parse(storedCart));
+    } else {
+      setCartItems([]); // Inicializamos con un array vacío.
     }
-    setIsMounted(true); // Ahora el componente está montado
+    setIsCartLoaded(true); // Marcamos como cargado después de la inicialización.
   }, []);
-
-  useEffect(() => {
-    if (isMounted) {
-      localStorage.setItem("cart", JSON.stringify(cartItems));
-    }
-  }, [cartItems, isMounted]);
 
   const addToCart = (item: Omit<CartItem, "quantity">, quantity: number) => {
     setCartItems((prev) => {
+      if (!prev) return prev;
       const existingItem = prev.find((cartItem) => cartItem.id === item.id);
       if (existingItem) {
         return prev.map((cartItem) =>
@@ -54,20 +51,31 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const removeFromCart = (id: number) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+    setCartItems((prev) => prev?.filter((item) => item.id !== id) ?? []);
   };
 
   const getTotalItems = () =>
-    cartItems.reduce((total, item) => total + item.quantity, 0);
+    cartItems?.reduce((total, item) => total + item.quantity, 0) ?? 0;
 
   const getTotalPrice = () =>
-    cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    cartItems?.reduce((total, item) => total + item.price * item.quantity, 0) ?? 0;
 
-  if (!isMounted) return null; // Retrasamos el renderizado si el componente aún no está montado
+  useEffect(() => {
+    if (cartItems !== null) {
+      localStorage.setItem("cart", JSON.stringify(cartItems));
+    }
+  }, [cartItems]);
 
   return (
     <CartContext.Provider
-      value={{ cartItems, addToCart, removeFromCart, getTotalItems, getTotalPrice }}
+      value={{
+        cartItems: cartItems || [],
+        addToCart,
+        removeFromCart,
+        getTotalItems,
+        getTotalPrice,
+        isCartLoaded, // Exportamos el estado de carga.
+      }}
     >
       {children}
     </CartContext.Provider>

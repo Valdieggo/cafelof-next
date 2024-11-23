@@ -1,10 +1,12 @@
+"use server";
 import { signOut } from "../../../auth"
  
 export default async function SignOut() {
   return (
     <form
       action={async () => {
-        await signOut()
+        "use server";
+        await signOut({ redirectTo: "/" });
       }}
     >
       <button type="submit">Sign Out</button>
