@@ -1,9 +1,10 @@
-import { getProductById } from "@/actions/getProductById";
 import ProductDetails from "@/components/products/ProductDetails";
 
 export default async function Page( product ) {
-    const products = await getProductById(product.params.product_id);
+    const data = await fetch(`http://localhost:3000/api/product/${product.params.product_id}`);
 
+    let products = await data.json();
+    products = products.data;
     return (
         <div>
             <ProductDetails
