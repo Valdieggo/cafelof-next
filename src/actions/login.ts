@@ -2,7 +2,7 @@
 import * as z from 'zod';
 import { LoginSchema } from '../../schemas';
 import { signIn } from '../../auth';
-import { DEFAULT_ADMIN_LOGIN_REDIRECT } from '../../routes';
+import { DEFAULT_LOGIN_REDIRECT } from '../../routes';
 import { AuthError } from 'next-auth';
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
@@ -18,7 +18,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
         await signIn("credentials", {
             email,
             password,
-            redirectTo: DEFAULT_ADMIN_LOGIN_REDIRECT, 
+            redirectTo: DEFAULT_LOGIN_REDIRECT, 
         });
         return { success: "Inicio de sesión exitoso" };
     } catch (error) {
