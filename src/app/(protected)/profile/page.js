@@ -1,6 +1,8 @@
 import UserProfile from "@/components/profile/UserProfile";
-import { auth } from "../../../../auth";
+import { auth, signOut } from "../../../../auth";
 import { getUser } from "@/actions/getUser";
+import { Button } from "@/components/ui/button";
+import SignOut from "@/components/auth/signOut";
 
 export default async function Page(){
     const session = await auth();
@@ -9,6 +11,7 @@ export default async function Page(){
     return (
         <div className="w-full max-w-md mx-auto mt-8 mb-8">
           <UserProfile user={user} />
+          <SignOut />
         </div>
       );
 }
