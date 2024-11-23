@@ -16,7 +16,10 @@ interface CartContextProps {
   removeFromCart: (id: number) => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
-  isCartLoaded: boolean; // Añadimos un estado de carga.
+  isCartLoaded: boolean;
+  isCartOpen: boolean; // Nuevo estado para la visibilidad del carrito
+  openCart: () => void; // Función para abrir el carrito
+  closeCart: () => void; // Función para cerrar el carrito
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -24,6 +27,7 @@ const CartContext = createContext<CartContextProps | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[] | null>(null);
   const [isCartLoaded, setIsCartLoaded] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false); // Estado de visibilidad
 
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
@@ -48,6 +52,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
       return [...prev, { ...item, quantity }];
     });
+    openCart(); // Abrimos el carrito después de agregar un producto
   };
 
   const removeFromCart = (id: number) => {
@@ -59,6 +64,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const getTotalPrice = () =>
     cartItems?.reduce((total, item) => total + item.price * item.quantity, 0) ?? 0;
+
+  const openCart = () => setIsCartOpen(true); // Función para abrir el carrito
+  const closeCart = () => setIsCartOpen(false); // Función para cerrar el carrito
 
   useEffect(() => {
     if (cartItems !== null) {
@@ -74,7 +82,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         removeFromCart,
         getTotalItems,
         getTotalPrice,
-        isCartLoaded, // Exportamos el estado de carga.
+        isCartLoaded,
+        isCartOpen, // Exportamos el estado de visibilidad
+        openCart, // Exportamos la función para abrir el carrito
+        closeCart, // Exportamos la función para cerrar el carrito
       }}
     >
       {children}

@@ -10,12 +10,16 @@ import { FaRegUser } from "react-icons/fa";
 import { useCart } from '@/context/CartContext';
 
 export default function NavBar() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  // Removemos el estado local de isCartOpen
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { getTotalItems, isCartLoaded } = useCart();
+  const { getTotalItems, isCartLoaded, isCartOpen, openCart, closeCart } = useCart();
 
   const toggleCart = () => {
-    setIsCartOpen(!isCartOpen);
+    if (isCartOpen) {
+      closeCart();
+    } else {
+      openCart();
+    }
   };
 
   const toggleMenu = () => {
@@ -69,10 +73,10 @@ export default function NavBar() {
         )}
       </header>
 
+      {/* Utilizamos el estado del contexto para mostrar el panel del carrito */}
       {isCartLoaded && (
-        <ShoppingCartPanel onClose={toggleCart} isOpen={isCartOpen} />
+        <ShoppingCartPanel onClose={closeCart} isOpen={isCartOpen} />
       )}
     </div>
   );
 }
-
