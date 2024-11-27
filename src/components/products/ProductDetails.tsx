@@ -2,12 +2,14 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { Button } from "@/components/ui/button";
 
 interface ProductDetailsProps {
   product_id: number;
   product_name: string;
   product_price: number;
-  product_image_url: string | null;
+  product_image_url: string;
+  product_category_name: string;
 }
 
 export default function ProductDetails({
@@ -15,9 +17,12 @@ export default function ProductDetails({
   product_name,
   product_price,
   product_image_url,
+  product_category_name,
 }: ProductDetailsProps) {
+
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
+  console.log({ product_id, product_name, product_price, product_image_url, product_category_name });
 
   const handleAddToCart = () => {
     addToCart(
@@ -26,57 +31,72 @@ export default function ProductDetails({
     );
   };
 
-  return ( 
+  return (
     product_id && (
-    <div className="flex flex-col lg:flex-row gap-8 p-4 container w-full max-w-md mx-auto mt-8 mb-8">
-      <div className="flex flex-col items-center">
-        <div className="relative w-72 h-72 lg:w-96 lg:h-96">
-          <Image
-            src={product_image_url || "https://images.dog.ceo/breeds/ridgeback-rhodesian/n02087394_9891.jpg"} // Imagen predeterminada si es null
-            alt={product_name}
-            layout="fill"
-            className="rounded-lg shadow-md"
-          />
-        </div>
-      </div>
-
-      {/* Detalles del producto */}
-      <div className="flex-1">
-        <h1 className="text-2xl font-bold mb-2">{product_name}</h1>
-
-        <p className="text-2xl font-semibold text-gray-900 mb-4">
-          ${product_price?.toLocaleString("es-CL") ?? "0"}
-        </p>
-
-
-        {/* Controles de cantidad */}
-        <div className="flex items-center gap-4 mb-4">
-          <span className="font-semibold">Cantidad:</span>
-          <div className="flex items-center border border-gray-300 rounded-md">
-            <button
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              className="px-3 py-1 text-lg font-bold"
-            >
-              −
-            </button>
-            <span className="px-4">{quantity}</span>
-            <button
-              onClick={() => setQuantity(quantity + 1)}
-              className="px-3 py-1 text-lg font-bold"
-            >
-              +
-            </button>
+      <div className="flex flex-col lg:flex-row gap-8 p-6 container w-full max-w-4xl mx-auto mt-10 bg-white rounded-lg shadow-lg mb-10">
+        {/* Imagen del producto */}
+        <div className="flex justify-center items-center lg:flex-1">
+          <div className="relative w-full h-72 lg:w-96 lg:h-96">
+            <Image
+              src={product_image_url || "https://images.dog.ceo/breeds/ridgeback-rhodesian/n02087394_9891.jpg"}
+              alt={product_name}
+              layout="fill"
+              className="rounded-lg shadow-lg object-cover"
+            />
           </div>
         </div>
 
-        {/* Botón Agregar al carrito */}
-        <button
-          onClick={handleAddToCart}
-          className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition"
-        >
-          Agregar al carrito
-        </button>
+        {/* Detalles del producto */}
+        <div className="flex-1 flex flex-col justify-between">
+          <div>
+            {/* Título del producto */}
+            <h1
+              className="text-3xl font-bold text-gray-900 mb-4 leading-tight break-words"
+              style={{ wordBreak: "break-word" }}
+            >
+              {product_name}
+            </h1>
+            <p className="text-xs text-gray-400">{product_category_name}</p>
+            {/* Precio del producto */}
+            <h1 className="text-lg text-gray-500">Precio:</h1>
+            <p className="text-2xl font-semibold text-green-600 mb-6">
+              ${product_price?.toLocaleString("es-CL") ?? "0"}
+            </p>
+
+            {/* Controles de cantidad */}
+            <div className="flex items-center gap-4 mb-6">
+              <span className="font-medium text-gray-700">Cantidad:</span>
+              <div className="flex items-center border border-gray-300 rounded-md shadow-sm overflow-hidden">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                >
+                  −
+                </Button>
+                <span className="px-6 text-lg font-medium">{quantity}</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setQuantity(quantity + 1)}
+                >
+                  +
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Botón Agregar al carrito */}
+          <Button
+            variant="default"
+            size="lg"
+            onClick={handleAddToCart}
+            className="w-full"
+          >
+            Agregar al carrito
+          </Button>
+        </div>
       </div>
-    </div>
-  ));
+    )
+  );
 }

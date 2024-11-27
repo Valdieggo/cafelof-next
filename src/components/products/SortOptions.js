@@ -1,18 +1,17 @@
-"use client";
 export default function SortOptions({ options, selectedOption, onSortChange }) {
-    return (
-      <div>
-        <select
-          value={selectedOption}
-          onChange={(e) => onSortChange(e.target.value)}
-          className="bg-white border border-gray-300 rounded py-2 px-4">
-          {options.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
-  }
-  
+  return (
+    <div className="flex-1 min-w-[100px] max-w-[200px]">
+      <select
+        value={selectedOption}
+        onChange={(e) => onSortChange(e.target.value)}
+        className="w-full px-2 py-1 bg-white border border-gray-300 rounded-md shadow-sm text-sm"
+      >
+        {options.map((option, index) => (
+          <option key={index} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
