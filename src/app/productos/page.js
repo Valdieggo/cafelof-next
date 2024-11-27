@@ -1,13 +1,17 @@
 import Products from "@/components/products/Products";
 
 export default async function Page() {
-  const data = await fetch('http://localhost:3000/api/product', {
+  const productsResponse = await fetch('http://localhost:3000/api/product', {
     next: { revalidate: 10 }, // Opcional: para revalidar caché cada 10 segundos
   });
 
-  let products = await data.json();
+  const products = await productsResponse.json();
 
-  const categories = ['Café de grano', 'Accesorios'];
+  const categoriesResponse = await fetch('http://localhost:3000/api/product/category');
+  const categoriesData = await categoriesResponse.json();
+
+  const categories = categoriesData.data.map(category => category.product_category_name);
+
   const sortOptions = ['Orden predeterminado', 'Precio ascendente', 'Precio descendente'];
 
   return (
