@@ -1,9 +1,24 @@
-import CartItem from './CartItem';
-import formatCurrency from '../../../utils/formatCurrency';
-import { useCart } from '../../context/CartContext';
+import { useEffect } from "react";
+import CartItem from "./CartItem";
+import formatCurrency from "../../../utils/formatCurrency";
+import { useCart } from "../../context/CartContext";
 
 export default function ShoppingCartPanel({ onClose, isOpen }: { onClose: () => void; isOpen: boolean }) {
   const { cartItems, removeFromCart, getTotalPrice } = useCart();
+
+  // Deshabilitar scroll del body cuando el carrito está abierto
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    // Limpieza: eliminar la clase al desmontar el componente
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [isOpen]);
 
   return (
     <>
@@ -16,7 +31,7 @@ export default function ShoppingCartPanel({ onClose, isOpen }: { onClose: () => 
       
       <div
         className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg z-50 p-6 flex flex-col transform transition-transform duration-300 ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
+          isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex justify-between items-center mb-4">
@@ -29,18 +44,18 @@ export default function ShoppingCartPanel({ onClose, isOpen }: { onClose: () => 
             <p className="text-gray-600">Comienza a agregar tus productos</p>
           ) : (
             <ul>
-        {cartItems.map((item) => (
-          <CartItem
-            key={item.id}
-            id={item.id}
-            title={item.title}
-            price={item.price * item.quantity}
-            quantity={item.quantity}
-            image={item.image}
-            onRemove={removeFromCart}
-          />
-        ))}
-      </ul>
+              {cartItems.map((item) => (
+                <CartItem
+                  key={item.id}
+                  id={item.id}
+                  title={item.title}
+                  price={item.price * item.quantity}
+                  quantity={item.quantity}
+                  image={item.image}
+                  onRemove={removeFromCart}
+                />
+              ))}
+            </ul>
           )}
         </div>
         

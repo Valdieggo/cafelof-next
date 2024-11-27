@@ -21,11 +21,13 @@ export default function CartItem({ id, title, price, image, quantity, onRemove }
             alt={title} 
             layout="fill"
             className="rounded-md" 
-            priority // Opcional: Si quieres priorizar la carga de estas imágenes
+            priority
           />
         </div>
-        <div className="flex-1">
-          <p className="text-lg font-semibold">{title}</p>
+        <div className="flex-1 min-w-0">
+          <p className="text-lg font-semibold break-words break-all">
+            {title}
+          </p>
           <p className="text-sm text-gray-600">{formatCurrency(price)}</p>
           <p className="text-sm text-gray-600">Cantidad: {quantity}</p>
         </div>

@@ -1,5 +1,6 @@
 "use server";
 import { signOut } from "../../../auth"
+import { Button } from "../ui/button";
  
 export default async function SignOut() {
   return (
@@ -9,7 +10,7 @@ export default async function SignOut() {
         await signOut({ redirectTo: "/" });
       }}
     >
-      <button type="submit">Sign Out</button>
+      <Button type="submit">Salir</Button>
     </form>
   )
 }
