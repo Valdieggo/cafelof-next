@@ -8,6 +8,7 @@ import ShoppingCartPanel from "../shoppingCart/ShoppingCartPanel";
 import logo from '../../../public/logo.png';
 import { FaRegUser } from "react-icons/fa";
 import { useCart } from '@/context/CartContext';
+import SearchButton from "@/components/layout/SearchButton";
 
 export default function NavBar() {
   // Removemos el estado local de isCartOpen
@@ -53,12 +54,13 @@ export default function NavBar() {
             </button>
             <button className="hover:text-[var(--highlight)]">
               <a href="/login">
-                <FaRegUser size={20}/>
+                <FaRegUser size={20} />
               </a>
             </button>
             <button onClick={toggleMenu} className="md:hidden hover:text-[var(--highlight)]">
               <FaBars size={18} />
             </button>
+            <SearchButton />
           </div>
         </div>
 
