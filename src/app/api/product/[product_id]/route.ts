@@ -16,6 +16,13 @@ export async function GET(request: Request, { params }: { params: { product_id: 
       where: {
         product_id: productId,
       },
+      include: {
+        category: {
+          select: {
+            product_category_name: true,
+          },
+        },
+      },
     });
 
     if (!product) {
@@ -25,9 +32,14 @@ export async function GET(request: Request, { params }: { params: { product_id: 
       );
     }
 
-    // Retorna el producto en la respuesta
+    const { category, ...productData } = product; // Destructure category out
+    const flattenedProduct = {
+      ...productData,
+      product_category_name: category?.product_category_name || null, 
+    };
+
     return NextResponse.json(
-      { status: 200, data: product },
+      { status: 200, data: flattenedProduct },
       { status: 200 }
     );
   } catch (error) {

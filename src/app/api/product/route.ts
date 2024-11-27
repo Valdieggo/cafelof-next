@@ -1,16 +1,48 @@
-const { PrismaClient } = require('@prisma/client')
+import { prisma } from '@/lib/prisma';
 
-const prisma = new PrismaClient()
+export async function GET(request: Request) {
+  try {
+    const allProducts = await prisma.product.findMany({
+      include: {
+        category: {
+          select: {
+            product_category_name: true,
+          },
+        },
+      },
+    });
 
-export async function GET(request: Request){
-    const allProducts = await prisma.product.findMany();
+    // Map through allProducts to flatten each product object and remove the category object
+    const flattenedProducts = allProducts.map(({ category, ...productData }) => ({
+      ...productData,
+      product_category_name: category?.product_category_name || null,
+    }));
 
-    return new Response(JSON.stringify({
+    return new Response(
+      JSON.stringify({
         status: 200,
-        data: allProducts
-      }), {
+        data: flattenedProducts,
+      }),
+      {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         }
-      });
+      }
+    );
+  } catch (error) {
+    console.error('Error fetching products:', error);
+
+    return new Response(
+      JSON.stringify({
+        status: 500,
+        message: 'Internal Server Error',
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        status: 500,
+      }
+    );
+  }
 }
