@@ -5,19 +5,30 @@ import formatCurrency from '../../../utils/formatCurrency';
 
 export default function CheckoutOrderSummary() {
   const { getTotalPrice } = useCart();
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const { cartItems } = useCart();
-  const handlePlaceOrder = () => {
-    console.log('Order placed with:', {
-      name,
-      email,
-      address,
-      paymentMethod,
-      cart: cartItems,
-    });
+
+  const handlePlaceOrder = async () => {
+    setLoading(true);
+
+    try{
+      const orderData = await fetch("http://localhost:3000/api/transaction/create",
+        {
+          method: "POST",
+          body: JSON.stringify({ amount: getTotalPrice() })
+        });
+        const data = await orderData.json();
+        window.location.href = `${data.url}?token_ws=${data.token}`;
+      } catch (error) {
+        console.error('Error al crear la transacción:', error);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
   };
 
   return (
@@ -40,6 +51,7 @@ export default function CheckoutOrderSummary() {
       <button
         className="w-full p-3 bg-black text-white font-bold rounded"
         onClick={handlePlaceOrder}
+        disabled={loading}
       >
         Ir a pagar
       </button>
