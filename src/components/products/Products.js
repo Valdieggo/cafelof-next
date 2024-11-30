@@ -42,7 +42,7 @@ export default function Products({ initialProducts = [], categories = [], sortOp
   };
 
   return (
-    <div className="min-h-screen py-10">
+    <div className="min-h-screen p-8">
       <div className="container mx-auto px-6">
         {/* Filtros y opciones de orden */}
         <div className="flex flex-wrap gap-4 items-center mb-6 bg-white p-4 rounded-lg shadow-md">

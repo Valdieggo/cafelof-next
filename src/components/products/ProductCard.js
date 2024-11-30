@@ -1,4 +1,5 @@
 import Image from "next/image";
+import imagen1 from "../../../public/imagenes_cafe/arabica_borboun.webp"
 
 export default function ProductCard({ product }) {
   return (
@@ -9,7 +10,7 @@ export default function ProductCard({ product }) {
           <Image
             src={
               product.product_image_url ||
-              "https://lh3.googleusercontent.com/a/ACg8ocJwSUA-JHZ1w4Nx8copuVnqLotFRHM18IO2MDWg4KB73mF62edz=s96-c"
+              imagen1
             }
             alt={product.product_name}
             layout="fill"

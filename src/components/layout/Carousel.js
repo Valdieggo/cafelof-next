@@ -8,20 +8,23 @@ import imagen2 from '../../../public/beneficios-del-cafe-en-grano_.jpg'
 import imagen3 from '../../../public/63e51e0602b22__KIWXSp9o.webp'
 
 const images = [imagen1, imagen2, imagen3]
-const carouselProducts = [...images, ...images, ...images]
+
+// Duplicate the images multiple times and create a slides array
+const slides = [...images, ...images, ...images]
+const totalSlides = slides.length
+const imagesLength = images.length
 
 export default function PhotoCarousel() {
-  const [slideIndex, setSlideIndex] = useState(images.length)
+  // Start from the middle set of images
+  const [slideIndex, setSlideIndex] = useState(imagesLength)
   const [isTransitioning, setIsTransitioning] = useState(true)
-
-  const goToPrevious = () => {
-    setSlideIndex(prevIndex => prevIndex - 1)
-    setIsTransitioning(true)
-  }
 
   const goToNext = () => {
     setSlideIndex(prevIndex => prevIndex + 1)
-    setIsTransitioning(true)
+  }
+
+  const goToPrevious = () => {
+    setSlideIndex(prevIndex => prevIndex - 1)
   }
 
   useEffect(() => {
@@ -30,20 +33,21 @@ export default function PhotoCarousel() {
   }, [])
 
   const handleTransitionEnd = () => {
-    if (slideIndex >= images.length * 2) {
-      // Sin transición, restablece al inicio del conjunto medio
+    // Reset to the middle set when reaching the end or beginning
+    if (slideIndex === totalSlides - imagesLength) {
+      // End of the middle set
       setIsTransitioning(false)
-      setSlideIndex(images.length)
-    } else if (slideIndex <= images.length - 1) {
-      // Sin transición, restablece al final del conjunto medio
+      setSlideIndex(imagesLength)
+    } else if (slideIndex === imagesLength - 1) {
+      // Beginning of the middle set
       setIsTransitioning(false)
-      setSlideIndex(images.length * 2 - 1)
+      setSlideIndex(totalSlides - 2 * imagesLength + imagesLength - 1)
     }
   }
 
   useEffect(() => {
     if (!isTransitioning) {
-      // Reinicia la transición después de restablecer el índice
+      // Re-enable transitions after resetting the slideIndex
       setTimeout(() => {
         setIsTransitioning(true)
       }, 0)
@@ -57,7 +61,7 @@ export default function PhotoCarousel() {
         style={{ transform: `translateX(-${slideIndex * 100}%)` }}
         onTransitionEnd={handleTransitionEnd}
       >
-        {carouselProducts.map((img, index) => (
+        {slides.map((img, index) => (
           <div key={index} className="w-full flex-shrink-0">
             <div className="relative h-[300px] md:h-[400px] w-full">
               <Image
@@ -73,14 +77,14 @@ export default function PhotoCarousel() {
       <button
         onClick={goToPrevious}
         className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/75 transition-colors z-10"
-        aria-label="Imagen anterior"
+        aria-label="Previous image"
       >
         <IoChevronBackOutline size={24} />
       </button>
       <button
         onClick={goToNext}
         className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/75 transition-colors z-10"
-        aria-label="Siguiente imagen"
+        aria-label="Next image"
       >
         <IoChevronForwardOutline size={24} />
       </button>
