@@ -1,5 +1,6 @@
 import CheckoutDetails from '@/components/checkout/CheckoutDetails';
 import CheckoutOrderSummary from '@/components/checkout/CheckoutOrderSummary';
+import UserInfoForm from '@/components/checkout/UserInfoForm';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default async function Page() {
@@ -13,7 +14,8 @@ export default async function Page() {
         <CardContent>
           <div className="flex flex-col lg:flex-row gap-8">
             {/* En pantallas grandes: dos columnas, en pequeñas: una columna */}
-            <CheckoutDetails />
+            {/* <CheckoutDetails /> */}
+            <UserInfoForm />
             <CheckoutOrderSummary />
           </div>
         </CardContent>
