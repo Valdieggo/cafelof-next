@@ -1,242 +1,254 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
-import { FaUser, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useCountries, useRegions, useCities } from "@/hooks";
+import { EditableField, EditableSelect } from "@/components/checkout";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// Tipos para los datos de país, región y ciudad
-interface Country {
-  country_id: number;
-  country_name: string;
-}
+const formSchema = z.object({
+  name: z.string().min(1, "El nombre es obligatorio").max(255),
+  phone: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Número de teléfono no válido"),
+  address: z.string().min(1, "La dirección es obligatoria"),
+  country: z.string().min(1, "El país es obligatorio"),
+  region: z.string().min(1, "La región es obligatoria"),
+  city: z.string().min(1, "La ciudad es obligatoria"),
+});
 
-interface Region {
-  region_id: number;
-  region_name: string;
-}
-
-interface City {
-  city_id: number;
-  city_name: string;
-}
-
-export default function UserInfoForm() {
-  const [countries, setCountries] = useState<Country[]>([]);
-  const [regions, setRegions] = useState<Region[]>([]);
-  const [cities, setCities] = useState<City[]>([]);
-
-  const [selectedCountry, setSelectedCountry] = useState<number | null>(null);
-  const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
-  const [selectedCity, setSelectedCity] = useState<number | null>(null);
-  const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
-  const [name, setName] = useState("");
-
+export default function UserInfoForm({
+  onBack,
+  onFormValidityChange,
+  onConfirm,
+}: {
+  onBack: () => void;
+  onFormValidityChange: (isValid: boolean) => void;
+  onConfirm: () => void;
+}) {
   const { data: session } = useSession();
+  const countries = useCountries();
 
-  // Cargar países al montar el componente
+  const methods = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      phone: "",
+      address: "",
+      country: "",
+      region: "",
+      city: "",
+    },
+  });
+
+  const { isValid } = methods.formState;
+  const { watch, handleSubmit, control, reset } = methods;
+
+  const country = watch("country");
+  const region = watch("region");
+  const { regions } = useRegions(country);
+  const { cities } = useCities(region);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [initialValues, setInitialValues] = useState<any>(null);
+
   useEffect(() => {
-    fetch("/api/country")
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status === 200 && Array.isArray(data.data)) {
-          setCountries(data.data);
-        } else {
-          console.error("Invalid countries response:", data);
+    onFormValidityChange(isValid);
+  }, [isValid, onFormValidityChange]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!session?.user?.id) return;
+
+      try {
+        const userResponse = await fetch(`/api/auth/user/${session.user.id}`);
+        const userData = await userResponse.json();
+
+        if (!userData) return;
+
+        const initialData = {
+          name: userData.name || "",
+          phone: userData.user_phone_number || "",
+          address: "",
+          country: "",
+          region: "",
+          city: "",
+        };
+
+        if (userData.user_address_id) {
+          const addressResponse = await fetch(
+            `/api/userAddress?user_address_id=${userData.user_address_id}`
+          );
+          const addressData = await addressResponse.json();
+
+          if (addressData.status === 200 && addressData.data) {
+            initialData.address = addressData.data.street || "";
+            initialData.country = addressData.data.country || "";
+            initialData.region = addressData.data.region || "";
+            initialData.city = addressData.data.city || "";
+          }
         }
-      })
-      .catch((error) => console.error("Error fetching countries:", error));
-  }, []);
 
-  // Cargar regiones al seleccionar un país
-  useEffect(() => {
-    if (selectedCountry) {
-      fetch(`/api/region?country_id=${selectedCountry}`)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.status === 200 && Array.isArray(data.data)) {
-            setRegions(data.data);
-            setCities([]); // Resetear ciudades al cambiar el país
-            setSelectedRegion(null); // Resetear la región seleccionada
-          } else {
-            console.error("Invalid regions response:", data);
-          }
-        })
-        .catch((error) => console.error("Error fetching regions:", error));
-    }
-  }, [selectedCountry]);
-
-  // Cargar ciudades al seleccionar una región
-  useEffect(() => {
-    if (selectedRegion) {
-      fetch(`/api/city?region_id=${selectedRegion}`)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.status === 200 && Array.isArray(data.data)) {
-            setCities(data.data);
-            setSelectedCity(null); // Resetear la ciudad seleccionada
-          } else {
-            console.error("Invalid cities response:", data);
-          }
-        })
-        .catch((error) => console.error("Error fetching cities:", error));
-    }
-  }, [selectedRegion]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!name || !address || !phone || !selectedCountry || !selectedRegion || !selectedCity) {
-      alert("Por favor, completa todos los campos");
-      return;
-    }
-
-    const payload = {
-      userId: session?.user.id,
-      name,
-      address,
-      phone,
-      cityId: selectedCity,
+        setInitialValues(initialData);
+        reset(initialData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
+    fetchUserData();
+  }, [session?.user?.id, reset]);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await fetch("/api/userInfo", {
-        method: "POST",
+      const payload = {
+        user_id: session?.user?.id,
+        user_phone_number: values.phone,
+        name: values.name,
+        user_address_street: values.address,
+        city_id: parseInt(values.city, 10),
+      };
+  
+      const response = await fetch("/api/auth/user/update", {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        alert("Información guardada exitosamente");
-        console.log("Respuesta del servidor:", result);
-      } else {
-        alert("Hubo un error al guardar la información");
-        console.error("Error del servidor:", result.error);
+  
+      if (!response.ok) {
+        const result = await response.json();
+        console.error(result.message);
+        alert("Hubo un error al guardar la información.");
+        return;
       }
+  
+      // Procesar respuesta exitosa
+      const updatedData = {
+        ...values,
+        country: countries.find((c) => c.country_id.toString() === values.country)?.country_name || values.country,
+        region: regions.find((r) => r.region_id.toString() === values.region)?.region_name || values.region,
+        city: cities.find((c) => c.city_id.toString() === values.city)?.city_name || values.city,
+      };
+  
+      alert("Información guardada con éxito.");
+      setInitialValues(updatedData);
+      reset(updatedData);
+      setIsEditing(false);
     } catch (error) {
-      console.error("Error en la solicitud:", error);
-      alert("Hubo un error al enviar los datos");
+      console.error("Error interno al guardar la información:", error);
+      alert("Error interno del servidor.");
+    }
+  };    
+
+  const onCancel = () => {
+    if (initialValues) {
+      reset(initialValues);
+      setIsEditing(false);
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-6 w-3/4" />
+        <Skeleton className="h-6 w-1/2" />
+        <Skeleton className="h-6 w-3/4" />
+        <Skeleton className="h-6 w-1/4" />
+        <Skeleton className="h-6 w-1/3" />
+        <Skeleton className="h-6 w-1/3" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Nombre */}
-        <div className="space-y-2">
-          <Label htmlFor="name">Nombre completo</Label>
-          <div className="relative">
-            <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <Input
-              id="name"
-              placeholder="John Doe"
-              className="pl-10"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+    <div>
+      <h1 className="text-2xl font-bold pb-2">Información para envío</h1>
+      <FormProvider {...methods}>
+        {!isEditing ? (
+          <div>
+            <p>
+              <strong>Nombre:</strong> {watch("name")}
+            </p>
+            <p>
+              <strong>Teléfono:</strong> {watch("phone")}
+            </p>
+            <p>
+              <strong>Dirección:</strong> {watch("address")}
+            </p>
+            <p>
+              <strong>País:</strong> {watch("country")}
+            </p>
+            <p>
+              <strong>Región:</strong> {watch("region")}
+            </p>
+            <p>
+              <strong>Ciudad:</strong> {watch("city")}
+            </p>
+            <div className="flex justify-between mt-4">
+              <Button
+                onClick={() => setIsEditing(true)}
+                type="button"
+                className="bg-gray-300 text-black"
+              >
+                Modificar información
+              </Button>
+              <Button onClick={onConfirm} type="button" className="bg-black text-white">
+                Confirmar y continuar
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <EditableField name="name" label="Nombre" placeholder="John Doe" control={control} />
+            <EditableField name="phone" label="Teléfono" placeholder="+1 (555) 123-4567" control={control} />
+            <EditableField name="address" label="Dirección" placeholder="123 Main St" control={control} />
+            <EditableSelect
+              name="country"
+              label="País"
+              options={countries.map((c) => ({
+                value: c.country_id.toString(),
+                label: c.country_name,
+              }))}
+              control={control}
             />
-          </div>
-        </div>
-
-        {/* Dirección */}
-        <div className="space-y-2">
-          <Label htmlFor="address">Dirección</Label>
-          <div className="relative">
-            <FaMapMarkerAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <Input
-              id="address"
-              placeholder="123 Main St"
-              className="pl-10"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
+            <EditableSelect
+              name="region"
+              label="Región"
+              options={regions.map((r) => ({
+                value: r.region_id.toString(),
+                label: r.region_name,
+              }))}
+              control={control}
+              disabled={!country}
             />
-          </div>
-        </div>
-
-        {/* País, Región y Ciudad */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="country">País</Label>
-            <Select onValueChange={(value) => setSelectedCountry(Number(value))}>
-              <SelectTrigger id="country">
-                <SelectValue placeholder="Selecciona un país" />
-              </SelectTrigger>
-              <SelectContent>
-                {countries.map((country) => (
-                  <SelectItem key={country.country_id} value={String(country.country_id)}>
-                    {country.country_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="region">Región</Label>
-            <Select
-              onValueChange={(value) => setSelectedRegion(Number(value))}
-              disabled={!selectedCountry}
-            >
-              <SelectTrigger id="region">
-                <SelectValue placeholder="Selecciona una región" />
-              </SelectTrigger>
-              <SelectContent>
-                {regions.map((region) => (
-                  <SelectItem key={region.region_id} value={String(region.region_id)}>
-                    {region.region_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="city">Ciudad</Label>
-            <Select
-              onValueChange={(value) => setSelectedCity(Number(value))}
-              disabled={!selectedRegion}
-            >
-              <SelectTrigger id="city">
-                <SelectValue placeholder="Selecciona una ciudad" />
-              </SelectTrigger>
-              <SelectContent>
-                {cities.map((city) => (
-                  <SelectItem key={city.city_id} value={String(city.city_id)}>
-                    {city.city_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Teléfono */}
-        <div className="space-y-2">
-          <Label htmlFor="phone">Teléfono</Label>
-          <div className="relative">
-            <FaPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <Input
-              id="phone"
-              placeholder="+1 (555) 123-4567"
-              className="pl-10"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+            <EditableSelect
+              name="city"
+              label="Ciudad"
+              options={cities.map((c) => ({
+                value: c.city_id.toString(),
+                label: c.city_name,
+              }))}
+              control={control}
+              disabled={!region}
             />
-          </div>
-        </div>
-
-        {/* Botón de enviar */}
-        <Button type="submit" className="w-full">
-          Guardar Información
-        </Button>
-      </form>
+            <div className="flex justify-between">
+              <Button onClick={onCancel} type="button" className="bg-gray-300 text-black">
+                Cancelar
+              </Button>
+              <Button type="submit" className="bg-black text-white">
+                Guardar Información
+              </Button>
+            </div>
+          </form>
+        )}
+      </FormProvider>
     </div>
   );
 }

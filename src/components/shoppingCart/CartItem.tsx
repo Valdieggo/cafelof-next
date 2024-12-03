@@ -19,7 +19,7 @@ export default function CartItem({ id, title, price, image, quantity, onRemove }
           <Image 
             src={image || "https://images.dog.ceo/breeds/ridgeback-rhodesian/n02087394_9891.jpg"} 
             alt={title} 
-            layout="fill"
+            fill
             className="rounded-md" 
             priority
           />

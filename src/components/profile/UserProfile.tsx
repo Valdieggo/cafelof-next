@@ -2,9 +2,9 @@
 
 import { FC, useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton"; // Importa Skeleton
-import AddressForm from "../address/AddressForm";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
+import AddressForm from "./address/AddressForm";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import PhoneForm from "./phone/PhoneForm";
 
 type UserProfileProps = {
   user: {
@@ -22,9 +23,10 @@ type UserProfileProps = {
     user_address_id: string;
     user_phone_number?: string | null;
   };
+  userId: number;
 };
 
-const UserProfile: FC<UserProfileProps> = ({ user }) => {
+const UserProfile: FC<UserProfileProps> = ({ user, userId }) => {
   const [address, setAddress] = useState<{
     street: string;
     city: string;
@@ -103,13 +105,29 @@ const UserProfile: FC<UserProfileProps> = ({ user }) => {
             {/* Teléfono */}
             <div>
               <h2 className="text-lg font-semibold">Teléfono</h2>
-              <p className="text-gray-600">
-                {user.user_phone_number ? (
+              <div className="text-gray-600">
+                {loading ? (
+                  <div className="space-y-2">
+                    <Skeleton className="h-6 w-3/4" />
+                  </div>
+                ) : error ? (
+                  <p className="text-red-600">{error}</p>
+                ) : user.user_phone_number ? (
                   user.user_phone_number
                 ) : (
-                  <Button>Agregar número</Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button>Agregar Número</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Agregar Número</DialogTitle>
+                        <PhoneForm userId={userId} />
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
                 )}
-              </p>
+              </div>
             </div>
           </div>
         </CardContent>
