@@ -51,14 +51,6 @@ export default function ResultadoTransaccion() {
     }
   }, [searchParams]);
 
-  /* if (!result && !error) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen text-gray-800">
-        <p className="text-lg font-semibold">Procesando resultado...</p>
-      </div>
-    );
-  } */
-
   if(!result && !error) {
     return (
       <main className="flex-grow">

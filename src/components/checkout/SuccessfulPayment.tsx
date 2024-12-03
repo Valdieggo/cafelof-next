@@ -1,5 +1,6 @@
 import { MdCheckCircle, MdCreditCard, MdCalendarToday, MdTag, MdAttachMoney, MdBusiness, MdShoppingBag } from 'react-icons/md'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import formatCurrency from '../../../utils/formatCurrency';
 
 interface PaymentDetails {
   orderNumber: string;
@@ -54,7 +55,7 @@ export default function SuccessfulPayment({
             <p className="text-sm font-medium text-gray-500">Detalles del método de pago</p>
             <div className="flex items-center space-x-2">
               <MdAttachMoney className="h-4 w-4 text-gray-400" />
-              <p><span className="font-medium">Monto:</span> {amount.toFixed(2)} {currency}</p>
+              <p><span className="font-medium">Monto:</span> {amount.toLocaleString("es-CL")} {currency}</p>
             </div>
             <div className="flex items-center space-x-2">
               <MdCreditCard className="h-4 w-4 text-gray-400" />
