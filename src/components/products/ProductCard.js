@@ -13,7 +13,7 @@ export default function ProductCard({ product }) {
               imagen1
             }
             alt={product.product_name}
-            layout="fill"
+            fill
             className="object-contain"
           />
         </div>
