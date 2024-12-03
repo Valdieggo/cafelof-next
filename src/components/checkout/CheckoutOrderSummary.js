@@ -1,35 +1,11 @@
 "use client";
-import { useCart } from '@/context/CartContext';
-import { useState } from 'react';
-import formatCurrency from '../../../utils/formatCurrency';
 
-export default function CheckoutOrderSummary() {
+import { useCart } from "@/context/CartContext";
+import formatCurrency from "../../../utils/formatCurrency";
+import { Button } from "@/components/ui/button"; // Asegúrate de importar el componente
+
+export default function CheckoutOrderSummary({ onContinue, formIsValid }) {
   const { getTotalPrice } = useCart();
-  const [loading, setLoading] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [address, setAddress] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('');
-  const { cartItems } = useCart();
-
-  const handlePlaceOrder = async () => {
-    setLoading(true);
-
-    try{
-      const orderData = await fetch("http://localhost:3000/api/transaction/create",
-        {
-          method: "POST",
-          body: JSON.stringify({ amount: getTotalPrice() })
-        });
-        const data = await orderData.json();
-        window.location.href = `${data.url}?token_ws=${data.token}`;
-      } catch (error) {
-        console.error('Error al crear la transacción:', error);
-        throw error;
-      } finally {
-        setLoading(false);
-      }
-  };
 
   return (
     <div className="summary-and-payment flex flex-col md:w-1/3 p-4 border-t md:border-l md:border-t-0 border-gray-300 gap-6">
@@ -48,13 +24,14 @@ export default function CheckoutOrderSummary() {
           <span>{formatCurrency(getTotalPrice())}</span>
         </div>
       </div>
-      <button
-        className="w-full p-3 bg-black text-white font-bold rounded"
-        onClick={handlePlaceOrder}
-        disabled={loading}
+
+      <Button
+        onClick={onContinue}
+        disabled={!formIsValid} // Deshabilitar si no es válido
+        className="w-full"
       >
-        Ir a pagar
-      </button>
+        Continuar
+      </Button>
     </div>
   );
 }
