@@ -22,7 +22,6 @@ export default function ProductDetails({
 
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
-  console.log({ product_id, product_name, product_price, product_image_url, product_category_name });
 
   const handleAddToCart = () => {
     addToCart(
@@ -40,7 +39,7 @@ export default function ProductDetails({
             <Image
               src={product_image_url || "https://images.dog.ceo/breeds/ridgeback-rhodesian/n02087394_9891.jpg"}
               alt={product_name}
-              layout="fill"
+              fill
               className="rounded-lg shadow-lg object-cover"
             />
           </div>

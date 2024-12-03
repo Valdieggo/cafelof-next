@@ -1,22 +1,23 @@
-"use server"
-import { signIn } from "../../../auth"
- 
+"use server";
+import { signIn } from "../../../auth";
+import { Button } from "@/components/ui/button";
+
 export async function SignInx() {
   return (
     <form
       action={async (formData) => {
-        await signIn("credentials", formData)
+        await signIn("credentials", formData);
       }}
     >
       <label>
         Email
-        <input name="email" type="email" />
+        <input name="email" type="email" className="input" />
       </label>
       <label>
         Password
-        <input name="password" type="password" />
+        <input name="password" type="password" className="input" />
       </label>
-      <button>Sign In</button>
+      <Button type="submit">Sign In</Button>
     </form>
-  )
+  );
 }

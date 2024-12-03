@@ -10,7 +10,7 @@ export default async function SignOut() {
         await signOut({ redirectTo: "/" });
       }}
     >
-      <Button type="submit">Salir</Button>
+      <Button type="submit">Cerrar sesión</Button>
     </form>
   )
 }
