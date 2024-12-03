@@ -1,36 +1,41 @@
-import authConfig from "../auth.config";
-import NextAuth from "next-auth";
+import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
 import { apiPrefix, authRoutes, DEFAULT_LOGIN_REDIRECT, adminRoutePrefix } from "../routes";
 
-const { auth } = NextAuth(authConfig);
+export async function middleware(req: any) {
+    const { pathname } = req.nextUrl;
 
-export default auth((req) => {
-    const { nextUrl } = req;
-    const isLoggedIn = !!req.auth;
+    const isApiRoute = pathname.startsWith(apiPrefix);
+    const isAuthRoute = authRoutes.includes(pathname);
+    const isAdminRoute = pathname.startsWith(adminRoutePrefix);
 
-    const isApiRoute = nextUrl.pathname.startsWith(apiPrefix);
-    const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-    const isAdminRoute = nextUrl.pathname.startsWith(adminRoutePrefix);
+    const token = await getToken({ req, secret: process.env.AUTH_SECRET });
 
-    if(isApiRoute){
-        return;
+    const isLoggedIn = !!token;
+    const userRole = token?.role;
+
+    if (isAdminRoute && userRole !== "ADMIN") {
+        return NextResponse.redirect(new URL("/login", req.nextUrl));
     }
 
-    if(isAuthRoute){
-        if(isLoggedIn){
-            return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl))
-        }else{
-            return;
+    if (isApiRoute) {
+        return NextResponse.next();
+    }
+
+    if (isAuthRoute) {
+        if (isLoggedIn) {
+            return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.nextUrl));
         }
+        return NextResponse.next();
     }
 
-    if(!isLoggedIn && isAdminRoute){
-        return Response.redirect(new URL("/login", nextUrl));
+    if (!isLoggedIn) {
+        return NextResponse.redirect(new URL("/login", req.nextUrl));
     }
 
-    return;
-})
+    return NextResponse.next();
+}
 
 export const config = {
     matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
-}
+};
