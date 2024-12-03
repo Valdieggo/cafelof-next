@@ -22,14 +22,10 @@ export const createTransaction = async (amount) => {
 };
 
 export const commitTransaction = async (token) => {
-  console.log(" CC: ",commerceCode," AK: ", apiKey," E: ", environment);
     try {
-        console.log("1");
         const response = await tx.commit(token);
-        console.log("2");
         return response;
     } catch (error) {
-      console.log("3");
         console.error('Error al confirmar la transacción:', error);
         throw error;
     }
