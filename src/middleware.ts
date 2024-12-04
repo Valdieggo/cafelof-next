@@ -29,10 +29,6 @@ export async function middleware(req: any) {
         return NextResponse.next();
     }
 
-    if (!isLoggedIn) {
-        return NextResponse.redirect(new URL("/login", req.nextUrl));
-    }
-
     return NextResponse.next();
 }
 
