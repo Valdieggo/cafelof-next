@@ -172,40 +172,34 @@ model Discount {
   orders               Order[]
 }
 
-model Payment {
-  payment_id     Int       @id @default(autoincrement())
-  payment_method String
-  payment_status String
-  payment_amount Float
-  created_at     DateTime  @default(now())
-  updated_at     DateTime? @updatedAt
-  orders         Order[]
-}
-
 model Order {
-  order_id          Int           @id @default(autoincrement())
-  order_date        DateTime
-  order_total_price Float
-  user_id           String
-  payment_id        Int
-  discount_id       Int?
-  created_at        DateTime      @default(now())
-  updated_at        DateTime?     @updatedAt
-  discount          Discount?     @relation(fields: [discount_id], references: [discount_id])
-  payment           Payment       @relation(fields: [payment_id], references: [payment_id])
-  user              User          @relation(fields: [user_id], references: [id])
-  orderDetails      OrderDetail[]
-  shipments         Shipment[]
+  order_id            String        @id @default(cuid())
+  order_date          DateTime
+  order_total_price   Float
+  user_id             String
+  discount_id         Int?
+  created_at          DateTime      @default(now())
+  updated_at          DateTime?     @updatedAt
+  authorization_code  String?
+  card_last_four      String?
+  installments_number Int?
+  payment_type_code   String?
+  response_code       Int?
+  transaction_amount  Int?
+  transaction_status  String?
+  discount            Discount?     @relation(fields: [discount_id], references: [discount_id])
+  user                User          @relation(fields: [user_id], references: [id])
+  orderDetails        OrderDetail[]
+  shipments           Shipment[]
 
   @@index([discount_id], map: "Order_discount_id_fkey")
-  @@index([payment_id], map: "Order_payment_id_fkey")
   @@index([user_id], map: "Order_user_id_fkey")
 }
 
 model Shipment {
   shipment_id     Int       @id @default(autoincrement())
   shipment_status String
-  order_id        Int
+  order_id        String
   created_at      DateTime  @default(now())
   updated_at      DateTime? @updatedAt
   order           Order     @relation(fields: [order_id], references: [order_id])
@@ -214,14 +208,13 @@ model Shipment {
 }
 
 model OrderDetail {
-  order_detail_id   Int       @id @default(autoincrement())
-  order_detail_name String
-  created_at        DateTime  @default(now())
-  updated_at        DateTime? @updatedAt
-  order_id          Int
-  cart_id           Int
-  cart              Cart      @relation(fields: [cart_id], references: [cart_id])
-  order             Order     @relation(fields: [order_id], references: [order_id])
+  order_detail_id Int       @id @default(autoincrement())
+  created_at      DateTime  @default(now())
+  updated_at      DateTime? @updatedAt
+  order_id        String
+  cart_id         Int
+  cart            Cart      @relation(fields: [cart_id], references: [cart_id])
+  order           Order     @relation(fields: [order_id], references: [order_id])
 
   @@index([cart_id], map: "OrderDetail_cart_id_fkey")
   @@index([order_id], map: "OrderDetail_order_id_fkey")
