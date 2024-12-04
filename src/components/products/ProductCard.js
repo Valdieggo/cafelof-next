@@ -1,5 +1,4 @@
 import Image from "next/image";
-import imagen1 from "../../../public/imagenes_cafe/arabica_borboun.webp"
 
 export default function ProductCard({ product }) {
   return (
@@ -8,13 +7,11 @@ export default function ProductCard({ product }) {
         {/* Maintain a fixed aspect ratio */}
         <div className="relative w-full aspect-square">
           <Image
-            src={
-              product.product_image_url ||
-              imagen1
-            }
+            src={product.product_image_url}
             alt={product.product_name}
             fill
             className="object-contain"
+            priority
           />
         </div>
       </a>
