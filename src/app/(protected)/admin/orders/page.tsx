@@ -7,29 +7,31 @@ export const metadata: Metadata = {
   description: 'Admin page to view and manage all user orders',
 }
 
+// Obtener órdenes desde el endpoint
 async function getOrders() {
-  // In a real application, you would fetch this data from your API or database
-  // This is just mock data for demonstration purposes
-  return [
-    { id: '1', user: 'john@example.com', total: 99.99, status: 'completed', date: '2023-05-01' },
-    { id: '2', user: 'jane@example.com', total: 149.99, status: 'processing', date: '2023-05-02' },
-    { id: '3', user: 'bob@example.com', total: 79.99, status: 'completed', date: '2023-05-03' },
-    { id: '4', user: 'alice@example.com', total: 199.99, status: 'shipped', date: '2023-05-04' },
-    { id: '5', user: 'charlie@example.com', total: 59.99, status: 'cancelled', date: '2023-05-05' },
-    { id: '7', user: 'bob@example.com', total: 79.99, status: 'completed', date: '2023-05-03' },
-    { id: '8', user: 'alice@example.com', total: 199.99, status: 'shipped', date: '2023-05-04' },
-    { id: '9', user: 'charlie@example.com', total: 59.99, status: 'cancelled', date: '2023-05-05' },
-    { id: '32', user: 'bob@example.com', total: 79.99, status: 'completed', date: '2023-05-03' },
-    { id: '43', user: 'alice@example.com', total: 199.99, status: 'shipped', date: '2023-05-04' },
-    { id: '54', user: 'charlie@example.com', total: 59.99, status: 'cancelled', date: '2023-05-05' },
-    { id: '35', user: 'bob@example.com', total: 79.99, status: 'completed', date: '2023-05-03' },
-    { id: '45', user: 'alice@example.com', total: 199.99, status: 'shipped', date: '2023-05-04' },
-    { id: '55', user: 'charlie@example.com', total: 59.99, status: 'cancelled', date: '2023-05-05' },
-  ]
+  try {
+    const response = await fetch('http://localhost:3000/api/order', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-store', // Evitar caché para obtener siempre datos actualizados
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener las órdenes: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error al obtener las órdenes:', error);
+    return [];
+  }
 }
 
 export default async function AdminOrdersPage() {
-  const orders = await getOrders()
+  const orders = await getOrders();
 
   return (
     <div className="container mx-auto py-10">
@@ -38,10 +40,17 @@ export default async function AdminOrdersPage() {
           <CardTitle>All Orders</CardTitle>
         </CardHeader>
         <CardContent>
-          <OrdersTable initialOrders={orders} />
+          {orders.length > 0 ? (
+            <OrdersTable initialOrders={orders} />
+          ) : (
+            <p className="text-gray-500 text-center">No orders found.</p>
+          )}
         </CardContent>
       </Card>
     </div>
   )
 }
 
+
+// TODO: 
+// Fix the Date to avoid hydratation errors
