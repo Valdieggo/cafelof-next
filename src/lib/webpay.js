@@ -7,26 +7,25 @@ const environment = Environment.Integration;
 
 export const tx = new WebpayPlus.Transaction(new Options(commerceCode, apiKey, environment));
 
-export const createTransaction = async (amount) => {
-    const buyOrder = 'O-' + Math.floor(Math.random() * 10000) + 1;
-    const sessionId = 'S-' + Math.floor(Math.random() * 10000) + 1;
-    const returnUrl = 'http://localhost:3000/paymentResult';
+export const createTransaction = async (orderId, sessionId, amount) => {
+  const buyOrder = orderId; // Usar el order_id como buyOrder
+  const returnUrl = 'http://localhost:3000/paymentResult';
 
-    try {
-        const response = await tx.create(buyOrder, sessionId, amount, returnUrl);
-        return response;
-    } catch (error) {
-        console.error('Error al crear la transacción:', error);
-        throw error;
-    }
+  try {
+    const response = await tx.create(buyOrder, sessionId, amount, returnUrl);
+    return response;
+  } catch (error) {
+    console.error('Error al crear la transacción:', error);
+    throw error;
+  }
 };
 
 export const commitTransaction = async (token) => {
-    try {
-        const response = await tx.commit(token);
-        return response;
-    } catch (error) {
-        console.error('Error al confirmar la transacción:', error);
-        throw error;
-    }
+  try {
+    const response = await tx.commit(token);
+    return response;
+  } catch (error) {
+    console.error('Error al confirmar la transacción:', error);
+    throw error;
+  }
 };
