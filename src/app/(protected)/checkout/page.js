@@ -23,27 +23,51 @@ export default function Page() {
         alert("Por favor, completa toda la información requerida antes de continuar.");
         return;
       }
-
+  
       try {
-        const response = await fetch("http://localhost:3000/api/transaction/create", {
+        // Crear orden en la base de datos
+        const createOrderResponse = await fetch("/api/order/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ amount: getTotalPrice() }),
+          body: JSON.stringify({
+            userId: session.user.id, // ID del usuario autenticado
+            totalAmount: getTotalPrice(),
+            buyOrder: session.user.id,
+          }),
         });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          window.location.href = `${result.url}?token_ws=${result.token}`;
-        } else {
-          console.error(result.message);
-          alert("Error al crear la transacción.");
+  
+        const createdOrder = await createOrderResponse.json();
+  
+        if (!createOrderResponse.ok) {
+          throw new Error('Error al crear la orden');
         }
+  
+        // Crear transacción en Webpay usando el order_id como buyOrder y session.user.id como sessionId
+        const transactionResponse = await fetch("/api/transaction/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            orderId: createdOrder.order_id, // Utilizar el order_id generado
+            sessionId: session.user.id, // ID de sesión de NextAuth
+            amount: createdOrder.order_total_price,
+          }),
+        });
+  
+        const transaction = await transactionResponse.json();
+  
+        if (!transactionResponse.ok) {
+          throw new Error('Error al crear la transacción en Webpay');
+        }
+  
+        // Redirigir al flujo de pago
+        window.location.href = `${transaction.url}?token_ws=${transaction.token}`;
       } catch (error) {
-        console.error("Error interno al crear la transacción:", error);
-        alert("Error interno al crear la transacción.");
+        console.error("Error al continuar:", error);
+        alert("Hubo un problema al procesar tu solicitud.");
       }
     }
   };

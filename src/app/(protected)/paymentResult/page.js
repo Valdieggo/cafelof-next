@@ -36,10 +36,37 @@ export default function ResultadoTransaccion() {
           return response.json();
         })
         .then((data) => {
-          setResult(data);
+          setResult(data); // Guardar en el estado para la UI
+
+          // Usar directamente `data` para actualizar la orden
+          return fetch("/api/order/update", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              buyOrder: data.buy_order,
+              transactionStatus: data.status,
+              amount: data.amount,
+              authorizationCode: data.authorization_code,
+              responseCode: data.response_code,
+              paymentTypeCode: data.payment_type_code,
+              installmentsNumber: data.installments_number,
+              cardLastFourDigits: data.card_detail.card_number,
+            }),
+          });
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Error al actualizar la orden");
+          }
+          return response.json();
+        })
+        .then((updatedOrder) => {
+          console.log("Orden actualizada:", updatedOrder);
         })
         .catch((err) => {
-          setError("Error al procesar la transacción");
+          setError("Error al procesar la transacción o actualizar la orden");
           console.error(err);
         });
     } else if (!token_ws && !TBK_TOKEN) {
@@ -51,7 +78,7 @@ export default function ResultadoTransaccion() {
     }
   }, [searchParams]);
 
-  if(!result && !error) {
+  if (!result && !error) {
     return (
       <main className="flex-grow">
         <div className="loader-container">
@@ -59,7 +86,6 @@ export default function ResultadoTransaccion() {
         </div>
       </main>
     );
-
   }
 
   if (error) {
