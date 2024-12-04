@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import "../../public/grano-hero.webp" 
 import Image from "next/image"
 
 export default function HeroSection() {
@@ -9,10 +10,10 @@ export default function HeroSection() {
           <div className="flex flex-col justify-center space-y-4">
             <div className="space-y-2">
               <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                Welcome to Our Amazing Product
+                Granos para juntar a tu familia
               </h1>
               <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
-                Discover how our innovative solution can transform your business and boost your productivity.
+                Prueba un tostado de café de especialidad con granos de primera calidad.
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -20,13 +21,13 @@ export default function HeroSection() {
               <Button variant="outline" size="lg">Learn More</Button>
             </div>
           </div>
-          {/* <Image
+          <Image
             alt="Hero"
             className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
             height="550"
-            src="/placeholder.svg"
+            src="/grano-hero.webp"
             width="550"
-          /> */}
+          />
         </div>
       </div>
     </section>

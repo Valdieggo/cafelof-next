@@ -11,6 +11,7 @@ module.exports = {
 		colors: {
 		  background: 'var(--background)',
 		  foreground: 'var(--foreground)',
+      footer: 'var(--footer-bg)',
 		  card: {
 			DEFAULT: 'var(--card)',
 			foreground: 'var(--card-foreground)'
