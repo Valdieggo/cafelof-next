@@ -17,7 +17,7 @@ export async function GET(request: Request) {
                 'Content-Type': 'application/json',
             },
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error fetching product categories:', error);
         return new Response(JSON.stringify({
             status: 500,
