@@ -30,16 +30,13 @@ export default function NavBar() {
             <Link href="/productos" className="hover:text-[var(--highlight)]">
               Productos
             </Link>
-            <Link href="/nosotros" className="hover:text-[var(--highlight)]">
-              Nosotros
-            </Link>
             <Link href="/contacto" className="hover:text-[var(--highlight)]">
               Contacto
             </Link>
           </nav>
 
-          <div className="flex justify-between space-x-2 relative">
-            <button onClick={toggleCart} className="hover:text-[var(--highlight)] relative">
+          <div className="flex items-center space-x-4 relative">
+            <button onClick={toggleCart} className="relative hover:text-[var(--highlight)] flex items-center">
               <TiShoppingCart size={24} />
               {totalItems !== null && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
@@ -47,12 +44,15 @@ export default function NavBar() {
                 </span>
               )}
             </button>
-            <Link href="/login" className="hover:text-[var(--highlight)]">
-              <FaRegUser size={20} />
+
+            <Link href="/login" className="hover:text-[var(--highlight)] flex items-center">
+              <FaRegUser size={24} />
             </Link>
-            <button onClick={toggleMenu} className="md:hidden hover:text-[var(--highlight)]">
-              <FaBars size={18} />
+
+            <button onClick={toggleMenu} className="md:hidden hover:text-[var(--highlight)] flex items-center">
+              <FaBars size={24} />
             </button>
+
             <SearchButton />
           </div>
         </div>
@@ -62,9 +62,6 @@ export default function NavBar() {
             <div className="container mx-auto px-6 py-4 flex flex-col space-y-4">
               <Link href="/productos" className="hover:text-[var(--highlight)]">
                 Productos
-              </Link>
-              <Link href="/nosotros" className="hover:text-[var(--highlight)]">
-                Nosotros
               </Link>
               <Link href="/contacto" className="hover:text-[var(--highlight)]">
                 Contacto

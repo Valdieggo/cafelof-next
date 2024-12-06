@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import "../../public/grano-hero.webp" 
 import Image from "next/image"
+import Link from "next/link"
 
 export default function HeroSection() {
   return (
@@ -17,8 +18,7 @@ export default function HeroSection() {
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
-              <Button size="lg">Get Started</Button>
-              <Button variant="outline" size="lg">Learn More</Button>
+              <Button size="lg"><Link href="/productos">Ver productos</Link></Button>
             </div>
           </div>
           <Image
