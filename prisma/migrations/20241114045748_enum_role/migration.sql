@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `User` ADD COLUMN `user_role` ENUM('ADMIN', 'USER') NOT NULL DEFAULT 'USER';
