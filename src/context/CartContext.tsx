@@ -20,6 +20,7 @@ interface CartContextProps {
   isCartOpen: boolean; // Nuevo estado para la visibilidad del carrito
   openCart: () => void; // Función para abrir el carrito
   closeCart: () => void; // Función para cerrar el carrito
+  updateCartItemQuantity: (id: number, quantity: number) => void;
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -65,6 +66,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const getTotalPrice = () =>
     cartItems?.reduce((total, item) => total + item.price * item.quantity, 0) ?? 0;
 
+  const updateCartItemQuantity = (id: number, quantity: number) => {
+    setCartItems((prev) =>
+      prev?.map((item) =>
+        item.id === id
+          ? { ...item, quantity: Math.max(1, quantity) } // Ensure quantity is at least 1
+          : item
+      ) ?? []
+    );
+  };  
+
   const openCart = () => setIsCartOpen(true); // Función para abrir el carrito
   const closeCart = () => setIsCartOpen(false); // Función para cerrar el carrito
 
@@ -80,6 +91,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         cartItems: cartItems || [],
         addToCart,
         removeFromCart,
+        updateCartItemQuantity,
         getTotalItems,
         getTotalPrice,
         isCartLoaded,
