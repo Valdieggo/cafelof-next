@@ -15,7 +15,7 @@ export async function middleware(req: any) {
     const userRole = token?.role;
 
     if (isAdminRoute && userRole !== "ADMIN") {
-        return NextResponse.redirect(new URL("/login", req.nextUrl));
+        return NextResponse.redirect(new URL("/", req.nextUrl));
     }
 
     if (isApiRoute) {
