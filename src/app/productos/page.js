@@ -1,13 +1,14 @@
 import Products from "@/components/products/Products";
 
 export default async function Page() {
-  const productsResponse = await fetch('http://localhost:3000/api/product', {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const productsResponse = await fetch(`${baseUrl}/product`, {
     next: { revalidate: 10 }, // Optional: Cache revalidation every 10 seconds
   });
 
   const products = await productsResponse.json();
 
-  const categoriesResponse = await fetch('http://localhost:3000/api/product/category');
+  const categoriesResponse = await fetch(`${baseUrl}/product/category`);
   const categoriesData = await categoriesResponse.json();
 
   // Pass full category objects to Products
