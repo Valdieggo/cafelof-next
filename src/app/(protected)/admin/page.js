@@ -1,23 +1,7 @@
-import { auth, signOut } from "../../../../auth";
-import { Button } from "@/components/ui/button";
+import AdminDashboard from "@/components/admin/AdminDashboard"
 
-export default async function Page() {
-  const session = await auth();
-
+export default function AdminPage() {
   return (
-    <div>
-      <h1>Admin Page</h1>
-      <div>{JSON.stringify(session)}</div>
-      <form
-        action={async () => {
-          "use server";
-          await signOut();
-        }}
-      >
-        <Button type="submit" variant="outline">
-          Sign Out
-        </Button>
-      </form>
-    </div>
-  );
+    <AdminDashboard />
+  )
 }
