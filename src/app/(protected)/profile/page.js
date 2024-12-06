@@ -4,7 +4,8 @@ import SignOut from "@/components/auth/signOut";
 
 export default async function Page(){
     const session = await auth();
-    const data = await fetch(`http://localhost:3000/api/auth/user/${session.user.id}`);
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+    const data = await fetch(`${baseUrl}/auth/user/${session.user.id}`);
 
     let user = await data.json();
 
