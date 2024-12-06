@@ -94,7 +94,7 @@ const AddressForm: React.FC = () => {
     };
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(`${baseUrl}/userAddress/create`, {
         method: "POST",
         headers: {
