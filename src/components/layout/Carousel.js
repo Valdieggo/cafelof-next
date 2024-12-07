@@ -8,11 +8,9 @@ import imagen2 from '../../../public/beneficios-del-cafe-en-grano_.jpg'
 import imagen3 from '../../../public/63e51e0602b22__KIWXSp9o.webp'
 
 const images = [imagen1, imagen2, imagen3]
-
-// Duplicate the images multiple times and create a slides array
 const slides = [...images, ...images, ...images]
-const totalSlides = slides.length
 const imagesLength = images.length
+const totalSlides = slides.length
 
 export default function PhotoCarousel() {
   // Start from the middle set of images
@@ -20,37 +18,37 @@ export default function PhotoCarousel() {
   const [isTransitioning, setIsTransitioning] = useState(true)
 
   const goToNext = () => {
-    setSlideIndex(prevIndex => prevIndex + 1)
+    setSlideIndex((prevIndex) => prevIndex + 1)
   }
 
   const goToPrevious = () => {
-    setSlideIndex(prevIndex => prevIndex - 1)
+    setSlideIndex((prevIndex) => prevIndex - 1)
   }
 
+  // Automatically move to the next slide every 3 seconds
   useEffect(() => {
     const interval = setInterval(goToNext, 3000)
     return () => clearInterval(interval)
   }, [])
 
   const handleTransitionEnd = () => {
-    // Reset to the middle set when reaching the end or beginning
-    if (slideIndex === totalSlides - imagesLength) {
-      // End of the middle set
+    if (slideIndex >= totalSlides - imagesLength) {
+      // Reset to the first middle image
       setIsTransitioning(false)
       setSlideIndex(imagesLength)
-    } else if (slideIndex === imagesLength - 1) {
-      // Beginning of the middle set
+    } else if (slideIndex < imagesLength) {
+      // Reset to the last middle image
       setIsTransitioning(false)
-      setSlideIndex(totalSlides - 2 * imagesLength + imagesLength - 1)
+      setSlideIndex(totalSlides - 2 * imagesLength)
     }
   }
 
+  // Re-enable transitions after resetting the slideIndex
   useEffect(() => {
     if (!isTransitioning) {
-      // Re-enable transitions after resetting the slideIndex
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         setIsTransitioning(true)
-      }, 0)
+      })
     }
   }, [isTransitioning])
 
