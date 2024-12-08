@@ -9,7 +9,7 @@ export async function middleware(req: any) {
     const isAuthRoute = authRoutes.includes(pathname);
     const isAdminRoute = pathname.startsWith(adminRoutePrefix);
 
-    const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+    const token = await getToken({ req, secret: process.env.AUTH_SECRET, secureCookie: true });
 
     const isLoggedIn = !!token;
     const userRole = token?.role;
