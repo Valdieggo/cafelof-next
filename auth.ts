@@ -16,11 +16,15 @@ declare module "next-auth" {
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  // Adapter to connect NextAuth to Prisma and NeonDB
+  adapter: PrismaAdapter(prisma),
+
+  // Callbacks to include custom user fields (e.g., role) in the JWT and session
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = user.user_role;
+        token.role = user.user_role; // Add the custom user role to the token
       }
       return token;
     },
@@ -37,22 +41,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-  adapter: PrismaAdapter(prisma),
-  secret: process.env.AUTH_SECRET,
-  session: {
-    strategy: "jwt",
-  },
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "strict",
-        path: "/",
-        secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-      },
-    },
-  },
-  debug: true,
+
+  // Spread authConfig to reuse provider and other settings
   ...authConfig,
+
+  // If needed, override properties from authConfig here
+  secret: process.env.AUTH_SECRET, // Specify secret globally
+  session: {
+    strategy: "jwt", // Use JWT-based sessions for stateless authentication
+  },
+
+  debug: process.env.NODE_ENV === "development", // Enable debug logs only in development
 });
