@@ -22,6 +22,10 @@ export async function middleware(req: any) {
         return NextResponse.next();
     }
 
+    if(isLoggedIn){
+      console.log("User is logged in !!!!");
+    }
+
     if (isAuthRoute) {
         console.log("Api route");
         if (isLoggedIn) {
