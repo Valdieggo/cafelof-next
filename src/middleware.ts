@@ -28,6 +28,8 @@ export async function middleware(req: any) {
       console.log("Auth route");
         if (isLoggedIn) {
             console.log("User is logged in");
+            console.log("token:",token);
+            console.log("req: ", req);
             return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.nextUrl));
         }else{
           console.log("User is not logged in");
