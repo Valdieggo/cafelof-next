@@ -38,7 +38,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" },
+  secret: process.env.AUTH_SECRET,
+  session: {
+    strategy: "jwt",
+  },
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "strict",
+        path: "/",
+        secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      },
+    },
+  },
   debug: true,
   ...authConfig,
 });
