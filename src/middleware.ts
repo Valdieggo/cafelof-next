@@ -27,6 +27,8 @@ export async function middleware(req: any) {
         if (isLoggedIn) {
             console.log("User is logged in");
             return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.nextUrl));
+        }else{
+          console.log("User is not logged in");
         }
         return NextResponse.next();
     }
