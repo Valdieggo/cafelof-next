@@ -9,7 +9,8 @@ export const tx = new WebpayPlus.Transaction(new Options(commerceCode, apiKey, e
 
 export const createTransaction = async (orderId, sessionId, amount) => {
   const buyOrder = orderId; // Usar el order_id como buyOrder
-  const returnUrl = 'http://localhost:3000/paymentResult';
+  const url = process.env.NEXT_PUBLIC_URL;
+  const returnUrl = `${url}/paymentResult`;
 
   try {
     const response = await tx.create(buyOrder, sessionId, amount, returnUrl);

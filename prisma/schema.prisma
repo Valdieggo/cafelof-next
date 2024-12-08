@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -24,7 +24,7 @@ model Region {
   cities      City[]
   country     Country   @relation(fields: [country_id], references: [country_id])
 
-  @@index([country_id], map: "Region_country_id_fkey")
+  @@index([country_id], map: "Region_country_id_idx")
 }
 
 model City {
@@ -36,7 +36,7 @@ model City {
   region     Region        @relation(fields: [region_id], references: [region_id])
   addresses  UserAddress[]
 
-  @@index([region_id], map: "City_region_id_fkey")
+  @@index([region_id], map: "City_region_id_idx")
 }
 
 model UserAddress {
@@ -48,7 +48,7 @@ model UserAddress {
   users               User[]
   city                City      @relation(fields: [city_id], references: [city_id])
 
-  @@index([city_id], map: "UserAddress_city_id_fkey")
+  @@index([city_id], map: "UserAddress_city_id_idx")
 }
 
 model User {
@@ -69,7 +69,7 @@ model User {
   Session           Session[]
   address           UserAddress? @relation(fields: [user_address_id], references: [user_address_id])
 
-  @@index([user_address_id], map: "User_user_address_id_fkey")
+  @@index([user_address_id], map: "User_user_address_id_idx")
 }
 
 model Account {
@@ -90,7 +90,7 @@ model Account {
   userId                   String   @unique
   user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_uq")
 }
 
 model Session {
@@ -102,7 +102,7 @@ model Session {
   userId       String
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
+  @@index([userId], map: "Session_userId_idx")
 }
 
 model VerificationToken {
@@ -110,7 +110,7 @@ model VerificationToken {
   token      String
   expires    DateTime
 
-  @@unique([identifier, token])
+  @@unique([identifier, token], map: "VerificationToken_identifier_token_uq")
 }
 
 model ProductCategory {
@@ -134,7 +134,7 @@ model Product {
   inventories         Inventory[]
   category            ProductCategory @relation(fields: [product_category_id], references: [product_category_id])
 
-  @@index([product_category_id], map: "Product_product_category_id_fkey")
+  @@index([product_category_id], map: "Product_product_category_id_idx")
 }
 
 model Cart {
@@ -148,8 +148,8 @@ model Cart {
   user          User          @relation(fields: [user_id], references: [id])
   orderDetails  OrderDetail[]
 
-  @@index([product_id], map: "Cart_product_id_fkey")
-  @@index([user_id], map: "Cart_user_id_fkey")
+  @@index([product_id], map: "Cart_product_id_idx")
+  @@index([user_id], map: "Cart_user_id_idx")
 }
 
 model Inventory {
@@ -160,7 +160,7 @@ model Inventory {
   updated_at         DateTime? @updatedAt
   product            Product   @relation(fields: [product_id], references: [product_id])
 
-  @@index([product_id], map: "Inventory_product_id_fkey")
+  @@index([product_id], map: "Inventory_product_id_idx")
 }
 
 model Discount {
@@ -192,8 +192,8 @@ model Order {
   orderDetails        OrderDetail[]
   shipments           Shipment[]
 
-  @@index([discount_id], map: "Order_discount_id_fkey")
-  @@index([user_id], map: "Order_user_id_fkey")
+  @@index([discount_id], map: "Order_discount_id_idx")
+  @@index([user_id], map: "Order_user_id_idx")
 }
 
 model Shipment {
@@ -204,7 +204,7 @@ model Shipment {
   updated_at      DateTime? @updatedAt
   order           Order     @relation(fields: [order_id], references: [order_id])
 
-  @@index([order_id], map: "Shipment_order_id_fkey")
+  @@index([order_id], map: "Shipment_order_id_idx")
 }
 
 model OrderDetail {
@@ -216,8 +216,8 @@ model OrderDetail {
   cart            Cart      @relation(fields: [cart_id], references: [cart_id])
   order           Order     @relation(fields: [order_id], references: [order_id])
 
-  @@index([cart_id], map: "OrderDetail_cart_id_fkey")
-  @@index([order_id], map: "OrderDetail_order_id_fkey")
+  @@index([cart_id], map: "OrderDetail_cart_id_idx")
+  @@index([order_id], map: "OrderDetail_order_id_idx")
 }
 
 model ContactForm {

@@ -10,7 +10,8 @@ export const metadata: Metadata = {
 // Obtener órdenes desde el endpoint
 async function getOrders() {
   try {
-    const response = await fetch('http://localhost:3000/api/order', {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+    const response = await fetch(`${baseUrl}/product`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

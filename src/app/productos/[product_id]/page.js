@@ -1,7 +1,8 @@
 import ProductDetails from "@/components/products/ProductDetails";
 
 export default async function Page(product_id) {
-  const data = await fetch(`http://localhost:3000/api/product/${product_id.params.product_id}`, {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const data = await fetch(`${baseUrl}/product/${product_id.params.product_id}`, {
     next: { revalidate: 10 },
   });
 

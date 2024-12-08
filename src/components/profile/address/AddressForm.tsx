@@ -94,7 +94,8 @@ const AddressForm: React.FC = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/userAddress/create", {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+      const response = await fetch(`${baseUrl}/userAddress/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
