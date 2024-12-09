@@ -1,8 +1,7 @@
 "use client";
 
 import { FC, useEffect, useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import AddressForm from "./address/AddressForm";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import PhoneForm from "./phone/PhoneForm";
+import { FaUser } from "react-icons/fa";
 
 type UserProfileProps = {
   user: {
@@ -56,82 +56,100 @@ const UserProfile: FC<UserProfileProps> = ({ user, userId }) => {
   }, [user.user_address_id]);
 
   return (
-    <div className="container mx-auto max-w-xl p-4">
-      <Card className="shadow-lg">
-        <CardHeader>
-          <div className="flex items-center space-x-4">
-            <Avatar className="w-16 h-16">
-              <AvatarImage src={user.image || undefined} alt={user.name} />
-            </Avatar>
-            <div>
-              <CardTitle className="text-2xl font-bold">{user.name}</CardTitle>
-              <p className="text-sm text-gray-500">{user.email}</p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="mt-4">
-          <div className="space-y-4">
-            {/* Dirección */}
-            <div>
-              <h2 className="text-lg font-semibold">Dirección</h2>
-              <div className="text-gray-600">
-                {loading ? (
-                  <div className="space-y-2">
-                    <Skeleton className="h-6 w-3/4" />
-                  </div>
-                ) : error ? (
-                  <p className="text-red-600">{error}</p>
-                ) : address ? (
-                  <p>
-                    {address.street}, {address.city}, {address.region},{" "}
-                    {address.country}
-                  </p>
-                ) : (
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button>Agregar dirección</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Agregar Dirección</DialogTitle>
-                      </DialogHeader>
-                      <AddressForm />
-                    </DialogContent>
-                  </Dialog>
-                )}
-              </div>
-            </div>
+    <div className="space-y-6">
+      {/* User Details */}
+      <div className="flex items-center space-x-4">
+        <Avatar className="w-16 h-16">
+          {user.image ? (
+            <AvatarImage src={user.image || undefined} alt={user.name} />
+          ) : (
+            <AvatarFallback>
+              <FaUser className="h-6 w-6 text-gray-400" />
+            </AvatarFallback>
+          )}
+        </Avatar>
+        <div>
+          <h1 className="text-2xl font-bold">{user.name}</h1>
+          <p className="text-sm text-gray-500">{user.email}</p>
+        </div>
+      </div>
 
-            {/* Teléfono */}
+      {/* Address */}
+      <div>
+        <h2 className="text-lg font-semibold">Dirección</h2>
+        <div className="text-gray-600 space-y-2">
+          {loading ? (
+            <Skeleton className="h-6 w-3/4" />
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : address ? (
             <div>
-              <h2 className="text-lg font-semibold">Teléfono</h2>
-              <div className="text-gray-600">
-                {loading ? (
-                  <div className="space-y-2">
-                    <Skeleton className="h-6 w-3/4" />
-                  </div>
-                ) : error ? (
-                  <p className="text-red-600">{error}</p>
-                ) : user.user_phone_number ? (
-                  user.user_phone_number
-                ) : (
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button>Agregar Número</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Agregar Número</DialogTitle>
-                        <PhoneForm userId={userId} />
-                      </DialogHeader>
-                    </DialogContent>
-                  </Dialog>
-                )}
-              </div>
+              <p>
+                {address.street}, {address.city}, {address.region},{" "}
+                {address.country}
+              </p>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="default">Modificar Dirección</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Modificar Dirección</DialogTitle>
+                  </DialogHeader>
+                  <AddressForm />
+                </DialogContent>
+              </Dialog>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          ) : (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button>Agregar Dirección</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Agregar Dirección</DialogTitle>
+                </DialogHeader>
+                <AddressForm />
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
+      </div>
+
+      {/* Phone */}
+      <div>
+        <h2 className="text-lg font-semibold">Teléfono</h2>
+        <div className="text-gray-600 space-y-2">
+          {user.user_phone_number ? (
+            <div>
+              <p>{user.user_phone_number}</p>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="default">Modificar Número</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Modificar Número</DialogTitle>
+                  </DialogHeader>
+                  <PhoneForm userId={userId}/>
+                </DialogContent>
+              </Dialog>
+            </div>
+          ) : (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button>Agregar Número</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Agregar Número</DialogTitle>
+                </DialogHeader>
+                <PhoneForm userId={userId}/>
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

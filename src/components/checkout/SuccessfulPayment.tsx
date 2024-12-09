@@ -9,8 +9,6 @@ interface PaymentDetails {
   authorizationCode: string;
   transactionDate: string;
   paymentType: 'Debit' | 'Credit';
-  feeType: string;
-  feeAmount: number;
   installmentAmount: number;
   cardLastFourDigits: string;
   description: string;
@@ -23,8 +21,6 @@ export default function SuccessfulPayment({
   authorizationCode,
   transactionDate,
   paymentType,
-  feeType,
-  feeAmount,
   installmentAmount,
   cardLastFourDigits,
   description
@@ -70,8 +66,6 @@ export default function SuccessfulPayment({
               <MdCalendarToday className="h-4 w-4 text-gray-400" />
               <p><span className="font-medium">Fecha:</span> {transactionDate}</p>
             </div>
-            <p><span className="font-medium">Tipo de impuesto:</span> {feeType}</p>
-            <p><span className="font-medium">Fee Amount:</span> {feeAmount.toFixed(2)} {currency}</p>
             <p><span className="font-medium">Installment Amount:</span> {installmentAmount.toFixed(2)} {currency}</p>
           </div>
         </div>

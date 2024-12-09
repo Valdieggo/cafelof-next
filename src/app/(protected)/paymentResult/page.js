@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import SuccessfulPayment from "@/components/checkout/SuccessfulPayment";
 import UnsuccessfulPayment from "@/components/checkout/UnsuccessfulPayment";
 import "@/lib/loader.css";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function ResultadoTransaccion() {
   const searchParams = useSearchParams();
@@ -113,8 +115,6 @@ export default function ResultadoTransaccion() {
           authorizationCode={result.authorization_code}
           transactionDate={new Date(result.transaction_date).toLocaleString()}
           paymentType={result.payment_type_code === "VD" ? "Débito" : "Crédito"}
-          feeType="IVA"
-          feeAmount={0}
           installmentAmount={result.installments_number || 0}
           cardLastFourDigits={result.card_detail.card_number}
           description="Compra realizada con éxito"
@@ -126,12 +126,9 @@ export default function ResultadoTransaccion() {
           errorMessage={result.mensaje || "La transacción no fue autorizada"}
         />
       )}
-      <a
-        href="/"
-        className="mt-6 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-      >
-        Volver a la página principal
-      </a>
+      <div className="pt-4">
+        <Button><Link href="/profile">Ver mis compras</Link></Button>
+      </div>
     </div>
   );
 }
