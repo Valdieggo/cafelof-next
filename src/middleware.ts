@@ -8,8 +8,9 @@ export async function middleware(req: any) {
   const isApiRoute = pathname.startsWith(apiPrefix);
   const isAuthRoute = authRoutes.includes(pathname);
   const isAdminRoute = pathname.startsWith(adminRoutePrefix);
+  const isCookieSecured = process.env.NODE_ENV === "production";
 
-  const token = await getToken({ req, secret: process.env.AUTH_SECRET, secureCookie: true });
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET, secureCookie: isCookieSecured });
 
   const isLoggedIn = !!token;
   const userRole = token?.role;
