@@ -100,6 +100,32 @@ async function main() {
     await prisma.productCategory.createMany({
         data: categories
     })
+
+    const moliendaAttribute = await prisma.attribute.upsert({
+      where: { attribute_name: "Molienda" },
+      update: {},
+      create: {
+        attribute_name: "Molienda",
+      },
+    });
+
+    const moliendaValues = ["GRUESA", "MEDIA", "ESPRESSO", "SIN MOLER"];
+
+    for (const value of moliendaValues) {
+      await prisma.attributeEnum.upsert({
+        where: {
+          attribute_id_value: {
+            attribute_id: moliendaAttribute.attribute_id,
+            value,
+          },
+        },
+        update: {},
+        create: {
+          attribute_id: moliendaAttribute.attribute_id,
+          value,
+        },
+      });
+    }
 }
 
 main()

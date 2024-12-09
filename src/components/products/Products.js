@@ -8,6 +8,7 @@ import ProductList from "./ProductList";
 export default function Products({ initialProducts = [], categories = [], sortOptions = [] }) {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [sortOption, setSortOption] = useState("Orden predeterminado");
+  console.log(JSON.stringify(initialProducts, null, 2));
 
   const filteredProducts = useMemo(() => {
     let products = [...initialProducts];

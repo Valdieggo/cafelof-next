@@ -123,20 +123,52 @@ model ProductCategory {
 }
 
 model Product {
-  product_id          Int             @id @default(autoincrement())
+  product_id          Int                @id @default(autoincrement())
   product_name        String
   product_price       Float
   product_image_url   String?
-  created_at          DateTime        @default(now())
-  updated_at          DateTime?       @updatedAt
+  created_at          DateTime           @default(now())
+  updated_at          DateTime?          @updatedAt
   product_category_id Int
   carts               Cart[]
   inventories         Inventory[]
-  category            ProductCategory @relation(fields: [product_category_id], references: [product_category_id])
+  attributes          ProductAttribute[]
+  category            ProductCategory    @relation(fields: [product_category_id], references: [product_category_id])
 
   @@index([product_category_id], map: "Product_product_category_id_idx")
 }
 
+model Attribute {
+  attribute_id       Int              @id @default(autoincrement())
+  attribute_name     String           @unique
+  created_at         DateTime         @default(now())
+  updated_at         DateTime?        @updatedAt
+  productValues      ProductAttribute[]
+  possibleValues     AttributeEnum[]  // Relationship to store enum values
+}
+
+model AttributeEnum {
+  attribute_enum_id Int       @id @default(autoincrement())
+  attribute_id      Int
+  value             String
+  created_at        DateTime  @default(now())
+  updated_at        DateTime? @updatedAt
+  attribute         Attribute @relation(fields: [attribute_id], references: [attribute_id])
+
+  @@index([attribute_id], map: "AttributeEnum_attribute_id_idx")
+}
+model ProductAttribute {
+  product_attribute_id Int       @id @default(autoincrement())
+  product_id           Int
+  attribute_id         Int
+  created_at           DateTime  @default(now())
+  updated_at           DateTime? @updatedAt
+  product              Product   @relation(fields: [product_id], references: [product_id])
+  attribute            Attribute @relation(fields: [attribute_id], references: [attribute_id])
+
+  @@index([product_id], map: "ProductAttribute_product_id_idx")
+  @@index([attribute_id], map: "ProductAttribute_attribute_id_idx")
+}
 model Cart {
   cart_id       Int           @id @default(autoincrement())
   cart_quantity Int

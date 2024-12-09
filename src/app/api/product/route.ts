@@ -9,24 +9,41 @@ export async function GET(request: Request) {
             product_category_name: true,
           },
         },
+        attributes: {
+          include: {
+            attribute: {
+              include: {
+                possibleValues: {
+                  select: {
+                    value: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
-    // Map through allProducts to flatten each product object and remove the category object
-    const flattenedProducts = allProducts.map(({ category, ...productData }) => ({
+    // Map through allProducts to flatten the attributes and structure the response
+    const structuredProducts = allProducts.map(({ category, attributes, ...productData }) => ({
       ...productData,
       product_category_name: category?.product_category_name || null,
+      attributes: attributes.map(({ attribute }) => ({
+        attribute_name: attribute.attribute_name,
+        values: attribute.possibleValues.map((enumValue) => enumValue.value),
+      })),
     }));
 
     return new Response(
       JSON.stringify({
         status: 200,
-        data: flattenedProducts,
+        data: structuredProducts,
       }),
       {
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
       }
     );
   } catch (error) {

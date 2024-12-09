@@ -22,6 +22,19 @@ export async function GET(request: Request, { params }: { params: { product_id: 
             product_category_name: true,
           },
         },
+        attributes: {
+          include: {
+            attribute: {
+              include: {
+                possibleValues: {
+                  select: {
+                    value: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -32,10 +45,18 @@ export async function GET(request: Request, { params }: { params: { product_id: 
       );
     }
 
-    const { category, ...productData } = product; // Destructure category out
+    const { category, attributes, ...productData } = product; // Destructure category and attributes out
+
+    // Format the attributes to include attribute name and its values
+    const formattedAttributes = attributes.map(({ attribute }) => ({
+      attribute_name: attribute.attribute_name,
+      values: attribute.possibleValues.map((enumValue) => enumValue.value),
+    }));
+
     const flattenedProduct = {
       ...productData,
-      product_category_name: category?.product_category_name || null, 
+      product_category_name: category?.product_category_name || null,
+      attributes: formattedAttributes, // Include formatted attributes
     };
 
     return NextResponse.json(

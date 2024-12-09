@@ -4,12 +4,18 @@ import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 
+interface Attribute {
+  attribute_name: string;
+  values: string[];
+}
+
 interface ProductDetailsProps {
   product_id: number;
   product_name: string;
   product_price: number;
   product_image_url: string;
   product_category_name: string;
+  attributes: Attribute[];
 }
 
 export default function ProductDetails({
@@ -18,8 +24,8 @@ export default function ProductDetails({
   product_price,
   product_image_url,
   product_category_name,
+  attributes = [],
 }: ProductDetailsProps) {
-
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
 
@@ -56,11 +62,39 @@ export default function ProductDetails({
               {product_name}
             </h1>
             <p className="text-xs text-gray-400">{product_category_name}</p>
+
             {/* Precio del producto */}
             <h1 className="text-lg text-gray-500">Precio:</h1>
             <p className="text-2xl font-semibold text-green-600 mb-6">
               ${product_price?.toLocaleString("es-CL") ?? "0"}
             </p>
+
+            {/* Render attributes */}
+            {attributes.length > 0 && (
+              <div className="mb-6">
+                <h2 className="text-lg font-semibold text-gray-700">Opciones:</h2>
+                {attributes.map((attribute) => (
+                  <div key={attribute.attribute_name} className="mb-4">
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                      {attribute.attribute_name}
+                    </label>
+                    <select
+                      className="w-full border border-gray-300 rounded-lg p-2"
+                      defaultValue=""
+                    >
+                      <option value="" disabled>
+                        Seleccione una opción
+                      </option>
+                      {attribute.values.map((value) => (
+                        <option key={value} value={value}>
+                          {value}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Controles de cantidad */}
             <div className="flex items-center gap-4 mb-6">

@@ -17,6 +17,7 @@ export default async function Page(product_id) {
         product_price={product.product_price}
         product_image_url={product.product_image_url}
         product_category_name={product.product_category_name}
+        attributes={product.attributes}
       />
     </div>
   );
