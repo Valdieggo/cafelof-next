@@ -40,8 +40,8 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col relative">
-        <CartProvider>
         <SessionProvider session={session} refetchOnWindowFocus={false}>
+        <CartProvider>
         <NavBar />
         <div className="flex-grow pt-20 flex flex-col">
           <main className="flex-grow">
@@ -51,8 +51,8 @@ export default async function RootLayout({ children }) {
           </main>
         </div>
         <Footer />
-        </SessionProvider >
         </CartProvider>
+        </SessionProvider >
       </body>
     </html>
   );

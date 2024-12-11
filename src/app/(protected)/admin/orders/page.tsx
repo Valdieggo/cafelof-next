@@ -1,22 +1,30 @@
-import { Metadata } from 'next'
-import OrdersTable from "@/components/orders/OrdersTable"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Metadata } from 'next';
+import OrdersTable from "@/components/orders/OrdersTable";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { cookies } from 'next/headers'; // Import cookies utility for server-side cookies
 
 export const metadata: Metadata = {
   title: 'Admin: All Orders',
   description: 'Admin page to view and manage all user orders',
-}
+};
 
 // Obtener órdenes desde el endpoint
 async function getOrders() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-    const response = await fetch(`${baseUrl}/product`, {
+    
+    // Get token from cookies
+    const cookieStore = cookies();
+    const sessionToken = process.env.NODE_ENV === 'production' ? '__Secure-authjs.session-token' : 'authjs.session-token';
+    const token = cookieStore.get('authjs.session-token')?.value; // Use the correct cookie key based on your auth setup
+
+    const response = await fetch(`${baseUrl}/order`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // Include token in the Authorization header
       },
-      cache: 'no-store', // Evitar caché para obtener siempre datos actualizados
+      cache: 'no-store', // Avoid caching to fetch updated data
     });
 
     if (!response.ok) {
@@ -49,9 +57,5 @@ export default async function AdminOrdersPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-
-
-// TODO: 
-// Fix the Date to avoid hydratation errors

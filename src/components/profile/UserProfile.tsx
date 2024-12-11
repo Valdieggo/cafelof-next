@@ -30,6 +30,7 @@ const UserProfile: FC<UserProfileProps> = ({ user, userId }) => {
   const [address, setAddress] = useState<{
     street: string;
     city: string;
+    cityId: number;
     region: string;
     country: string;
   } | null>(null);
@@ -96,7 +97,13 @@ const UserProfile: FC<UserProfileProps> = ({ user, userId }) => {
                   <DialogHeader>
                     <DialogTitle>Modificar Dirección</DialogTitle>
                   </DialogHeader>
-                  <AddressForm />
+                  <AddressForm
+                    existingAddress={{
+                      userAddressId: user.user_address_id,
+                      userAddressStreet: address.street,
+                      cityId: address.cityId,
+                    }}
+                  />
                 </DialogContent>
               </Dialog>
             </div>
@@ -131,7 +138,7 @@ const UserProfile: FC<UserProfileProps> = ({ user, userId }) => {
                   <DialogHeader>
                     <DialogTitle>Modificar Número</DialogTitle>
                   </DialogHeader>
-                  <PhoneForm userId={userId}/>
+                  <PhoneForm userId={userId} />
                 </DialogContent>
               </Dialog>
             </div>
@@ -144,7 +151,7 @@ const UserProfile: FC<UserProfileProps> = ({ user, userId }) => {
                 <DialogHeader>
                   <DialogTitle>Agregar Número</DialogTitle>
                 </DialogHeader>
-                <PhoneForm userId={userId}/>
+                <PhoneForm userId={userId} />
               </DialogContent>
             </Dialog>
           )}

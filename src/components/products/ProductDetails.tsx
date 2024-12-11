@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
@@ -27,11 +28,34 @@ export default function ProductDetails({
   attributes = [],
 }: ProductDetailsProps) {
   const [quantity, setQuantity] = useState(1);
+  const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
   const { addToCart } = useCart();
 
+  const handleAttributeChange = (attributeName: string, value: string) => {
+    setSelectedAttributes((prev) => ({
+      ...prev,
+      [attributeName]: value,
+    }));
+  };
+
   const handleAddToCart = () => {
+    const selectedValues = attributes.map(
+      (attr) => selectedAttributes[attr.attribute_name] || ""
+    );
+
+    if (selectedValues.includes("")) {
+      alert("Por favor, seleccione todas las opciones disponibles.");
+      return;
+    }
+
     addToCart(
-      { id: product_id, title: product_name, price: product_price, image: product_image_url },
+      {
+        id: product_id,
+        title: product_name,
+        price: product_price,
+        image: product_image_url,
+        attributes: selectedValues,
+      },
       quantity
     );
   };
@@ -43,7 +67,10 @@ export default function ProductDetails({
         <div className="flex justify-center items-center lg:flex-1">
           <div className="relative w-full h-72 lg:w-96 lg:h-96">
             <Image
-              src={product_image_url || "https://images.dog.ceo/breeds/ridgeback-rhodesian/n02087394_9891.jpg"}
+              src={
+                product_image_url ||
+                "https://images.dog.ceo/breeds/ridgeback-rhodesian/n02087394_9891.jpg"
+              }
               alt={product_name}
               fill
               className="rounded-lg shadow-lg object-cover"
@@ -80,7 +107,10 @@ export default function ProductDetails({
                     </label>
                     <select
                       className="w-full border border-gray-300 rounded-lg p-2"
-                      defaultValue=""
+                      value={selectedAttributes[attribute.attribute_name] || ""}
+                      onChange={(e) =>
+                        handleAttributeChange(attribute.attribute_name, e.target.value)
+                      }
                     >
                       <option value="" disabled>
                         Seleccione una opción

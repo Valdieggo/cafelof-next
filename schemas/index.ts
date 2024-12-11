@@ -34,8 +34,15 @@ export const UserFormSchema = z.object({
   name: z.string().min(1, "El nombre es obligatorio").max(255),
   phone: z
     .string()
-    .regex(/^\+?[1-9]\d{1,14}$/, "Número de teléfono no válido")
+    .regex(/^\+\([1-9]\d{0,2}\)\d{8,14}$|^\+[1-9]\d{0,2}\d{8,14}$/, "Número de teléfono no válido")
     .min(1, "El teléfono es obligatorio"),
+  address: z.string().min(1, "La dirección es obligatoria"),
+  country: z.string().min(1, "El país es obligatorio"),
+  region: z.string().min(1, "La región es obligatoria"),
+  city: z.string().min(1, "La ciudad es obligatoria"),
+});
+
+export const AddressFormSchema = z.object({
   address: z.string().min(1, "La dirección es obligatoria"),
   country: z.string().min(1, "El país es obligatorio"),
   region: z.string().min(1, "La región es obligatoria"),

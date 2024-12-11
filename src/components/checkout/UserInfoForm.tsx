@@ -7,20 +7,11 @@ import { useCountries, useRegions, useCities } from "@/hooks";
 import { EditableField, EditableSelect } from "@/components/checkout";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-
-const formSchema = z.object({
-  name: z.string().min(1, "El nombre es obligatorio").max(255),
-  phone: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Número de teléfono no válido"),
-  address: z.string().min(1, "La dirección es obligatoria"),
-  country: z.string().min(1, "El país es obligatorio"),
-  region: z.string().min(1, "La región es obligatoria"),
-  city: z.string().min(1, "La ciudad es obligatoria"),
-});
+import { UserFormSchema } from "../../../schemas";
 
 export default function UserInfoForm({
   onBack,
   onFormValidityChange,
-  onConfirm,
 }: {
   onBack: () => void;
   onFormValidityChange: (isValid: boolean) => void;
@@ -29,8 +20,8 @@ export default function UserInfoForm({
   const { data: session } = useSession();
   const countries = useCountries();
 
-  const methods = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const methods = useForm<z.infer<typeof UserFormSchema>>({
+    resolver: zodResolver(UserFormSchema),
     mode: "onChange",
     defaultValues: {
       name: "",
@@ -103,7 +94,7 @@ export default function UserInfoForm({
     fetchUserData();
   }, [session?.user?.id, reset]);
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof UserFormSchema>) => {
     try {
       const payload = {
         user_id: session?.user?.id,
@@ -192,6 +183,9 @@ export default function UserInfoForm({
               <strong>Ciudad:</strong> {watch("city")}
             </p>
             <div className="flex justify-between mt-4">
+              <Button onClick={onBack} type="button" className="bg-gray-300 text-black">
+                Regresar
+              </Button>
               <Button
                 onClick={() => setIsEditing(true)}
                 type="button"
@@ -199,15 +193,12 @@ export default function UserInfoForm({
               >
                 Modificar información
               </Button>
-              <Button onClick={onConfirm} type="button" className="bg-black text-white">
-                Confirmar y continuar
-              </Button>
             </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <EditableField name="name" label="Nombre" placeholder="John Doe" control={control} />
-            <EditableField name="phone" label="Teléfono" placeholder="+1 (555) 123-4567" control={control} />
+            <EditableField name="phone" label="Teléfono" placeholder="+(56)123456789" control={control} />
             <EditableField name="address" label="Dirección" placeholder="123 Main St" control={control} />
             <EditableSelect
               name="country"

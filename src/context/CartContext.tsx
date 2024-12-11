@@ -1,103 +1,233 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 interface CartItem {
-  id: number;
+  id: number; // Product ID
   title: string;
   price: number;
   quantity: number;
   image: string | null;
+  attributes: string[]; // Attributes to distinguish product variations
 }
 
 interface CartContextProps {
   cartItems: CartItem[];
-  addToCart: (item: Omit<CartItem, "quantity">, quantity: number) => void;
-  removeFromCart: (id: number) => void;
+  addToCart: (item: Omit<CartItem, "quantity">, quantity: number) => Promise<void>;
+  removeFromCart: (id: number, attributes: string[]) => Promise<void>;
+  updateCartItemQuantity: (id: number, attributes: string[], quantity: number) => Promise<void>;
   getTotalItems: () => number;
   getTotalPrice: () => number;
   isCartLoaded: boolean;
-  isCartOpen: boolean; // Nuevo estado para la visibilidad del carrito
-  openCart: () => void; // Función para abrir el carrito
-  closeCart: () => void; // Función para cerrar el carrito
-  updateCartItemQuantity: (id: number, quantity: number) => void;
+  isCartOpen: boolean;
+  openCart: () => void;
+  closeCart: () => void;
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartItem[] | null>(null);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartLoaded, setIsCartLoaded] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false); // Estado de visibilidad
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const { data: session, status } = useSession();
 
-  useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) {
-      setCartItems(JSON.parse(storedCart));
-    } else {
-      setCartItems([]); // Inicializamos con un array vacío.
-    }
-    setIsCartLoaded(true); // Marcamos como cargado después de la inicialización.
-  }, []);
-
-  const addToCart = (item: Omit<CartItem, "quantity">, quantity: number) => {
-    setCartItems((prev) => {
-      if (!prev) return prev;
-      const existingItem = prev.find((cartItem) => cartItem.id === item.id);
-      if (existingItem) {
-        return prev.map((cartItem) =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + quantity }
-            : cartItem
-        );
+  // Fetch the cart from the database or local storage
+  const fetchCart = async (userId?: string) => {
+    if (userId) {
+      try {
+        const response = await fetch("/api/cart", {
+          method: "GET",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${userId}` },
+        });
+        if (!response.ok) throw new Error("Failed to fetch cart");
+        const data: CartItem[] = await response.json();
+        setCartItems(data);
+      } catch (error) {
+        console.error("Error fetching cart:", error);
       }
-      return [...prev, { ...item, quantity }];
-    });
-    openCart(); // Abrimos el carrito después de agregar un producto
+    } else {
+      // Load the cart from local storage for unauthenticated users
+      const storedCart = localStorage.getItem("cart");
+      setCartItems(storedCart ? JSON.parse(storedCart) : []);
+    }
+    setIsCartLoaded(true);
   };
 
-  const removeFromCart = (id: number) => {
-    setCartItems((prev) => prev?.filter((item) => item.id !== id) ?? []);
-  };
-
-  const getTotalItems = () =>
-    cartItems?.reduce((total, item) => total + item.quantity, 0) ?? 0;
-
-  const getTotalPrice = () =>
-    cartItems?.reduce((total, item) => total + item.price * item.quantity, 0) ?? 0;
-
-  const updateCartItemQuantity = (id: number, quantity: number) => {
-    setCartItems((prev) =>
-      prev?.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, quantity) } // Ensure quantity is at least 1
-          : item
-      ) ?? []
-    );
-  };  
-
-  const openCart = () => setIsCartOpen(true); // Función para abrir el carrito
-  const closeCart = () => setIsCartOpen(false); // Función para cerrar el carrito
-
+  // Reload cart from local storage for unauthenticated users on every mount
   useEffect(() => {
-    if (cartItems !== null) {
+    if (status === "unauthenticated") {
+      const storedCart = localStorage.getItem("cart");
+      setCartItems(storedCart ? JSON.parse(storedCart) : []);
+      setIsCartLoaded(true);
+    }
+  }, [status]);
+
+  // Sync local storage with `cartItems` for unauthenticated users
+  useEffect(() => {
+    if (status === "unauthenticated") {
       localStorage.setItem("cart", JSON.stringify(cartItems));
     }
-  }, [cartItems]);
+  }, [cartItems, status]);
+
+  // Sync cart to the database on login
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.id) {
+      const syncCartToDatabase = async () => {
+        const localCart = localStorage.getItem("cart");
+        const cartItems: CartItem[] = localCart ? JSON.parse(localCart) : [];
+
+        // Check if the database cart is empty
+        const response = await fetch("/api/cart", {
+          method: "GET",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.user.id}` },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch database cart");
+        const databaseCart: CartItem[] = await response.json();
+
+        if (databaseCart.length === 0 && cartItems.length > 0) {
+          // Sync local storage cart to database if database cart is empty
+          for (const item of cartItems) {
+            await fetch("/api/cart/create", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                productId: item.id,
+                quantity: item.quantity,
+                attributes: item.attributes,
+                userId: session.user.id,
+              }),
+            });
+          }
+          localStorage.removeItem("cart"); // Clear local storage after sync
+        }
+
+        // Fetch the updated cart from the database
+        await fetchCart(session.user.id);
+      };
+
+      syncCartToDatabase();
+    }
+  }, [status, session?.user?.id]);
+
+  const addToCart = async (item: Omit<CartItem, "quantity">, quantity: number) => {
+    if (status === "authenticated" && session?.user?.id) {
+      try {
+        await fetch("/api/cart/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            productId: item.id,
+            quantity,
+            attributes: item.attributes,
+            userId: session.user.id,
+          }),
+        });
+        await fetchCart(session.user.id);
+      } catch (error) {
+        console.error("Error adding to cart:", error);
+      }
+    } else {
+      setCartItems((prev) => {
+        const existingItem = prev.find(
+          (cartItem) =>
+            cartItem.id === item.id &&
+            JSON.stringify(cartItem.attributes) === JSON.stringify(item.attributes)
+        );
+
+        if (existingItem) {
+          return prev.map((cartItem) =>
+            cartItem === existingItem
+              ? { ...cartItem, quantity: cartItem.quantity + quantity }
+              : cartItem
+          );
+        }
+
+        return [...prev, { ...item, quantity }];
+      });
+
+      openCart(); // Open the cart immediately
+    }
+  };
+
+  const removeFromCart = async (id: number, attributes: string[]) => {
+    if (status === "authenticated" && session?.user?.id) {
+      try {
+        await fetch(`/api/cart/remove/${id}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ attributes, userId: session.user.id }),
+        });
+        await fetchCart(session.user.id);
+      } catch (error) {
+        console.error("Error removing from cart:", error);
+      }
+    } else {
+      setCartItems((prev) =>
+        prev.filter(
+          (item) =>
+            item.id !== id ||
+            JSON.stringify(item.attributes) !== JSON.stringify(attributes)
+        )
+      );
+    }
+  };
+
+  const updateCartItemQuantity = async (
+    id: number,
+    attributes: string[],
+    quantity: number
+  ) => {
+    if (status === "authenticated" && session?.user?.id) {
+      try {
+        await fetch("/api/cart/update", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            productId: id,
+            attributes,
+            quantity,
+            userId: session.user.id,
+          }),
+        });
+        await fetchCart(session.user.id);
+      } catch (error) {
+        console.error("Error updating cart quantity:", error);
+      }
+    } else {
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item.id === id &&
+          JSON.stringify(item.attributes) === JSON.stringify(attributes)
+            ? { ...item, quantity }
+            : item
+        )
+      );
+    }
+  };
+
+  const getTotalItems = () => cartItems.reduce((total, item) => total + item.quantity, 0);
+  const getTotalPrice = () =>
+    cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+
+  const openCart = () => setIsCartOpen(true);
+  const closeCart = () => setIsCartOpen(false);
 
   return (
     <CartContext.Provider
       value={{
-        cartItems: cartItems || [],
+        cartItems,
         addToCart,
         removeFromCart,
         updateCartItemQuantity,
         getTotalItems,
         getTotalPrice,
         isCartLoaded,
-        isCartOpen, // Exportamos el estado de visibilidad
-        openCart, // Exportamos la función para abrir el carrito
-        closeCart, // Exportamos la función para cerrar el carrito
+        isCartOpen,
+        openCart,
+        closeCart,
       }}
     >
       {children}

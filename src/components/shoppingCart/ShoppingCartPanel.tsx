@@ -47,13 +47,14 @@ export default function ShoppingCartPanel({ onClose, isOpen }: { onClose: () => 
             <ul>
               {cartItems.map((item) => (
                 <CartItem
-                  key={item.id}
+                  key={`${item.id}-${item.attributes.join("-")}`} // Unique key
                   id={item.id}
+                  attributes={item.attributes} // Pass attributes
                   title={item.title}
                   price={item.price * item.quantity}
                   quantity={item.quantity}
                   image={item.image}
-                  onRemove={removeFromCart}
+                  onRemove={() => removeFromCart(item.id, item.attributes)} // Pass id and attributes
                 />
               ))}
             </ul>

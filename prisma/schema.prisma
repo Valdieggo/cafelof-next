@@ -174,6 +174,7 @@ model Cart {
   cart_quantity Int
   user_id       String
   product_id    Int
+  attributes    String
   created_at    DateTime      @default(now())
   updated_at    DateTime?     @updatedAt
   product       Product       @relation(fields: [product_id], references: [product_id])

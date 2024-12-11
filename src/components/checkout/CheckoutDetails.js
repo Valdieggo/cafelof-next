@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { FiTrash2 } from "react-icons/fi";
 
 export default function CheckoutDetails({ setFormIsValid }) {
-  const { cartItems, removeFromCart, updateCartItemQuantity } = useCart(); // Include updateCartItemQuantity
+  const { cartItems, removeFromCart, updateCartItemQuantity } = useCart();
 
   useEffect(() => {
     setFormIsValid(cartItems.length > 0);
@@ -17,7 +17,7 @@ export default function CheckoutDetails({ setFormIsValid }) {
   return (
     <div className="cart-details flex-1 p-4">
       {cartItems.map((item, index) => (
-        <div key={item.id}>
+        <div key={`${item.id}-${item.attributes.join("-")}`}>
           <div className="cart-item grid grid-cols-1 sm:grid-cols-3 gap-4 items-center mb-4">
             <a
               href={`/productos/${item.id}`}
@@ -31,14 +31,16 @@ export default function CheckoutDetails({ setFormIsValid }) {
                   className="object-cover rounded"
                 />
               </div>
-              <h3 className="text-lg font-semibold break-words">
-                {item.title}
-              </h3>
+              <div>
+                <h3 className="text-lg font-semibold break-words">{item.title}</h3>
+                {/* Display Attributes */}
+                {item.attributes.length? <p className="text-sm text-gray-600">Opcion: {item.attributes.join(", ")}</p> : null}
+              </div>
             </a>
             <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-6 col-span-1">
               <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => updateCartItemQuantity(item.id, item.quantity - 1)}
+                  onClick={() => updateCartItemQuantity(item.id, item.attributes, item.quantity - 1)}
                   className="flex items-center justify-center w-8 h-8 border border-gray-300 rounded"
                   aria-label="Decrease quantity"
                 >
@@ -46,7 +48,7 @@ export default function CheckoutDetails({ setFormIsValid }) {
                 </Button>
                 <span className="text-center w-8">{item.quantity}</span>
                 <Button
-                  onClick={() => updateCartItemQuantity(item.id, item.quantity + 1)}
+                  onClick={() => updateCartItemQuantity(item.id, item.attributes, item.quantity + 1)}
                   className="flex items-center justify-center w-8 h-8 border border-gray-300 rounded"
                   aria-label="Increase quantity"
                 >
@@ -55,7 +57,7 @@ export default function CheckoutDetails({ setFormIsValid }) {
               </div>
               <span className="font-semibold">{formatCurrency(item.price)}</span>
               <button
-                onClick={() => removeFromCart(item.id)}
+                onClick={() => removeFromCart(item.id, item.attributes)} // Pass id and attributes
                 className="flex items-center justify-center w-8 h-8 text-red-600 hover:text-red-800"
                 aria-label={`Remove ${item.title}`}
               >
