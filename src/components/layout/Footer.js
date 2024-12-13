@@ -1,5 +1,7 @@
 import { FaInstagram } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa";
+import webpayLogo from "../../../public/1.Webpay_FN_300px.png";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -29,6 +31,9 @@ export default function Footer() {
               </a>
             </li>
           </ul>
+        </div>
+        <div>
+          <Image src={webpayLogo} alt="Webpay" />
         </div>
       </div>
       <div className="bg-[var(--footer-bg)] py-4">

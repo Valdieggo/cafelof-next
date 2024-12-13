@@ -115,7 +115,29 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const addToCart = async (item: Omit<CartItem, "quantity">, quantity: number) => {
     if (status === "authenticated" && session?.user?.id) {
       try {
-        await fetch("/api/cart/create", {
+        // Primero, optimísticamente agrega el producto localmente
+        setCartItems((prev) => {
+          const existingItem = prev.find(
+            (cartItem) =>
+              cartItem.id === item.id &&
+              JSON.stringify(cartItem.attributes) === JSON.stringify(item.attributes)
+          );
+          
+          if (existingItem) {
+            return prev.map((cartItem) =>
+              cartItem === existingItem
+                ? { ...cartItem, quantity: cartItem.quantity + quantity }
+                : cartItem
+            );
+          }
+  
+          return [...prev, { ...item, quantity }];
+        });
+  
+        openCart();
+  
+        // Luego haz la llamada al servidor
+        const response = await fetch("/api/cart/create", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -125,18 +147,27 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             userId: session.user.id,
           }),
         });
-        await fetchCart(session.user.id);
+  
+        if (!response.ok) {
+          // Manejar error, revertir cambio optimista si es necesario
+          console.error("Error adding to cart");
+        } else {
+          // Opcionalmente, sincronizar el carrito final con el servidor
+          await fetchCart(session.user.id);
+        }
       } catch (error) {
         console.error("Error adding to cart:", error);
+        // Podrías revertir el cambio optimista aquí si se requiere
       }
     } else {
+      // Comportamiento para no autenticados como antes
       setCartItems((prev) => {
         const existingItem = prev.find(
           (cartItem) =>
             cartItem.id === item.id &&
             JSON.stringify(cartItem.attributes) === JSON.stringify(item.attributes)
         );
-
+  
         if (existingItem) {
           return prev.map((cartItem) =>
             cartItem === existingItem
@@ -144,11 +175,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
               : cartItem
           );
         }
-
+  
         return [...prev, { ...item, quantity }];
       });
-
-      openCart(); // Open the cart immediately
+  
+      openCart();
     }
   };
 

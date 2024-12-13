@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 type PhoneFormProps = {
   userId: number;
@@ -12,6 +13,7 @@ type PhoneFormProps = {
 };
 
 export default function PhoneForm({ userId, existingPhoneNumber }: PhoneFormProps) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof PhoneNumberSchema>>({
     resolver: zodResolver(PhoneNumberSchema),
     defaultValues: {
@@ -32,6 +34,7 @@ export default function PhoneForm({ userId, existingPhoneNumber }: PhoneFormProp
       if (response.ok) {
         alert("Número de teléfono actualizado con éxito");
         form.reset({ phone: values.phone });
+        router.refresh();
       } else {
         alert("Error al actualizar número de teléfono");
       }

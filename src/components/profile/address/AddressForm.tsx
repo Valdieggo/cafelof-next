@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface Country {
   country_id: number;
@@ -28,6 +29,7 @@ type AddressFormProps = {
 };
 
 const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
+  const router = useRouter();
   const [countries, setCountries] = useState<Country[]>([]);
   const [regions, setRegions] = useState<Region[]>([]);
   const [cities, setCities] = useState<City[]>([]);
@@ -117,10 +119,9 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
           body: JSON.stringify(updatedPayload),
         });
 
-        const result = await response.json();
-
         if (response.ok) {
           alert("Dirección actualizada exitosamente");
+          router.refresh();
         } else {
           alert("Hubo un error al actualizar la dirección");
         }
@@ -140,10 +141,9 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
           body: JSON.stringify(payload),
         });
 
-        const result = await response.json();
-
         if (response.ok) {
           alert("Dirección creada exitosamente");
+          router.refresh();
         } else {
           alert("Hubo un error al crear la dirección");
         }

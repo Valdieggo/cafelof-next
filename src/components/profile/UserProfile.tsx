@@ -127,7 +127,11 @@ const UserProfile: FC<UserProfileProps> = ({ user, userId }) => {
       <div>
         <h2 className="text-lg font-semibold">Teléfono</h2>
         <div className="text-gray-600 space-y-2">
-          {user.user_phone_number ? (
+          {loading ? (
+            <Skeleton className="h-6 w-3/4" />
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : user.user_phone_number ? (
             <div>
               <p>{user.user_phone_number}</p>
               <Dialog>
