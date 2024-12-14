@@ -18,7 +18,6 @@ export default function Page() {
   const [cartIsValid, setCartIsValid] = useState(false);
   const [userInfoValid, setUserInfoValid] = useState(false);
   const [guestMode, setGuestMode] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); // Controla si el usuario está editando su información
 
   const handleGuestContinue = async (formData) => {
     try {
@@ -39,10 +38,60 @@ export default function Page() {
 
       const user = await response.json();
       alert("Usuario invitado creado exitosamente.");
-      // Continuar con el flujo del checkout para el usuario invitado
+
+      // Crear orden y transacción para el usuario invitado con el ID retornado
+      await createOrderAndTransaction(user.user.id);
     } catch (error) {
       console.error("Error interno:", error);
       alert("Error interno al crear usuario invitado.");
+    }
+  };
+
+  const createOrderAndTransaction = async (userId) => {
+    if (!userId) {
+      alert("Error: No se pudo obtener el ID del usuario.");
+      console.error("Error: userId no está definido.");
+      return;
+    }
+
+    try {
+      const createOrderResponse = await fetch("/api/order/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId, // Pasar siempre el ID directamente
+          totalAmount: getTotalPrice(),
+          buyOrder: userId, // Usa el ID del usuario como buyOrder
+        }),
+      });
+
+      if (!createOrderResponse.ok) throw new Error("No se pudo crear la orden.");
+
+      const createdOrder = await createOrderResponse.json();
+
+      const transactionResponse = await fetch("/api/transaction/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderId: createdOrder.order_id,
+          sessionId: userId, // Usa el ID del usuario directamente
+          amount: createdOrder.order_total_price,
+        }),
+      });
+
+      if (!transactionResponse.ok) throw new Error("No se pudo crear la transacción.");
+
+      const transaction = await transactionResponse.json();
+
+      // Redirigir al usuario al portal de pago
+      window.location.href = `${transaction.url}?token_ws=${transaction.token}`;
+    } catch (error) {
+      console.error("Error durante el checkout:", error);
+      alert("Hubo un problema al procesar tu solicitud.");
     }
   };
 
@@ -55,15 +104,24 @@ export default function Page() {
         return;
       }
 
-      if (!session && !guestMode) {
-        alert("Debes elegir entre iniciar sesión o continuar como invitado.");
+      let userId;
+
+      // Determinar el ID del usuario
+      if (guestMode) {
+        alert("Formulario completado correctamente.");
+        return;
+      } else if (session && session.user.id) {
+        userId = session.user.id; // Usuario registrado
+      }
+
+      if (!userId) {
+        alert("No se pudo completar la operación: usuario no identificado.");
+        console.error("Error: userId no está definido.");
         return;
       }
 
-      if (guestMode) {
-        alert("Formulario completado correctamente.");
-        // Aquí puedes proceder al siguiente paso del checkout o al resumen de la orden
-      }
+      // Crear orden y transacción para el usuario registrado
+      await createOrderAndTransaction(userId);
     }
   };
 
@@ -124,8 +182,8 @@ export default function Page() {
                 <UserInfoForm
                   onBack={handleBack}
                   onFormValidityChange={setUserInfoValid}
-                  onSubmit={handleGuestContinue} // Enviar datos del invitado
-                  isGuest={true} // Indicar que es un usuario invitado
+                  onSubmit={handleGuestContinue}
+                  isGuest={true}
                 />
               )}
               {currentStep === "userInfo" && session && (
@@ -138,7 +196,7 @@ export default function Page() {
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({
                         ...data,
-                        city: Number(data.city), // Asegurar que city sea numérico
+                        city: Number(data.city),
                       }),
                     });
 
@@ -148,8 +206,6 @@ export default function Page() {
                       alert("Error al actualizar la información.");
                     }
                   }}
-                  isEditing={isEditing} // Pasar control de edición
-                  setIsEditing={setIsEditing} // Permitir cambiar entre estados
                 />
               )}
             </div>

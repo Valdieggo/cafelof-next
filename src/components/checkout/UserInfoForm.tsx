@@ -46,8 +46,8 @@ export default function UserInfoForm({
   const region = watch("region");
   const city = watch("city");
 
-  const { regions } = useRegions(country);
-  const { cities } = useCities(region);
+  const { regions: availableRegions } = useRegions(country);
+  const { cities: availableCities } = useCities(region);
 
   const [isEditing, setIsEditing] = useState(isGuest || !session); // Si es invitado, empieza en modo edición
   const [isLoading, setIsLoading] = useState(true);
@@ -115,14 +115,9 @@ export default function UserInfoForm({
       city: Number(data.city), // Convertir city a número
       user_id: session?.user?.id, // Agregar user_id al payload
     };
-  
+
     await onSubmit(payload);
-  
-    // Recargar las opciones dinámicas para asegurar la consistencia
-    const updatedRegions = useRegions(data.country).regions;
-    const updatedCities = useCities(data.region).cities;
-  
-    // Encontrar etiquetas correspondientes para país, región y ciudad
+
     const updatedData = {
       ...data,
       country: getLabel(
@@ -133,26 +128,27 @@ export default function UserInfoForm({
         data.country
       ),
       region: getLabel(
-        updatedRegions.map((r) => ({
+        availableRegions.map((r) => ({
           value: r.region_id.toString(),
           label: r.region_name,
         })),
         data.region
       ),
       city: getLabel(
-        updatedCities.map((c) => ({
+        availableCities.map((c) => ({
           value: c.city_id.toString(),
           label: c.city_name,
         })),
         data.city
       ),
     };
-  
-    // Actualizar los valores en el formulario
+
     reset(updatedData);
-  
     setIsEditing(false); // Cambiar a modo solo lectura
   };
+
+  const getLabel = (options: { value: string; label: string }[], value: string) =>
+    options.find((option) => option.value === value)?.label || value;
 
   if (isLoading) {
     return (
@@ -167,9 +163,6 @@ export default function UserInfoForm({
       </div>
     );
   }
-
-  const getLabel = (options: { value: string; label: string }[], value: string) =>
-    options.find((option) => option.value === value)?.label || value;
 
   return (
     <div>
@@ -195,7 +188,7 @@ export default function UserInfoForm({
             <EditableSelect
               name="region"
               label="Región"
-              options={regions.map((r) => ({
+              options={availableRegions.map((r) => ({
                 value: r.region_id.toString(),
                 label: r.region_name,
               }))}
@@ -205,7 +198,7 @@ export default function UserInfoForm({
             <EditableSelect
               name="city"
               label="Ciudad"
-              options={cities.map((c) => ({
+              options={availableCities.map((c) => ({
                 value: c.city_id.toString(),
                 label: c.city_name,
               }))}
@@ -249,7 +242,7 @@ export default function UserInfoForm({
           <p>
             <strong>Región:</strong>{" "}
             {getLabel(
-              regions.map((r) => ({
+              availableRegions.map((r) => ({
                 value: r.region_id.toString(),
                 label: r.region_name,
               })),
@@ -259,7 +252,7 @@ export default function UserInfoForm({
           <p>
             <strong>Ciudad:</strong>{" "}
             {getLabel(
-              cities.map((c) => ({
+              availableCities.map((c) => ({
                 value: c.city_id.toString(),
                 label: c.city_name,
               })),
