@@ -170,11 +170,11 @@ export default function Page() {
                 <CheckoutDetails setFormIsValid={setCartIsValid} />
               )}
               {currentStep === "userInfo" && !session && !guestMode && (
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 mx-12">
                   <p>Elige una opción para continuar:</p>
                   <Button onClick={() => setGuestMode(true)}>Seguir como invitado</Button>
                   <Button>
-                    <Link href="/login">Iniciar sesión</Link>
+                    <Link href="/login?redirectTo=/checkout">Iniciar sesión</Link>
                   </Button>
                 </div>
               )}
