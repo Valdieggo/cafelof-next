@@ -1,9 +1,9 @@
-'use client'
+'use client';
 
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Button } from "@/components/ui/button"
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -11,22 +11,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { HiEye, HiEyeSlash } from 'react-icons/hi2'
-import GoogleSignIn from './GoogleSignIn'
-import { useState } from 'react'
-import { LoginSchema } from '../../../schemas'
-import { login } from '@/actions/login'
-import FormError from '../ui/form-error'
-import FormSuccess from '../ui/form-success'
-import { useTransition } from 'react'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { HiEye, HiEyeSlash } from 'react-icons/hi2';
+import GoogleSignIn from './GoogleSignIn';
+import { useState } from 'react';
+import { LoginSchema } from '../../../schemas';
+import { login } from '@/actions/login';
+import FormError from '../ui/form-error';
+import FormSuccess from '../ui/form-success';
+import { useTransition } from 'react';
+import { useSearchParams, useRouter } from "next/navigation";
+import { getSession } from "next-auth/react";
+
 
 export default function LoginForm() {
-  const [error, setError] = useState<string | undefined>("")
-  const [success, setSuccess] = useState<string | undefined>("")
-  const [isPending, startTransition] = useTransition()
+  const searchParams = useSearchParams(); // Hook para acceder a los parámetros de la URL
+  const router = useRouter(); // Hook para redirigir
+  const redirectTo = searchParams.get("redirectTo") || "/profile"; // Obtener `redirectTo`, con `/profile` como fallback
+
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -34,20 +41,27 @@ export default function LoginForm() {
       email: "",
       password: "",
     },
-  })
+  });
 
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    setError("")
-    setSuccess("")
-    
-    startTransition(() => {
-      login(values).then((response) => {
-        setError(response?.error)
-        setSuccess(response?.success)
-    })})
+    setError("");
+    setSuccess("");
+  
+    startTransition(async () => {
+      const response = await login(values);
+      if (response?.error) {
+        setError(response.error);
+      } else {
+        setSuccess(response?.success);
+  
+        await getSession();
+        router.push(redirectTo); // Redirige después del login exitoso
+      }
+    });
   };
+   
 
   return (
     <Card className="w-full max-w-md mx-auto mt-8 mb-8">
@@ -123,5 +137,5 @@ export default function LoginForm() {
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }
