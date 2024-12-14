@@ -18,7 +18,9 @@ export default function Page() {
   const [cartIsValid, setCartIsValid] = useState(false);
   const [userInfoValid, setUserInfoValid] = useState(false);
   const [guestMode, setGuestMode] = useState(false);
+  const [guestUserId, setGuestUserId] = useState(null); // Guardar el ID del usuario invitado
 
+  // Maneja la información del usuario invitado
   const handleGuestContinue = async (formData) => {
     try {
       const response = await fetch("/api/auth/user/create-guest", {
@@ -32,21 +34,20 @@ export default function Page() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error creando usuario invitado:", errorData.error);
-        alert(errorData.error || "Hubo un error al crear el usuario invitado.");
+        alert(errorData.error || "Hubo un error al ingresar los datos");
         return;
       }
 
       const user = await response.json();
-      alert("Usuario invitado creado exitosamente.");
-
-      // Crear orden y transacción para el usuario invitado con el ID retornado
-      await createOrderAndTransaction(user.user.id);
+      setGuestUserId(user.user.id); // Guardar el ID del usuario invitado para usarlo más adelante
+      alert("Información guardada exitosamente.");
     } catch (error) {
-      console.error("Error interno:", error);
-      alert("Error interno al crear usuario invitado.");
+      console.error("Error interno", error);
+      alert(response.message);
     }
   };
 
+  // Maneja la creación de la orden y la transacción
   const createOrderAndTransaction = async (userId) => {
     if (!userId) {
       alert("Error: No se pudo obtener el ID del usuario.");
@@ -95,6 +96,7 @@ export default function Page() {
     }
   };
 
+  // Maneja el botón "Continuar" en `CheckoutOrderSummary`
   const handleContinue = async () => {
     if (currentStep === "details") {
       setCurrentStep("userInfo");
@@ -104,15 +106,7 @@ export default function Page() {
         return;
       }
 
-      let userId;
-
-      // Determinar el ID del usuario
-      if (guestMode) {
-        alert("Formulario completado correctamente.");
-        return;
-      } else if (session && session.user.id) {
-        userId = session.user.id; // Usuario registrado
-      }
+      let userId = guestMode ? guestUserId : session?.user?.id;
 
       if (!userId) {
         alert("No se pudo completar la operación: usuario no identificado.");
@@ -120,7 +114,7 @@ export default function Page() {
         return;
       }
 
-      // Crear orden y transacción para el usuario registrado
+      // Crear la orden y transacción
       await createOrderAndTransaction(userId);
     }
   };
