@@ -19,6 +19,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
                 email: true,
                 user_phone_number: true,
                 user_address_id: true,
+                emailVerified: true,
             }
         });
 

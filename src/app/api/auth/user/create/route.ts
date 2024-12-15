@@ -28,7 +28,7 @@ export async function POST(request: Request){
         
         return new Response(JSON.stringify({
                 status: 201,
-                message: 'User created successfully',
+                message: 'Mensaje de confirmación enviado',
                 data: user,
             }), {
                 headers: {
