@@ -54,10 +54,12 @@ export default function LoginForm() {
       if (response?.error) {
         setError(response.error);
       } else {
-        setSuccess(response?.success);
-  
-        await getSession();
-        router.push(redirectTo); // Redirige después del login exitoso
+        if(response?.flag){
+          setSuccess(response?.success);
+        }else{
+          await getSession();
+          router.push(redirectTo); // Redirige después del login exitoso
+        }
       }
     });
   };

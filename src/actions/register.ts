@@ -28,6 +28,18 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
         body: JSON.stringify(requestValues),
     });
 
+    const verificationTokenFetch = await fetch(`${baseUrl}/auth/verificationToken?email=${values.email}`);
+    const verificationToken = await verificationTokenFetch.json();
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/send`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: values.email, token: verificationToken.token }),
+      }
+    );
+
     const data = await response.json();
     
     return data;
