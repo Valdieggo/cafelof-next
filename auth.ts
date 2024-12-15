@@ -22,7 +22,25 @@ declare module "next-auth" {
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  events: {
+    async linkAccount({ user }){
+      await prisma.user.update({
+        where: { id: user.id },
+        data:{ emailVerified: new Date()}
+      })
+    }
+  },
   callbacks: {
+    async signIn({ user, account }){
+      if(account?.provider !== "credentials") return true;
+
+      const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/get/${user.id}`);
+      const existingUser = await userResponse.json();
+
+      if(!existingUser.emailVerified) return false;
+
+      return true;
+    },
     async jwt({ token, user }) {
       // Add user ID and role to the token if available
       if (user) {
