@@ -46,8 +46,8 @@ export async function GET(request: Request) {
       });
     }
 
-    const verificationToken = email? await generateVerificationToken(email) : null;
-    return NextResponse.json({ message: "Correo de confirmación enviado", token: verificationToken }, { status: 201 });
+    const verificationToken = email? await generateVerificationToken(email) : token;
+    return NextResponse.json({ message: "Correo de verificación enviado", token: verificationToken? verificationToken : null }, { status: 201 });
   
   } catch {
 
