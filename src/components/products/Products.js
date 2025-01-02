@@ -44,7 +44,7 @@ export default function Products({ initialProducts = [], categories = [], sortOp
       <div className="container mx-auto px-6 grid lg:grid-cols-[250px_1fr] lg:gap-6">
         {/* Sidebar for large screens */}
         <aside className="hidden lg:block bg-white p-4 rounded-lg shadow-md sticky top-8 h-fit pt-2">
-          <h3 className="text-lg font-semibold mb-4">Filtros</h3>
+          <h2 className="text-lg font-semibold mb-4">Filtros</h2>
           <CategoryFilter
             categories={categories}
             selectedCategories={selectedCategories}
