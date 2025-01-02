@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: 'Admin page to view and manage all user orders',
 };
 
+export const dynamic = "force-dynamic";
+
 // Obtener órdenes desde el endpoint
 async function getOrders() {
   try {
@@ -16,7 +18,7 @@ async function getOrders() {
     // Get token from cookies
     const cookieStore = cookies();
     const sessionToken = process.env.NODE_ENV === 'production' ? '__Secure-authjs.session-token' : 'authjs.session-token';
-    const token = cookieStore.get('authjs.session-token')?.value; // Use the correct cookie key based on your auth setup
+    const token = cookieStore.get(sessionToken)?.value; // Use the correct cookie key based on your auth setup
 
     const response = await fetch(`${baseUrl}/order`, {
       method: 'GET',

@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getToken } from "next-auth/jwt";
 
 const secret = process.env.AUTH_SECRET;
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   try {

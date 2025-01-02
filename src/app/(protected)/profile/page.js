@@ -4,6 +4,11 @@ import SignOut from "@/components/auth/signOut";
 import UserOrders from "@/components/profile/UserOrders";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+export const metadata = {
+  title: "Perfil",
+  description: "Información de tu perfil de usuario.",
+}
+
 export default async function Page() {
   const session = await auth();
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;

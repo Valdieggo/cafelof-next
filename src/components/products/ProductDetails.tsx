@@ -131,7 +131,7 @@ export default function ProductDetails({
               <span className="font-medium text-gray-700">Cantidad:</span>
               <div className="flex items-center border border-gray-300 rounded-md shadow-sm overflow-hidden">
                 <Button
-                  variant="outline"
+                  variant="default"
                   size="sm"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 >
@@ -139,7 +139,7 @@ export default function ProductDetails({
                 </Button>
                 <span className="px-6 text-lg font-medium">{quantity}</span>
                 <Button
-                  variant="outline"
+                  variant="default"
                   size="sm"
                   onClick={() => setQuantity(quantity + 1)}
                 >

@@ -24,7 +24,7 @@ model Region {
   cities      City[]
   country     Country   @relation(fields: [country_id], references: [country_id])
 
-  @@index([country_id], map: "Region_country_id_idx")
+  @@index([country_id])
 }
 
 model City {
@@ -36,7 +36,7 @@ model City {
   region     Region        @relation(fields: [region_id], references: [region_id])
   addresses  UserAddress[]
 
-  @@index([region_id], map: "City_region_id_idx")
+  @@index([region_id])
 }
 
 model UserAddress {
@@ -48,7 +48,7 @@ model UserAddress {
   users               User[]
   city                City      @relation(fields: [city_id], references: [city_id])
 
-  @@index([city_id], map: "UserAddress_city_id_idx")
+  @@index([city_id])
 }
 
 model User {
@@ -69,19 +69,19 @@ model User {
   Session           Session[]
   address           UserAddress? @relation(fields: [user_address_id], references: [user_address_id])
 
-  @@index([user_address_id], map: "User_user_address_id_idx")
+  @@index([user_address_id])
 }
 
 model Account {
   type                     String
   provider                 String
   providerAccountId        String
-  refresh_token            String?  @db.Text
-  access_token             String?  @db.Text
+  refresh_token            String?
+  access_token             String?
   expires_at               Int?
   token_type               String?
   scope                    String?
-  id_token                 String?  @db.Text
+  id_token                 String?
   session_state            String?
   refresh_token_expires_in Int?
   createdAt                DateTime @default(now())
@@ -102,14 +102,14 @@ model Session {
   userId       String
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId], map: "Session_userId_idx")
+  @@index([userId])
 }
 
 model VerificationToken {
   identifier String   @id @default(cuid())
-  email      String
   token      String   @unique
   expires    DateTime
+  email      String
 
   @@unique([email, token], map: "VerificationToken_identifier_token_uq")
 }
@@ -131,12 +131,13 @@ model Product {
   created_at          DateTime           @default(now())
   updated_at          DateTime?          @updatedAt
   product_category_id Int
+  product_slug        String             @unique
   carts               Cart[]
   inventories         Inventory[]
-  attributes          ProductAttribute[]
   category            ProductCategory    @relation(fields: [product_category_id], references: [product_category_id])
+  attributes          ProductAttribute[]
 
-  @@index([product_category_id], map: "Product_product_category_id_idx")
+  @@index([product_category_id])
 }
 
 model Attribute {
@@ -144,8 +145,8 @@ model Attribute {
   attribute_name String             @unique
   created_at     DateTime           @default(now())
   updated_at     DateTime?          @updatedAt
+  possibleValues AttributeEnum[]
   productValues  ProductAttribute[]
-  possibleValues AttributeEnum[] // Relationship to store enum values
 }
 
 model AttributeEnum {
@@ -156,7 +157,7 @@ model AttributeEnum {
   updated_at        DateTime? @updatedAt
   attribute         Attribute @relation(fields: [attribute_id], references: [attribute_id])
 
-  @@index([attribute_id], map: "AttributeEnum_attribute_id_idx")
+  @@index([attribute_id])
 }
 
 model ProductAttribute {
@@ -165,11 +166,11 @@ model ProductAttribute {
   attribute_id         Int
   created_at           DateTime  @default(now())
   updated_at           DateTime? @updatedAt
-  product              Product   @relation(fields: [product_id], references: [product_id])
   attribute            Attribute @relation(fields: [attribute_id], references: [attribute_id])
+  product              Product   @relation(fields: [product_id], references: [product_id])
 
-  @@index([product_id], map: "ProductAttribute_product_id_idx")
-  @@index([attribute_id], map: "ProductAttribute_attribute_id_idx")
+  @@index([product_id])
+  @@index([attribute_id])
 }
 
 model Cart {
@@ -177,15 +178,15 @@ model Cart {
   cart_quantity Int
   user_id       String
   product_id    Int
-  attributes    String
   created_at    DateTime      @default(now())
   updated_at    DateTime?     @updatedAt
+  attributes    String
   product       Product       @relation(fields: [product_id], references: [product_id])
   user          User          @relation(fields: [user_id], references: [id])
   orderDetails  OrderDetail[]
 
-  @@index([product_id], map: "Cart_product_id_idx")
-  @@index([user_id], map: "Cart_user_id_idx")
+  @@index([product_id])
+  @@index([user_id])
 }
 
 model Inventory {
@@ -196,7 +197,7 @@ model Inventory {
   updated_at         DateTime? @updatedAt
   product            Product   @relation(fields: [product_id], references: [product_id])
 
-  @@index([product_id], map: "Inventory_product_id_idx")
+  @@index([product_id])
 }
 
 model Discount {
@@ -228,8 +229,8 @@ model Order {
   orderDetails        OrderDetail[]
   shipments           Shipment[]
 
-  @@index([discount_id], map: "Order_discount_id_idx")
-  @@index([user_id], map: "Order_user_id_idx")
+  @@index([discount_id])
+  @@index([user_id])
 }
 
 model Shipment {
@@ -240,7 +241,7 @@ model Shipment {
   updated_at      DateTime? @updatedAt
   order           Order     @relation(fields: [order_id], references: [order_id])
 
-  @@index([order_id], map: "Shipment_order_id_idx")
+  @@index([order_id])
 }
 
 model OrderDetail {
@@ -252,8 +253,8 @@ model OrderDetail {
   cart            Cart      @relation(fields: [cart_id], references: [cart_id])
   order           Order     @relation(fields: [order_id], references: [order_id])
 
-  @@index([cart_id], map: "OrderDetail_cart_id_idx")
-  @@index([order_id], map: "OrderDetail_order_id_idx")
+  @@index([cart_id])
+  @@index([order_id])
 }
 
 model ContactForm {

@@ -1,5 +1,10 @@
 import { ContactoForm } from "./ContactoForm";
 
+export const metadata = {
+  title: "Contacto",
+  description: "¿Tienes alguna pregunta o sugerencia? Nos encantaría escucharla.",
+}
+
 export default async function Page() {
     return (
         <div className="flex flex-col items-center p-8">

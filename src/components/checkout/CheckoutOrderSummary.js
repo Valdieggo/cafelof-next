@@ -3,6 +3,7 @@
 import { useCart } from "@/context/CartContext";
 import formatCurrency from "../../../utils/formatCurrency";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function CheckoutOrderSummary({ onContinue, formIsValid }) {
   const { cartItems, getTotalPrice } = useCart();
@@ -41,8 +42,15 @@ export default function CheckoutOrderSummary({ onContinue, formIsValid }) {
           <span>Total</span>
           <span>{formatCurrency(getTotalPrice())}</span>
         </div>
+        <div className="flex justify-between pt-2">
+          <Image 
+            src="/1.Webpay_FB_80px.png"
+            alt="webpaylogo"
+            width={81}
+            height={30}
+          />
+        </div>
       </div>
-
       <Button
         onClick={onContinue}
         disabled={!formIsValid}

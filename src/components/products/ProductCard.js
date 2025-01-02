@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function ProductCard({ product }) {
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-      <a href={`/productos/${product.product_id}`}>
+      <a href={`/productos/${product.product_slug}`}>
         {/* Maintain a fixed aspect ratio */}
         <div className="relative w-full aspect-square">
           <Image

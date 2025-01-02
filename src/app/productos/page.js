@@ -1,5 +1,10 @@
 import Products from "@/components/products/Products";
 
+export const metadata = {
+  title: "Productos",
+  description: "Disfruta los sabores frescos y auténticos de Perú, Colombia y El Salvador.",
+}
+
 export default async function Page() {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 

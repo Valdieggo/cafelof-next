@@ -23,7 +23,7 @@ export default function NavBar() {
       <header className="bg-[var(--navbar-bg)] text-[var(--navbar-text)] shadow fixed w-full top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/" className="flex flex-row items-center hover:scale-105">
-            <Image src="/logo.png" alt="Café Lof" width={50} height={50} />
+            <Image src="/logo.webp" alt="Café Lof" width={50} height={50} />
           </Link>
 
           <nav className="hidden md:flex space-x-6">

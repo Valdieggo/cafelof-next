@@ -40,7 +40,7 @@ export async function POST(request: Request){
             if(error.code === 'P2002'){
                 return new Response(JSON.stringify({
                     status: 400,
-                    message: 'El usuario ya existe',
+                    message: 'Error al crear usuario',
                 }), {
                     headers: {
                         'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export async function POST(request: Request){
         }
         return new Response(JSON.stringify({
             status: 400,
-            message: 'Error creating user',
+            message: 'Error al crear usuario',
         }), {
             headers: {
                 'Content-Type': 'application/json',

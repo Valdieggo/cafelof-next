@@ -2,6 +2,10 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+function generateSlug(name: string): string {
+  return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
+
 export async function POST(request: Request) {
     const body = await request.json();
     const { product_name, product_price, product_category_id, product_image_url } = body;
@@ -25,6 +29,7 @@ export async function POST(request: Request) {
                 product_price,
                 product_image_url: product_image_url || null, // Handle optional field
                 product_category_id,
+                product_slug: generateSlug(product_name),
             },
         });
 

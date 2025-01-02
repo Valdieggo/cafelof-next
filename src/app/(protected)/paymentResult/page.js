@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import SuccessfulPayment from "@/components/checkout/SuccessfulPayment";
 import UnsuccessfulPayment from "@/components/checkout/UnsuccessfulPayment";
 import "@/lib/loader.css";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function ResultadoTransaccion() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -22,6 +23,11 @@ export default function ResultadoTransaccion() {
     const TBK_TOKEN = searchParams.get("TBK_TOKEN");
     const TBK_ORDEN_COMPRA = searchParams.get("TBK_ORDEN_COMPRA");
     const TBK_ID_SESION = searchParams.get("TBK_ID_SESION");
+
+    if (!token_ws && !TBK_TOKEN && !TBK_ORDEN_COMPRA && !TBK_ID_SESION) {
+      router.push("/");
+      return;
+    }
 
     if (token_ws && !TBK_TOKEN) {
       fetch("/api/transaction/commit", {
