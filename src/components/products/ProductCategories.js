@@ -11,7 +11,7 @@ const categories = [
 export default function ProductCategories() {
   return (
     <div className="w-full py-6 bg-[var(--categories-bar)] container mx-auto">
-      <h1 className="text-xl sm:text-4xl flex justify-center">Explora nuestras categorías</h1>
+      <h2 className="text-xl sm:text-4xl flex justify-center">Explora nuestras categorías</h2>
       <div className="w-full overflow-x-auto scrollbar-hide">
         <div className="flex space-x-6 p-4 justify-start md:justify-center">
           {categories.map((category, index) => {
