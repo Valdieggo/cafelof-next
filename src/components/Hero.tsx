@@ -14,7 +14,7 @@ export default function HeroSection() {
                 Granos tostados desde Concepción
               </h1>
               <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
-                Prueba un café de especialidad con materiales de primera calidad.
+                Descubre el sabor único de nuestro café de especialidad.
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
