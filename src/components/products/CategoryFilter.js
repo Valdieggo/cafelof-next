@@ -4,13 +4,13 @@ export default function CategoryFilter({ categories, selectedCategories, onCateg
   return (
     <div>
       {/* Heading for clarity */}
-      <h2 className="text-lg font-semibold mb-2">Categorias</h2>
+      <p className="text-lg font-semibold mb-2">Categorias</p>
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => (
           <Button
             key={category.product_category_id}
             onClick={() => onCategoryChange(category.product_category_id)}
-            variant={selectedCategories.includes(category.product_category_id) ? "category" : "outline"} // Use `category` variant
+            variant={selectedCategories.includes(category.product_category_id) ? "outline" : "category"} // Use `category` variant
           >
             {category.product_category_name}
           </Button>
