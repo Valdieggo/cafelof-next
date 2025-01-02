@@ -18,16 +18,30 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Aplica los encabezados a todas las rutas
+        // Encabezados para todas las rutas principales
         source: "/(.*)",
         headers: [
           {
             key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin", // Protección contra envío de referencias
+            value: "strict-origin-when-cross-origin",
           },
           {
             key: "X-Frame-Options",
-            value: "SAMEORIGIN", // Permite mostrar contenido en iframes solo desde el mismo origen
+            value: "SAMEORIGIN",
+          },
+        ],
+      },
+      {
+        // Encabezados para recursos estáticos en _next/static
+        source: "/_next/static/(.*)",
+        headers: [
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "SAMEORIGIN",
           },
         ],
       },
