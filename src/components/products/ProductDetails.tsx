@@ -91,7 +91,7 @@ export default function ProductDetails({
             <p className="text-xs text-gray-400">{product_category_name}</p>
 
             {/* Precio del producto */}
-            <h1 className="text-lg text-gray-500">Precio:</h1>
+            <h2 className="text-lg text-gray-500">Precio:</h2>
             <p className="text-2xl font-semibold text-green-600 mb-6">
               ${product_price?.toLocaleString("es-CL") ?? "0"}
             </p>

@@ -14,7 +14,7 @@ export default async function Page() {
       <PhotoCarousel />
       <Hero />
       <ProductInfo />
-      <ProductCategories />
+      {/* <ProductCategories /> */}
     </div>
   );
 }
