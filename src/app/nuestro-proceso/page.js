@@ -8,7 +8,7 @@ export default async function Page() {
         <CardHeader>
           <CardTitle className="text-center text-2xl font-bold flex items-center justify-center space-x-2">
             <FaHardHat className="text-yellow-500" size={24} />
-            <span>Página en construcción</span>
+            <h1>Página en construcción</h1>
           </CardTitle>
         </CardHeader>
         <CardContent>
