@@ -58,7 +58,7 @@ export default function RegisterForm() {
     <Card className="w-full max-w-md mx-auto mt-8 mb-8">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-center"><h1>Crea una cuenta</h1></CardTitle>
-        <CardDescription className="text-center">Comienza ingresando tus datos</CardDescription>
+        <CardDescription className="text-center"><h2>Comienza ingresando tus datos</h2></CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

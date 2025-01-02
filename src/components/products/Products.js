@@ -50,7 +50,7 @@ export default function Products({ initialProducts = [], categories = [], sortOp
             selectedCategories={selectedCategories}
             onCategoryChange={handleCategoryChange}
           />
-          <h2 className="text-lg font-semibold mt-6 mb-4">Ordenar por</h2>
+          <h3 className="text-lg font-semibold mt-6 mb-4">Ordenar por</h3>
           <SortOptions
             options={sortOptions}
             selectedOption={sortOption}
@@ -68,7 +68,7 @@ export default function Products({ initialProducts = [], categories = [], sortOp
               selectedCategories={selectedCategories}
               onCategoryChange={handleCategoryChange}
             />
-            <h2 className="text-lg font-semibold mt-6 mb-4">Ordenar por</h2>
+            <h3 className="text-lg font-semibold mt-6 mb-4">Ordenar por</h3>
             <SortOptions
               options={sortOptions}
               selectedOption={sortOption}

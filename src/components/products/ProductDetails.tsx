@@ -99,7 +99,7 @@ export default function ProductDetails({
             {/* Render attributes */}
             {attributes.length > 0 && (
               <div className="mb-6">
-                <h2 className="text-lg font-semibold text-gray-700">Opciones:</h2>
+                <h3 className="text-lg font-semibold text-gray-700">Opciones:</h3>
                 {attributes.map((attribute) => (
                   <div key={attribute.attribute_name} className="mb-4">
                     <label className="block text-sm font-semibold text-gray-700 mb-1">

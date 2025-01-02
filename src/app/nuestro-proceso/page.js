@@ -12,9 +12,9 @@ export default async function Page() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-center text-gray-600">
+          <h2 className="text-center text-gray-600">
             Vuelve pronto para ver el contenido de esta página.
-          </p>
+          </h2>
         </CardContent>
       </Card>
     </div>

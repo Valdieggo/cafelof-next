@@ -69,7 +69,7 @@ export default function LoginForm() {
     <Card className="w-full max-w-md mx-auto mt-8 mb-8">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-center"><h1>Iniciar sesión</h1></CardTitle>
-        <CardDescription className="text-center">Ingresa tus datos para iniciar</CardDescription>
+        <CardDescription className="text-center"><h2>Ingresa tus datos para iniciar sesión</h2></CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
