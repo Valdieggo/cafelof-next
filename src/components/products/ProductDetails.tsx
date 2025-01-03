@@ -16,6 +16,7 @@ interface ProductDetailsProps {
   product_price: number;
   product_image_url: string;
   product_category_name: string;
+  product_description: string;
   attributes: Attribute[];
 }
 
@@ -25,6 +26,7 @@ export default function ProductDetails({
   product_price,
   product_image_url,
   product_category_name,
+  product_description,
   attributes = [],
 }: ProductDetailsProps) {
   const [quantity, setQuantity] = useState(1);
@@ -147,6 +149,12 @@ export default function ProductDetails({
                 </Button>
               </div>
             </div>
+          </div>
+
+          {/* Descripción del producto */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-700">Descripción:</h3>
+            <p className="text-gray-600 leading-relaxed">{product_description}</p>
           </div>
 
           {/* Botón Agregar al carrito */}

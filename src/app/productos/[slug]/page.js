@@ -48,6 +48,7 @@ export default async function Page({ params }) {
         product_price={product.product_price}
         product_image_url={product.product_image_url}
         product_category_name={product.product_category_name}
+        product_description={product.product_description}
         attributes={product.attributes}
         />
       }

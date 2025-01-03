@@ -132,6 +132,7 @@ model Product {
   updated_at          DateTime?          @updatedAt
   product_category_id Int
   product_slug        String             @unique
+  product_description String?
   carts               Cart[]
   inventories         Inventory[]
   category            ProductCategory    @relation(fields: [product_category_id], references: [product_category_id])
