@@ -16,6 +16,9 @@ const nextConfig = {
     ],
   },
   async headers() {
+    if (process.env.NODE_ENV === 'development') {
+      return [];
+    }
     return [
       {
         source: "/(.*)", // Apply to all routes, including _next/static
