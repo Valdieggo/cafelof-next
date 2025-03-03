@@ -40,8 +40,9 @@ export async function GET(request: Request){
             status: 500,
             message: 'Internal server error',
         }), {
+            status: 500,
             headers: {
-                'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
             },
         });
     }

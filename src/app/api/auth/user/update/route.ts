@@ -6,10 +6,10 @@ export async function PATCH(request: Request) {
   // Extraer datos del cuerpo de la solicitud
   const {
     user_id,
-    user_phone_number,
+    phone,
     name,
-    user_address_street,
-    city_id,
+    address,
+    city,
   } = body;
 
   // Validar que el `user_id` esté presente
@@ -29,11 +29,11 @@ export async function PATCH(request: Request) {
   try {
     // Construir datos para actualizar el usuario
     const userUpdateData: any = {};
-    if (user_phone_number) userUpdateData.user_phone_number = user_phone_number;
+    if (phone) userUpdateData.user_phone_number = phone;
     if (name) userUpdateData.name = name;
 
     // Manejar la dirección del usuario
-    if (user_address_street || city_id) {
+    if (address || city) {
       // Verificar si el usuario ya tiene una dirección asociada
       const user = await prisma.user.findUnique({
         where: { id: user_id },
@@ -45,16 +45,16 @@ export async function PATCH(request: Request) {
         await prisma.userAddress.update({
           where: { user_address_id: user.user_address_id },
           data: {
-            user_address_street: user_address_street || undefined,
-            city_id: city_id || undefined,
+            user_address_street: address || undefined,
+            city_id: city || undefined,
           },
         });
-      } else if (user_address_street && city_id) {
+      } else if (address && city) {
         // Crear una nueva dirección y asociarla al usuario
         const newAddress = await prisma.userAddress.create({
           data: {
-            user_address_street,
-            city_id,
+            user_address_street: address,
+            city_id: city,
           },
         });
         userUpdateData.user_address_id = newAddress.user_address_id;
@@ -73,6 +73,7 @@ export async function PATCH(request: Request) {
         status: 200,
         message: "Usuario actualizado con éxito.",
         user: updatedUser,
+        dataSent: body,
       }),
       {
         status: 200,

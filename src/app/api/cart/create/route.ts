@@ -26,7 +26,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Product not found" }, { status: 404 });
     }
 
-    // Convert attributes to JSON string for comparison and storage
     const attributesString = JSON.stringify(attributes);
 
     // Check if a cart item with the same product and attributes exists
@@ -47,13 +46,12 @@ export async function POST(request: Request) {
       return NextResponse.json(updatedCart, { status: 200 });
     }
 
-    // Create a new cart item
     const newCartItem = await prisma.cart.create({
       data: {
         user_id: userId,
         product_id: productId,
         cart_quantity: quantity,
-        attributes: attributesString, // Save attributes as JSON string
+        attributes: attributesString,
       },
     });
 

@@ -16,7 +16,6 @@ export async function POST(request: Request) {
       cardLastFourDigits,
     } = body;
 
-    // Validar que `buyOrder` y otros campos requeridos estén presentes
     if (!buyOrder || !transactionStatus || amount === undefined) {
       return new Response(
         JSON.stringify({
@@ -29,7 +28,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Actualizar la orden en la base de datos
     const updatedOrder = await prisma.order.update({
       where: { order_id: buyOrder }, // Ahora `order_id` es un String
       data: {
@@ -50,7 +48,6 @@ export async function POST(request: Request) {
   } catch (error : any) {
     console.error('Error al actualizar la orden:', error);
 
-    // Manejar el caso donde la orden no se encuentra
     if (error.code === 'P2025') {
       return new Response(
         JSON.stringify({ error: 'Orden no encontrada para actualizar' }),

@@ -5,10 +5,10 @@ const prisma = new PrismaClient();
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { userId, totalAmount, buyOrder } = body;
+    const { userId, totalAmount, cartItems } = body;
 
     // Validar que los datos sean correctos
-    if (!userId || !totalAmount || !buyOrder) {
+    if (!userId || !totalAmount ) {
       return new Response(JSON.stringify({ error: 'Datos incompletos' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -21,9 +21,29 @@ export async function POST(request: Request) {
         user_id: userId,
         order_total_price: totalAmount,
         order_date: new Date(),
-        transaction_status: 'CREATED', // Inicialmente marcada como "CREATED"
+        transaction_status: 'CREADA', // Inicialmente marcada como "CREATED"
       },
     });
+
+    const cart = await prisma.cart.findFirst({
+      where: {
+        user_id: userId
+      },
+    });
+
+    console.log("cart id: ",cart?.cart_id)
+    console.log("orden creada")
+    const orderDetails = cartItems.map((item: any) => ({
+      order_id: order.order_id,
+      product_id: item.id,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+
+    await prisma.orderDetail.createMany({
+      data: orderDetails,
+    });
+    console.log("aqui falla")
 
     return new Response(JSON.stringify(order), {
       status: 200,
