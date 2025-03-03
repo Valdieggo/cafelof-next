@@ -68,14 +68,14 @@ export default function ShoppingCartPanel({ onClose, isOpen }: { onClose: () => 
                 {formatCurrency(getTotalPrice())}
               </span>
             </div>
-            <Button
-              variant="default"
-              className="w-full text-center"
-            >
-              <Link href="/checkout" className="block w-full h-full">
+            <Link href="/checkout" className="block w-full h-full" onClick={onClose}>
+              <Button
+                variant="default"
+                className="w-full text-center"
+              >
                 Proceder al pago
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         )}
       </div>

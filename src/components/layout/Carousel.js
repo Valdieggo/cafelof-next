@@ -53,7 +53,7 @@ export default function PhotoCarousel() {
   }, [isTransitioning])
 
   return (
-    <div className="relative w-full max-w-8xl mx-auto overflow-hidden">
+    <div className="container relative mx-auto overflow-hidden">
       <div
         className={`flex ${isTransitioning ? 'transition-transform duration-500 ease-in-out' : ''}`}
         style={{ transform: `translateX(-${slideIndex * 100}%)` }}

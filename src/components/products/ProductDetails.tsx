@@ -62,6 +62,11 @@ export default function ProductDetails({
     );
   };
 
+  // Split the description into paragraphs based on double spaces
+  const formattedDescription = product_description.split('  ').map((desc, index) => (
+    <p key={index} className="text-gray-600 leading-relaxed mb-2">{desc.trim()}</p>
+  ));
+
   return (
     product_id && (
       <div className="flex flex-col lg:flex-row gap-8 p-6 container w-full max-w-4xl mx-auto mt-10 bg-white rounded-lg shadow-lg mb-10">
@@ -85,18 +90,25 @@ export default function ProductDetails({
           <div>
             {/* Título del producto */}
             <h1
-              className="text-3xl font-bold text-gray-900 mb-4 leading-tight break-words"
+              className="text-3xl font-bold text-gray-900 leading-tight break-words"
               style={{ wordBreak: "break-word" }}
             >
               {product_name}
             </h1>
-            <p className="text-xs text-gray-400">{product_category_name}</p>
+            <p className="text-s text-gray-500">{product_category_name}</p>
 
             {/* Precio del producto */}
             <h2 className="text-lg text-gray-500">Precio:</h2>
-            <p className="text-2xl font-semibold text-green-600 mb-6">
+            <p className="text-2xl font-semibold text-amber-800 mb-6">
               ${product_price?.toLocaleString("es-CL") ?? "0"}
             </p>
+
+
+            {/* Descripción del producto */}
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold text-gray-700">Descripción:</h3>
+              {formattedDescription}
+            </div>
 
             {/* Render attributes */}
             {attributes.length > 0 && (
@@ -149,12 +161,6 @@ export default function ProductDetails({
                 </Button>
               </div>
             </div>
-          </div>
-
-          {/* Descripción del producto */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-700">Descripción:</h3>
-            <p className="text-gray-600 leading-relaxed">{product_description}</p>
           </div>
 
           {/* Botón Agregar al carrito */}

@@ -10,7 +10,7 @@ export const metadata = {
 
 export default async function Page() {
   return (
-    <div>
+    <div className="container mx-auto relative">
       <PhotoCarousel />
       <Hero />
       <ProductInfo />

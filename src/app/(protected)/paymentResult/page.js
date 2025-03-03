@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import SuccessfulPayment from "@/components/checkout/SuccessfulPayment";
 import UnsuccessfulPayment from "@/components/checkout/UnsuccessfulPayment";
-import "@/lib/loader.css";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import CoffeeLoader from "@/lib/CoffeeLoader";
 
 export default function ResultadoTransaccion() {
   const router = useRouter();
@@ -87,12 +87,9 @@ export default function ResultadoTransaccion() {
   }, [searchParams]);
 
   if (!result && !error) {
+  //if(true){
     return (
-      <main className="flex-grow">
-        <div className="loader-container">
-          <div className="loader"></div>
-        </div>
-      </main>
+      <CoffeeLoader />
     );
   }
 

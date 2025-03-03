@@ -42,7 +42,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return true;
     },
     async jwt({ token, user }) {
-      // Add user ID and role to the token if available
       if (user) {
         token.id = user.id;
         token.role = user.user_role;
@@ -61,11 +60,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-  adapter: PrismaAdapter(prisma), // Use PrismaAdapter for user management
+  adapter: PrismaAdapter(prisma),
   session: { 
-    strategy: "jwt", // Ensure JWT is used for session handling
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  debug: process.env.NODE_ENV === "development", // Enable debug logs in development
-  ...authConfig, // Spread in additional configuration
+  debug: process.env.NODE_ENV === "development",
+  ...authConfig,
 });

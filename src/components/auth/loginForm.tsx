@@ -29,7 +29,7 @@ import { getSession } from "next-auth/react";
 export default function LoginForm() {
   const searchParams = useSearchParams(); // Hook para acceder a los parámetros de la URL
   const router = useRouter(); // Hook para redirigir
-  const redirectTo = searchParams.get("redirectTo") || "/profile"; // Obtener `redirectTo`, con `/profile` como fallback
+  const redirectTo = searchParams?.get("redirectTo") || "/profile"; // Obtener `redirectTo`, con `/profile` como fallback
 
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
@@ -134,7 +134,7 @@ export default function LoginForm() {
           <GoogleSignIn />
         </div>
         <div className="flex space-x-2">
-          <a href="#" className="text-sm text-blue-600 hover:underline">Recuperar contraseña</a>
+          <a href="/recovery" className="text-sm text-blue-600 hover:underline">Recuperar contraseña</a>
           <a href="/register" className="text-sm text-blue-600 hover:underline">Registrarse</a>
         </div>
       </CardFooter>

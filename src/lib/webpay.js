@@ -8,7 +8,7 @@ const environment = Environment.Integration;
 export const tx = new WebpayPlus.Transaction(new Options(commerceCode, apiKey, environment));
 
 export const createTransaction = async (orderId, sessionId, amount) => {
-  const buyOrder = orderId; // Usar el order_id como buyOrder
+  const buyOrder = orderId;
   const url = process.env.NEXT_PUBLIC_URL;
   const returnUrl = `${url}/paymentResult`;
 

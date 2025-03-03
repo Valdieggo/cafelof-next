@@ -3,6 +3,7 @@ import { auth } from "../../../../auth";
 import SignOut from "@/components/auth/signOut";
 import UserOrders from "@/components/profile/UserOrders";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Perfil",
@@ -11,6 +12,11 @@ export const metadata = {
 
 export default async function Page() {
   const session = await auth();
+
+  if (!session) {
+    redirect("/login");
+  }
+
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const data = await fetch(`${baseUrl}/auth/user/${session.user.id}`);
 

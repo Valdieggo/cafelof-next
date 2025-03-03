@@ -4,7 +4,7 @@ import { createContext, useContext, useState, ReactNode, useEffect } from "react
 import { useSession } from "next-auth/react";
 
 interface CartItem {
-  id: number; // Product ID
+  id: number;
   title: string;
   price: number;
   quantity: number;

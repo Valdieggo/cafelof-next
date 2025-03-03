@@ -42,7 +42,6 @@ export async function GET(request: Request) {
       },
     });
 
-    // Verificar si la dirección no existe
     if (!userAddress) {
       return new Response(
         JSON.stringify({

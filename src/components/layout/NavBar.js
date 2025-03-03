@@ -7,7 +7,7 @@ import { FaRegUser } from "react-icons/fa";
 import { useState } from "react";
 import ShoppingCartPanel from "../shoppingCart/ShoppingCartPanel";
 import { useCart } from "@/context/CartContext";
-import SearchButton from "@/components/layout/SearchButton";
+//import SearchButton from "@/components/layout/SearchButton";
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -53,7 +53,7 @@ export default function NavBar() {
               <FaBars size={24} />
             </button>
 
-            <SearchButton />
+            {/* <SearchButton /> */}
           </div>
         </div>
 

@@ -29,7 +29,6 @@ export async function generateMetadata({ params }) {
 export default async function Page({ params }) {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  // Fetch product by slug
   const data = await fetch(`${baseUrl}/product/slug/${params.slug}`, {
     next: { revalidate: 10 },
   });

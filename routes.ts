@@ -13,6 +13,7 @@ export const adminRoutePrefix: string = "/admin";
 export const authRoutes: string[] = [
     "/login",
     "/register",
+    "/recovery"
 ];
 
 /**

@@ -146,7 +146,7 @@ export default function RegisterForm() {
       </CardContent>
       <CardFooter className="flex justify-center flex-col">
           <GoogleSignIn />
-          <a href="#" className="text-sm text-blue-600 hover:underline">Recuperar contraseña</a>
+          <a href="/recovery" className="text-sm text-blue-600 hover:underline">Recuperar contraseña</a>
           <a href="/login" className="text-sm text-blue-600 hover:underline">Ingresar</a>
       </CardFooter>
     </Card>

@@ -4,7 +4,6 @@ import { LoginSchema } from '../../schemas';
 import { signIn } from '../../auth';
 import { DEFAULT_LOGIN_REDIRECT } from '../../routes';
 import { AuthError } from 'next-auth';
-import { sendVerificationEmail } from '@/lib/mail';
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   const validatedFields = LoginSchema.safeParse(values);
@@ -31,7 +30,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: existingUser.email, token: token.token }),
+        body: JSON.stringify({ email: existingUser.email, token: token.token, type: "verification" }),
       }
     );
 

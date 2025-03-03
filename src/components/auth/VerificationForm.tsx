@@ -1,5 +1,5 @@
 "use client";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { Card, CardTitle } from "../ui/card";
 import { useEffect, useCallback, useState } from "react";
 import { BeatLoader } from "react-spinners";
@@ -8,7 +8,7 @@ import FormSuccess from "../ui/form-success";
 
 export default function VerificationForm() {
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const token = searchParams?.get("token");
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
 
