@@ -114,6 +114,15 @@ model VerificationToken {
   @@unique([email, token], map: "VerificationToken_identifier_token_uq")
 }
 
+model RecoveryToken {
+  identifier String   @id @default(cuid())
+  token      String   @unique
+  expires    DateTime
+  email      String
+
+  @@unique([email, token], map: "RecoveryToken_identifier_token_uq")
+}
+
 model ProductCategory {
   product_category_id          Int       @id @default(autoincrement())
   product_category_name        String    @unique
@@ -137,6 +146,7 @@ model Product {
   inventories         Inventory[]
   category            ProductCategory    @relation(fields: [product_category_id], references: [product_category_id])
   attributes          ProductAttribute[]
+  orderDetails      OrderDetail[]
 
   @@index([product_category_id])
 }
@@ -184,7 +194,6 @@ model Cart {
   attributes    String
   product       Product       @relation(fields: [product_id], references: [product_id])
   user          User          @relation(fields: [user_id], references: [id])
-  orderDetails  OrderDetail[]
 
   @@index([product_id])
   @@index([user_id])
@@ -250,12 +259,14 @@ model OrderDetail {
   created_at      DateTime  @default(now())
   updated_at      DateTime? @updatedAt
   order_id        String
-  cart_id         Int
-  cart            Cart      @relation(fields: [cart_id], references: [cart_id])
+  product_id      Int
+  quantity        Int
+  price           Float
   order           Order     @relation(fields: [order_id], references: [order_id])
+  product         Product   @relation(fields: [product_id], references: [product_id])
 
-  @@index([cart_id])
   @@index([order_id])
+  @@index([product_id])
 }
 
 model ContactForm {
