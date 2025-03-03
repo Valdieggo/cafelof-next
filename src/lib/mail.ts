@@ -17,3 +17,19 @@ export const sendVerificationEmail = async (
     html: `<p>Para verificar tu correo electrónico, haz clic en el siguiente <a href="${confirmLink}">enlace</a></p>`
   });
 };
+
+export const sendRecoveryEmail = async (
+  email: string,
+  token: string 
+) => {
+  const recoveryLink = `${process.env.NEXT_PUBLIC_URL}/auth/recovery?token=${token}`;
+
+  resend.domains.create({name: 'cafelof.cl'});
+
+  await resend.emails.send({
+    from: "cafelof.cl",
+    to: email,
+    subject: "Recupera tu contraseña",
+    html: `<p>Para recuperar tu contraseña, haz clic en el siguiente <a href="${recoveryLink}">enlace</a></p>`
+  });
+}

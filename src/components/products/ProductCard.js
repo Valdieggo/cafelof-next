@@ -14,16 +14,16 @@ export default function ProductCard({ product }) {
             priority
           />
         </div>
+        <div className="p-4">
+          <h3 className="text-base md:text-lg font-semibold text-gray-800 break-words">
+            {product.product_name}
+          </h3>
+          <p className="text-sm text-gray-500">{product.product_category_name}</p>
+          <p className="text-lg font-bold text-gray-800 mt-2">
+            ${product.product_price?.toLocaleString("es-CL")}
+          </p>
+        </div>
       </a>
-      <div className="p-4">
-        <h3 className="text-base md:text-lg font-semibold text-gray-800 break-words">
-          {product.product_name}
-        </h3>
-        <p className="text-sm text-gray-500">{product.product_category_name}</p>
-        <p className="text-lg font-bold text-gray-800 mt-2">
-          ${product.product_price?.toLocaleString("es-CL")}
-        </p>
-      </div>
     </div>
   );
 }

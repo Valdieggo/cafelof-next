@@ -9,17 +9,25 @@ import UserInfoForm from "@/components/checkout/UserInfoForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import "@/lib/loader.css";
+import CoffeeLoader from "@/lib/CoffeeLoader";
 
 export default function CheckoutClient() {
   const { data: session, status } = useSession();
   const { cartItems, getTotalPrice, isCartLoaded } = useCart();
+  console.log("cart items: ", cartItems);
 
   const [currentStep, setCurrentStep] = useState("details");
   const [cartIsValid, setCartIsValid] = useState(false);
   const [userInfoValid, setUserInfoValid] = useState(false);
   const [guestMode, setGuestMode] = useState(false);
   const [guestUserId, setGuestUserId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  if (isLoading) {
+    return (
+      <CoffeeLoader />
+    );
+  }
 
   const handleGuestContinue = async (formData: any) => {
     try {
@@ -62,7 +70,7 @@ export default function CheckoutClient() {
         body: JSON.stringify({
           userId,
           totalAmount: getTotalPrice(),
-          buyOrder: userId,
+          cartItems,
         }),
       });
 
@@ -108,7 +116,9 @@ export default function CheckoutClient() {
         return;
       }
 
+      setIsLoading(true);
       await createOrderAndTransaction(userId);
+      setIsLoading(false);
     }
   };
 
@@ -120,9 +130,7 @@ export default function CheckoutClient() {
 
   if (status === "loading" || !isCartLoaded) {
     return (
-      <div className="loader-container">
-        <div className="loader"></div>
-      </div>
+      <CoffeeLoader />
     );
   }
 
@@ -135,9 +143,11 @@ export default function CheckoutClient() {
           </CardHeader>
           <CardContent>
             <p>Tu carro está vacío.</p>
-            <Button>
-              <Link href="/productos">Ver productos</Link>
-            </Button>
+            <Link href="/productos">
+              <Button>
+                Ver productos
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>
@@ -176,6 +186,7 @@ export default function CheckoutClient() {
                   onBack={handleBack}
                   onFormValidityChange={setUserInfoValid}
                   onSubmit={async (data) => {
+                    console.log("data: ", data);
                     const response = await fetch("/api/auth/user/update", {
                       method: "PATCH",
                       headers: { "Content-Type": "application/json" },
