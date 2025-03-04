@@ -10,7 +10,6 @@ export async function PATCH(request: Request) {
         email: email ?? undefined
       },
       data: {
-        passwordReset: new Date(), // Assuming you have a field for password reset
         email: email ?? undefined
       }
     });
