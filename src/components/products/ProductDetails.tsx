@@ -63,7 +63,7 @@ export default function ProductDetails({
   };
 
   // Split the description into paragraphs based on double spaces
-  const formattedDescription = product_description.split('  ').map((desc, index) => (
+  const formattedDescription = product_description?.split('  ').map((desc, index) => (
     <p key={index} className="text-gray-600 leading-relaxed mb-2">{desc.trim()}</p>
   ));
 
@@ -107,7 +107,7 @@ export default function ProductDetails({
             {/* Descripción del producto */}
             <div className="mb-4">
               <h3 className="text-lg font-semibold text-gray-700">Descripción:</h3>
-              {formattedDescription}
+              {formattedDescription ? formattedDescription : <p>No hay descripción disponible.</p>}
             </div>
 
             {/* Render attributes */}

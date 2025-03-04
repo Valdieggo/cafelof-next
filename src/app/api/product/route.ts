@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
+import { revalidateTag } from 'next/cache';
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const allProducts = await prisma.product.findMany({
       include: {
@@ -24,6 +25,7 @@ export async function GET(request: Request) {
         },
       },
     });
+    revalidateTag('allProducts');
 
     // Map through allProducts to flatten the attributes and structure the response
     const structuredProducts = allProducts.map(({ category, attributes, ...productData }) => ({

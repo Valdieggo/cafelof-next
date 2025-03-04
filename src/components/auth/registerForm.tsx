@@ -46,10 +46,10 @@ export default function RegisterForm() {
     
     startTransition(() => {
       register(values).then((response) => {
-        if(response.status == 400){
-          setError(response.message)
+        if(response?.error){
+          setError(response?.error)
         }else{
-          setSuccess(response.message)
+          setSuccess(response?.success)
         }
     })})
   };

@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(request: Request) {
     try {
@@ -9,6 +10,8 @@ export async function GET(request: Request) {
             product_category_description: true,
           }
         });
+
+        revalidateTag('productCategories');
         return new Response(JSON.stringify({
             status: 200,
             data: productCategories

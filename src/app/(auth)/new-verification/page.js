@@ -4,10 +4,10 @@ import { redirect } from "next/navigation";
 export const metadata = {
   title: "Verificación",
 }
-export default async function Page({params}) {
+export default async function Page({ searchParams }) {
 
-  const token = params.token;
-  console.log("token ",params.token);
+  const token = searchParams.token;
+  console.log("token ",searchParams.token);
 
   if(!token){
     redirect("/login");

@@ -23,7 +23,7 @@ export default function UserOrders({ userId }: UserOrdersProps) {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch(`/api/order/${userId}`);
+        const response = await fetch(`/api/order/${userId}`, { cache: 'no-store'});
         const data = await response.json();
 
         if (response.ok) {

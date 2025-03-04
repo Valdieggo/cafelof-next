@@ -10,8 +10,8 @@ export default async function Page() {
 
   // Hacer solicitudes en paralelo
   const [productsResponse, categoriesResponse] = await Promise.all([
-    fetch(`${baseUrl}/product`, { next: { revalidate: 10 } }), // Revalida cada 10 segundos
-    fetch(`${baseUrl}/product/category`, { next: { revalidate: 10 } }),
+    fetch(`${baseUrl}/product`, { cache: 'no-store'}),
+    fetch(`${baseUrl}/product/category`, { cache: 'no-store'}),
   ]);
 
   const products = await productsResponse.json();

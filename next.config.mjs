@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  logging: {
+    fetches: {
+      fullUrl: true,
+    }
+  },
   images: {
     remotePatterns: [
       {
@@ -39,7 +44,7 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: `
               default-src 'self';
-              script-src 'self' 'unsafe-inline' https://apis.google.com https://www.googletagmanager.com;;
+              script-src 'self' 'unsafe-inline' https://apis.google.com https://www.googletagmanager.com;
               style-src 'self' 'unsafe-inline';
               img-src 'self' https://images.dog.ceo https://lh3.googleusercontent.com;
               font-src 'self';

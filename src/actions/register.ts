@@ -28,19 +28,32 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
         body: JSON.stringify(requestValues),
     });
 
+    const data = await response.json();
+
+    if (data.status === 400) {
+        return { error: data.message || "Error al crear la cuenta" };
+    }
+
+    // Generar un token de verificación
     const verificationTokenFetch = await fetch(`${baseUrl}/auth/verificationToken?email=${values.email}`);
     const verificationToken = await verificationTokenFetch.json();
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/send`,
-      {
+
+    if (!verificationToken.token) {
+        return { error: "Error al generar el token de verificación" };
+    }
+
+    // Enviar el correo de verificación
+    const sendEmailResponse = await fetch(`${baseUrl}/send`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: values.email, token: verificationToken.token }),
-      }
-    );
+        body: JSON.stringify({ email: values.email, token: verificationToken.token, type: "verification" }),
+    });
 
-    const data = await response.json();
-    
-    return data;
+    if (!sendEmailResponse.ok) {
+        return { error: "Error al enviar el correo de verificación" };
+    }
+
+    return { success: verificationToken.message, flag: true };
 }

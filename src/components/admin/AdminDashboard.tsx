@@ -15,7 +15,6 @@ export default function AdminDashboard() {
             key={index}
             className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300"
           >
-            <a>
               <Link href={func.href}>
                 <div className="flex justify-center">
                   <func.icon className="w-12 h-12 text-blue-600 mb-4" />
@@ -23,7 +22,6 @@ export default function AdminDashboard() {
                 <h2 className="text-xl font-semibold text-gray-800 mb-2">{func.title}</h2>
                 <p className="text-gray-600">{func.description}</p>
               </Link>
-            </a>
           </div>
         ))}
       </div>
