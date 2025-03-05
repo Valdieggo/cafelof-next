@@ -1,15 +1,11 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'DELETE') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
-  const userId = req.headers.authorization?.split('Bearer ')[1];
+export async function DELETE(request: Request) {
+  const userId = request.headers.get('authorization')?.split('Bearer ')[1];
 
   if (!userId) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   try {
@@ -17,9 +13,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { user_id: userId },
     });
 
-    return res.status(200).json({ message: 'Cart cleared' });
+    return NextResponse.json({ message: 'Cart cleared' }, { status: 200 });
   } catch (error) {
     console.error('Error clearing cart:', error);
-    return res.status(500).json({ message: 'Failed to clear cart' });
+    return NextResponse.json(
+      { message: 'Failed to clear cart' },
+      { status: 500 }
+    );
   }
 }
