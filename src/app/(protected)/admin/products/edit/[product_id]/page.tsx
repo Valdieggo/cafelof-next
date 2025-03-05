@@ -66,7 +66,7 @@ export default function EditProductPage({ params }: { params: any }) {
     }
   }, [productId]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     setProductData({
       ...productData,
       [e.target.name]: e.target.value,
