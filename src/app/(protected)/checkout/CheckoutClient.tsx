@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import CoffeeLoader from "@/lib/CoffeeLoader";
 import { redirect } from "next/navigation";
+import { toast } from "nextjs-toast-notify";
 
 export default function CheckoutClient() {
   const { data: session, status } = useSession();
@@ -41,7 +42,14 @@ export default function CheckoutClient() {
 
     if(!userGuestExists.message){
       setGuestUserId(userGuestExists.id);
-      alert("Información guardada exitosamente.");
+      toast.info("Información guardada exitosamente", {
+        duration: 4000,
+        progress: false,
+        position: "bottom-center",
+        transition: "popUp",
+        icon: '',
+        sound: false,
+      });
       return;
     }
 
@@ -57,13 +65,27 @@ export default function CheckoutClient() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error creando usuario invitado:", errorData.error);
-        alert(errorData.error || "Hubo un error al ingresar los datos");
+        toast.error(errorData.error || "Hubo un error al ingresar los datos", {
+          duration: 4000,
+          progress: false,
+          position: "bottom-center",
+          transition: "popUp",
+          icon: '',
+          sound: false,
+        });
         return;
       }
 
       const user = await response.json();
       setGuestUserId(user.user.id);
-      alert("Información guardada exitosamente.");
+      toast.info("Información guardada exitosamente", {
+        duration: 4000,
+        progress: false,
+        position: "bottom-center",
+        transition: "popUp",
+        icon: '',
+        sound: false,
+      });
     } catch (error) {
       console.error("Error interno", error);
     }
