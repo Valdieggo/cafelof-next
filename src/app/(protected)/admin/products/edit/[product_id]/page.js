@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton'; // Importa el componente Skeleton
 
-export default function EditProductPage({ params }: { params: any }) {
+export default function EditProductPage({ params }) {
   const [productData, setProductData] = useState({
     product_id: '',
     product_name: '',
@@ -66,7 +66,7 @@ export default function EditProductPage({ params }: { params: any }) {
     }
   }, [productId]);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e) => {
     setProductData({
       ...productData,
       [e.target.name]: e.target.value,
