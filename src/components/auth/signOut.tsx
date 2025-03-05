@@ -8,9 +8,13 @@ export default function SignOut() {
   const router = useRouter();
 
   const handleSignOut = async () => {
-    await signOut({ redirect: false }); 
-    router.refresh();
+    await signOut({ redirect: false });
+
+    localStorage.removeItem("user"); 
+    sessionStorage.removeItem("user");
+
     router.push("/");
+    router.refresh();
   };
 
   return (

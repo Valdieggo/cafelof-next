@@ -5,7 +5,7 @@ import UserOrders from "@/components/profile/UserOrders";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Button } from "@/components/ui/button"; // Importa el componente Button de shadcn/ui
+import { Button } from "@/components/ui/button";
 
 export const metadata = {
   title: "Perfil",

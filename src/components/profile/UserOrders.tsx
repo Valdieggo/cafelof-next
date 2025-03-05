@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"; // Importar el modal de shadcn
 import Image from "next/image";
 
 interface Order {
@@ -32,10 +31,9 @@ export default function UserOrders({ userId }: UserOrdersProps) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null); // Estado para controlar la orden expandida
   const [orderDetails, setOrderDetails] = useState<OrderDetail[]>([]);
   const [detailsLoading, setDetailsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -79,15 +77,13 @@ export default function UserOrders({ userId }: UserOrdersProps) {
   };
 
   const handleOrderClick = async (orderId: string) => {
-    setSelectedOrderId(orderId);
-    await fetchOrderDetails(orderId); // Obtener los detalles de la orden
-    setIsModalOpen(true); // Abrir el modal
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false); // Cerrar el modal
-    setSelectedOrderId(null); // Limpiar la orden seleccionada
-    setOrderDetails([]); // Limpiar los detalles de la orden
+    if (expandedOrderId === orderId) {
+      setExpandedOrderId(null); // Colapsar la orden si ya está expandida
+      setOrderDetails([]); // Limpiar los detalles de la orden
+    } else {
+      setExpandedOrderId(orderId); // Expandir la orden
+      await fetchOrderDetails(orderId); // Obtener los detalles de la orden
+    }
   };
 
   return (
@@ -138,62 +134,62 @@ export default function UserOrders({ userId }: UserOrdersProps) {
                   )}
                 </p>
               </div>
+
+              {/* Detalles de la orden expandida */}
+              {expandedOrderId === order.order_id && (
+                <div className="mt-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">
+                    Detalles de la Orden:
+                  </h4>
+                  {detailsLoading ? (
+                    <div className="space-y-4">
+                      <Skeleton className="h-12 rounded-lg" />
+                      <Skeleton className="h-12 rounded-lg" />
+                    </div>
+                  ) : orderDetails.length > 0 ? (
+                    <div className="space-y-4">
+                      {orderDetails.map((detail) => (
+                        <div
+                          key={`${detail.order_id}-${detail.product_id}`}
+                          className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center"
+                        >
+                          <div className="flex items-center gap-4 col-span-1 sm:col-span-2">
+                            <div className="w-16 h-16 relative flex-shrink-0">
+                              <Image
+                                src={detail.product.product_image || "/placeholder.png"}
+                                alt={detail.product.product_name}
+                                fill
+                                className="object-cover rounded"
+                              />
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-semibold break-words">
+                                {detail.product.product_name}
+                              </h3>
+                              <p className="text-sm text-gray-600">
+                                Cantidad: {detail.quantity}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-end">
+                            <span className="font-semibold">
+                              {(detail.product.product_price * detail.quantity).toLocaleString("es-CL")}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">No se encontraron detalles para esta orden.</p>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>
       ) : (
         <p className="text-gray-500">No tiene órdenes de compra.</p>
       )}
-
-      {/* Modal para mostrar los detalles de la orden */}
-      <Dialog open={isModalOpen} onOpenChange={closeModal}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Detalles de la Orden #{selectedOrderId}</DialogTitle>
-          </DialogHeader>
-          {detailsLoading ? (
-            <div className="space-y-4">
-              <Skeleton className="h-12 rounded-lg" />
-              <Skeleton className="h-12 rounded-lg" />
-            </div>
-          ) : orderDetails.length > 0 ? (
-            <div className="space-y-4">
-              {orderDetails.map((detail) => (
-                <div
-                  key={`${detail.order_id}-${detail.product_id}`}
-                  className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center"
-                >
-                  <div className="flex items-center gap-4 col-span-1 sm:col-span-2">
-                    <div className="w-16 h-16 relative flex-shrink-0">
-                      <Image
-                        src={detail.product.product_image || "/placeholder.png"}
-                        alt={detail.product.product_name}
-                        fill
-                        className="object-cover rounded"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold break-words">
-                        {detail.product.product_name}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        Cantidad: {detail.quantity}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-end">
-                    <span className="font-semibold">
-                      { (detail.product.product_price * detail.quantity).toLocaleString("es-CL") }
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500">No se encontraron detalles para esta orden.</p>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
