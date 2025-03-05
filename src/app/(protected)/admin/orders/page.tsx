@@ -17,6 +17,7 @@ async function getOrders() {
     const cookieStore = cookies();
     const sessionToken = process.env.NODE_ENV === 'production' ? '__Secure-authjs.session-token' : 'authjs.session-token';
     const token = cookieStore.get(sessionToken)?.value; 
+    console.log(sessionToken, token);
 
     const response = await fetch(`${baseUrl}/order`, {
       method: 'GET',
