@@ -4,11 +4,13 @@ import SignOut from "@/components/auth/signOut";
 import UserOrders from "@/components/profile/UserOrders";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { redirect } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button"; // Importa el componente Button de shadcn/ui
 
 export const metadata = {
   title: "Perfil",
   description: "Información de tu perfil de usuario.",
-}
+};
 
 export default async function Page() {
   const session = await auth();
@@ -27,6 +29,13 @@ export default async function Page() {
       <Card className="shadow-lg">
         <CardHeader className="flex justify-between items-center">
           <CardTitle className="text-2xl font-bold">Perfil</CardTitle>
+          {session.user.role === "ADMIN" && (
+            <Link href="/admin">
+              <Button variant="outline" className="bg-blue-600 text-white hover:bg-blue-700">
+                Panel de Administración
+              </Button>
+            </Link>
+          )}
         </CardHeader>
         <CardContent className="space-y-6">
           <UserProfile user={user} userId={session.user.id} />

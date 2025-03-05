@@ -174,33 +174,35 @@ export default function UserInfoForm({
           <form onSubmit={handleSubmit(handleSave)} className="space-y-4">
             <EditableField name="name" label="Nombre" placeholder="José Valdera" control={control} />
             <EditableField name="phone" label="Teléfono" placeholder="+(56)123456789" control={control} />
-            <EditableField name="email" label="Email" placeholder="correo@ejemplo.com" control={control} />
+            <EditableField name="email" label="Email" placeholder="correo@ejemplo.com" control={control} disabled={!!session} />
             <EditableField name="address" label="Dirección" placeholder="Calle Bernardo O`Higgins 1127" control={control} />
             <EditableSelect
               name="country"
               label="País"
               options={countries.map((c) => ({
-                value: c.country_id.toString(),
-                label: c.country_name,
+                value: c.country_id.toString(), // Usar el ID como valor
+                label: c.country_name, // Mostrar el nombre como etiqueta
               }))}
               control={control}
             />
+
             <EditableSelect
               name="region"
               label="Región"
               options={availableRegions.map((r) => ({
-                value: r.region_id.toString(),
-                label: r.region_name,
+                value: r.region_id.toString(), // Usar el ID como valor
+                label: r.region_name, // Mostrar el nombre como etiqueta
               }))}
               control={control}
               disabled={!country}
             />
+
             <EditableSelect
               name="city"
               label="Ciudad"
               options={availableCities.map((c) => ({
-                value: c.city_id.toString(),
-                label: c.city_name,
+                value: c.city_id.toString(), // Usar el ID como valor
+                label: c.city_name, // Mostrar el nombre como etiqueta
               }))}
               control={control}
               disabled={!region}

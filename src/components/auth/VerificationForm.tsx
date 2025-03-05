@@ -1,13 +1,15 @@
 "use client";
-import { redirect, useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation"; // Importa useRouter
 import { Card, CardTitle } from "../ui/card";
 import { useEffect, useCallback, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import FormError from "../ui/form-error";
 import FormSuccess from "../ui/form-success";
+import { Button } from "../ui/button";
 
 export default function VerificationForm() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const token = searchParams?.get("token");
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
@@ -51,19 +53,16 @@ export default function VerificationForm() {
       );
       const existingUser = await response.json();
       if (!existingUser) {
-        console.log("if ex: ", existingUser)
         return { error: "Correo no encontrado" };
       }
       setSuccess(existingUser.message);
-      const deleted = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verificationToken/delete?identifier=${existingToken.identifier}`, {
+
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verificationToken/delete?identifier=${existingToken.identifier}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-      })
-      const data = await deleted.json();
-      console.log(data)
-
+      });
     }
   }, [token]);
 
@@ -78,12 +77,15 @@ export default function VerificationForm() {
       <Card className="flex items-center w-full justify-center flex-col">
         <CardTitle className="pt-8">Verificando tu cuenta</CardTitle>
         <div className="flex items-center justify-center pt-8 pb-8">
-          {!success && !error &&
-            (<BeatLoader color="#000" />)
-          }
+          {!success && !error && (<BeatLoader color="#000" />)}
           <FormError message={error} />
           <FormSuccess message={success} />
         </div>
+        {success && (
+          <div className="pb-8">
+            <Button onClick={() => router.push("/login")}>Iniciar sesión</Button>
+          </div>
+        )}
       </Card>
     </div>
   );

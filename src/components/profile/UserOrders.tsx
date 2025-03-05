@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"; // Importar el modal de shadcn
+import Image from "next/image";
 
 interface Order {
   order_id: string;
@@ -9,6 +11,17 @@ interface Order {
   order_total_price: number;
   transaction_status: string;
   card_last_four: string | null;
+}
+
+interface OrderDetail {
+  order_id: string;
+  product_id: string;
+  quantity: number;
+  product: {
+    product_name: string;
+    product_price: number;
+    product_image: string; // Asegúrate de que el endpoint devuelva la imagen del producto
+  };
 }
 
 interface UserOrdersProps {
@@ -19,11 +32,15 @@ export default function UserOrders({ userId }: UserOrdersProps) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [orderDetails, setOrderDetails] = useState<OrderDetail[]>([]);
+  const [detailsLoading, setDetailsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch(`/api/order/${userId}`, { cache: 'no-store'});
+        const response = await fetch(`/api/order/${userId}`, { cache: 'no-store' });
         const data = await response.json();
 
         if (response.ok) {
@@ -42,6 +59,37 @@ export default function UserOrders({ userId }: UserOrdersProps) {
     fetchOrders();
   }, [userId]);
 
+  const fetchOrderDetails = async (orderId: string) => {
+    setDetailsLoading(true);
+    try {
+      const response = await fetch(`/api/order/details/${orderId}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        setOrderDetails(data);
+      } else {
+        setError(data.message || "Error fetching order details");
+      }
+    } catch (err) {
+      console.error("Error fetching order details:", err);
+      setError("Failed to load order details. Please try again later.");
+    } finally {
+      setDetailsLoading(false);
+    }
+  };
+
+  const handleOrderClick = async (orderId: string) => {
+    setSelectedOrderId(orderId);
+    await fetchOrderDetails(orderId); // Obtener los detalles de la orden
+    setIsModalOpen(true); // Abrir el modal
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false); // Cerrar el modal
+    setSelectedOrderId(null); // Limpiar la orden seleccionada
+    setOrderDetails([]); // Limpiar los detalles de la orden
+  };
+
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold">Mis Órdenes</h2>
@@ -57,7 +105,8 @@ export default function UserOrders({ userId }: UserOrdersProps) {
           {orders.map((order) => (
             <div
               key={order.order_id}
-              className="border border-gray-300 rounded-lg p-4 bg-gray-50"
+              className="border border-gray-300 rounded-lg p-4 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+              onClick={() => handleOrderClick(order.order_id)}
             >
               <div className="flex justify-between items-center">
                 <h3 className="text-sm font-semibold text-gray-700">
@@ -95,6 +144,56 @@ export default function UserOrders({ userId }: UserOrdersProps) {
       ) : (
         <p className="text-gray-500">No tiene órdenes de compra.</p>
       )}
+
+      {/* Modal para mostrar los detalles de la orden */}
+      <Dialog open={isModalOpen} onOpenChange={closeModal}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Detalles de la Orden #{selectedOrderId}</DialogTitle>
+          </DialogHeader>
+          {detailsLoading ? (
+            <div className="space-y-4">
+              <Skeleton className="h-12 rounded-lg" />
+              <Skeleton className="h-12 rounded-lg" />
+            </div>
+          ) : orderDetails.length > 0 ? (
+            <div className="space-y-4">
+              {orderDetails.map((detail) => (
+                <div
+                  key={`${detail.order_id}-${detail.product_id}`}
+                  className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center"
+                >
+                  <div className="flex items-center gap-4 col-span-1 sm:col-span-2">
+                    <div className="w-16 h-16 relative flex-shrink-0">
+                      <Image
+                        src={detail.product.product_image || "/placeholder.png"}
+                        alt={detail.product.product_name}
+                        fill
+                        className="object-cover rounded"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold break-words">
+                        {detail.product.product_name}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Cantidad: {detail.quantity}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-end">
+                    <span className="font-semibold">
+                      { (detail.product.product_price * detail.quantity).toLocaleString("es-CL") }
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500">No se encontraron detalles para esta orden.</p>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -7,9 +7,10 @@ interface EditableFieldProps {
   label: string;
   placeholder: string;
   control: any; // Replace with the correct type from `react-hook-form`.
+  disabled?: boolean; // Agregado: Prop opcional para desactivar el campo
 }
 
-export const EditableField: React.FC<EditableFieldProps> = ({ name, label, placeholder, control }) => (
+export const EditableField: React.FC<EditableFieldProps> = ({ name, label, placeholder, control, disabled }) => (
   <FormField
     control={control}
     name={name}
@@ -17,7 +18,12 @@ export const EditableField: React.FC<EditableFieldProps> = ({ name, label, place
       <FormItem>
         <FormLabel>{label}</FormLabel>
         <FormControl>
-          <Input id={name} placeholder={placeholder} {...field} />
+          <Input 
+            id={name} 
+            placeholder={placeholder} 
+            disabled={disabled} // Agregado: Desactiva el campo si se pasa el prop
+            {...field} 
+          />
         </FormControl>
         <FormMessage />
       </FormItem>

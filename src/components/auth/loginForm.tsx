@@ -30,6 +30,7 @@ export default function LoginForm() {
   const searchParams = useSearchParams(); // Hook para acceder a los parámetros de la URL
   const router = useRouter(); // Hook para redirigir
   const redirectTo = searchParams?.get("redirectTo") || "/profile"; // Obtener `redirectTo`, con `/profile` como fallback
+  const urlError = searchParams?.get("error") === "OAuthAccountNotLinked" ? "Correo ya en uso con otro proveedor" : ""; // Verifica si el error es de cuenta no vinculada
 
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
@@ -123,7 +124,7 @@ export default function LoginForm() {
                 </FormItem>
               )}
             />
-            <FormError message={error} />
+            <FormError message={error || urlError} />
             <FormSuccess message={success} />
             <Button type="submit" className="w-full">Entrar</Button>
           </form>

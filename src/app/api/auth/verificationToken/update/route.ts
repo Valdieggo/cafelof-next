@@ -18,7 +18,7 @@ export async function PATCH(request: Request) {
 
     return new Response(JSON.stringify({
       status: 200,
-      message: 'Email verified'
+      message: 'Email verificado correctamente'
     }), {
       headers: {
         'Content-Type': 'application/json',

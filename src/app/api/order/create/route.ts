@@ -31,8 +31,6 @@ export async function POST(request: Request) {
       },
     });
 
-    console.log("cart id: ",cart?.cart_id)
-    console.log("orden creada")
     const orderDetails = cartItems.map((item: any) => ({
       order_id: order.order_id,
       product_id: item.id,
@@ -43,7 +41,6 @@ export async function POST(request: Request) {
     await prisma.orderDetail.createMany({
       data: orderDetails,
     });
-    console.log("aqui falla")
 
     return new Response(JSON.stringify(order), {
       status: 200,

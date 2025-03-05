@@ -44,6 +44,7 @@ export default function ResultadoTransaccion() {
           return response.json();
         })
         .then((data) => {
+          console.log("data commit", data);
           setResult(data); // Guardar en el estado para la UI
 
           // Usar directamente `data` para actualizar la orden
@@ -87,7 +88,7 @@ export default function ResultadoTransaccion() {
   }, [searchParams]);
 
   if (!result && !error) {
-  //if(true){
+    //if(true){
     return (
       <CoffeeLoader />
     );
