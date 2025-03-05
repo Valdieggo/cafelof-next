@@ -9,7 +9,6 @@ export default function EditProductPage({ params }) {
     product_price: '',
     product_image_url: '',
     product_category_id: '',
-    product_slug: '',
     product_description: '',
     attributes: [], // Para manejar atributos dinámicos
   });
@@ -43,12 +42,11 @@ export default function EditProductPage({ params }) {
           if (data.status === 200) {
             // Establecer los datos del producto en el estado
             setProductData({
-              product_id: data.data.product_id,
+              //product_id: data.data.product_id,
               product_name: data.data.product_name,
               product_price: data.data.product_price,
               product_image_url: data.data.product_image_url || '',
               product_category_id: data.data.product_category_id,
-              product_slug: data.data.product_slug,
               product_description: data.data.product_description || '',
               attributes: data.data.attributes || [], // Manejar atributos dinámicos
             });
@@ -173,26 +171,6 @@ export default function EditProductPage({ params }) {
         </div>
 
         <div>
-          <label htmlFor="product_slug" className="block text-sm font-medium">
-            Slug
-          </label>
-          {isLoading ? (
-            <Skeleton className="h-10 w-full mt-1" />
-          ) : (
-            <input
-              type="text"
-              name="product_slug"
-              id="product_slug"
-              value={productData.product_slug}
-              onChange={handleChange}
-              placeholder="Ingrese el slug del producto"
-              required
-              className="w-full mt-1 p-2 border rounded"
-            />
-          )}
-        </div>
-
-        <div>
           <label htmlFor="product_description" className="block text-sm font-medium">
             Descripción
           </label>
@@ -269,7 +247,7 @@ export default function EditProductPage({ params }) {
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded"
-          disabled={isLoading} // Deshabilitar el botón mientras se carga
+          disabled={isLoading}
         >
           {isLoading ? <Skeleton className="h-10 w-24" /> : 'Actualizar producto'}
         </button>
