@@ -58,7 +58,6 @@ const UserProfile: FC<UserProfileProps> = ({ user, userId }) => {
 
   return (
     <div className="space-y-6">
-      {/* User Details */}
       <div className="flex items-center space-x-4">
         <Avatar className="w-16 h-16">
           {user.image ? (
@@ -75,7 +74,6 @@ const UserProfile: FC<UserProfileProps> = ({ user, userId }) => {
         </div>
       </div>
 
-      {/* Address */}
       <div>
         <h2 className="text-lg font-semibold">Dirección</h2>
         <div className="text-gray-600 space-y-2">
@@ -123,7 +121,6 @@ const UserProfile: FC<UserProfileProps> = ({ user, userId }) => {
         </div>
       </div>
 
-      {/* Phone */}
       <div>
         <h2 className="text-lg font-semibold">Teléfono</h2>
         <div className="text-gray-600 space-y-2">

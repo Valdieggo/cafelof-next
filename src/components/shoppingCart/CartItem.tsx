@@ -23,7 +23,6 @@ export default function CartItem({
   return (
     <li className="mb-4">
       <div className="flex items-center">
-        {/* Imagen del producto utilizando next/image */}
         <div className="relative w-16 h-16 mr-4">
           <Image
             src={

@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import { FiPlus, FiList, FiUsers, FiBarChart } from 'react-icons/fi';
+import { FiPlus, FiList, FiUsers, FiBarChart, FiEdit } from 'react-icons/fi';
 
 const adminFunctions = [
   { icon: FiPlus, title: 'Crear producto', description: 'Añadir nuevo producto a inventario', href: "/admin/products" },
   { icon: FiList, title: 'Gestionar ordenes', description: 'Ver y procesar órdenes de usuarios', href: "/admin/orders" },
+  { icon: FiEdit, title: 'Editar producto', description: 'Modificar información de productos existentes', href: "/admin/products/edit" },
 ];
 
 export default function AdminDashboard() {

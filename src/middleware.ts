@@ -30,6 +30,10 @@ export async function middleware(req: any) {
     return NextResponse.next();
   }
 
+  if (!isLoggedIn && pathname.startsWith('/profile')) {
+    return NextResponse.redirect(new URL("/login", req.nextUrl));
+  }
+
   return NextResponse.next();
 }
 

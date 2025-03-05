@@ -20,7 +20,6 @@ export default function CheckoutOrderSummary({ onContinue, formIsValid }) {
             >
               <div>
                 <h3 className="text-lg font-semibold">{item.title}</h3>
-                {/* Display Attributes */}
                 {item.attributes.length? <p className="text-sm text-gray-600">Opción: {item.attributes.join(", ")}</p> : null}
                 <p className="text-sm text-gray-600">Cantidad: {item.quantity}</p>
               </div>
@@ -32,7 +31,11 @@ export default function CheckoutOrderSummary({ onContinue, formIsValid }) {
         </ul>
         <div className="flex justify-between mb-3">
           <span>Subtotal</span>
-          <span>{formatCurrency(getTotalPrice())}</span>
+          <span>{formatCurrency(getTotalPrice() - getTotalPrice()*0.19)}</span>
+        </div>
+        <div className="flex justify-between mb-3">
+          <span>IVA (19%)</span>
+          <span>{formatCurrency(getTotalPrice() * 0.19)}</span>
         </div>
         <div className="flex justify-between mb-3">
           <span>Descuentos</span>

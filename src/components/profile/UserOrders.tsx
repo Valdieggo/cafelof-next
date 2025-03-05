@@ -59,7 +59,6 @@ export default function UserOrders({ userId }: UserOrdersProps) {
               key={order.order_id}
               className="border border-gray-300 rounded-lg p-4 bg-gray-50"
             >
-              {/* Order Header */}
               <div className="flex justify-between items-center">
                 <h3 className="text-sm font-semibold text-gray-700">
                   Orden #{order.order_id}
@@ -75,7 +74,6 @@ export default function UserOrders({ userId }: UserOrdersProps) {
                 </span>
               </div>
 
-              {/* Order Details */}
               <div className="mt-2 text-sm text-gray-500">
                 <p>
                   Fecha de creación:{" "}

@@ -62,7 +62,6 @@ export default function ProductDetails({
     );
   };
 
-  // Split the description into paragraphs based on double spaces
   const formattedDescription = product_description?.split('  ').map((desc, index) => (
     <p key={index} className="text-gray-600 leading-relaxed mb-2">{desc.trim()}</p>
   ));
@@ -70,7 +69,6 @@ export default function ProductDetails({
   return (
     product_id && (
       <div className="flex flex-col lg:flex-row gap-8 p-6 container w-full max-w-4xl mx-auto mt-10 bg-white rounded-lg shadow-lg mb-10">
-        {/* Imagen del producto */}
         <div className="flex justify-center items-center lg:flex-1">
           <div className="relative w-full h-72 lg:w-96 lg:h-96">
             <Image
@@ -85,10 +83,8 @@ export default function ProductDetails({
           </div>
         </div>
 
-        {/* Detalles del producto */}
         <div className="flex-1 flex flex-col justify-between">
           <div>
-            {/* Título del producto */}
             <h1
               className="text-3xl font-bold text-gray-900 leading-tight break-words"
               style={{ wordBreak: "break-word" }}
@@ -97,20 +93,17 @@ export default function ProductDetails({
             </h1>
             <p className="text-s text-gray-500">{product_category_name}</p>
 
-            {/* Precio del producto */}
             <h2 className="text-lg text-gray-500">Precio:</h2>
             <p className="text-2xl font-semibold text-amber-800 mb-6">
               ${product_price?.toLocaleString("es-CL") ?? "0"}
             </p>
 
 
-            {/* Descripción del producto */}
             <div className="mb-4">
               <h3 className="text-lg font-semibold text-gray-700">Descripción:</h3>
               {formattedDescription ? formattedDescription : <p>No hay descripción disponible.</p>}
             </div>
 
-            {/* Render attributes */}
             {attributes.length > 0 && (
               <div className="mb-6">
                 <h3 className="text-lg font-semibold text-gray-700">Opciones:</h3>
@@ -140,7 +133,6 @@ export default function ProductDetails({
               </div>
             )}
 
-            {/* Controles de cantidad */}
             <div className="flex items-center gap-4 mb-6">
               <span className="font-medium text-gray-700">Cantidad:</span>
               <div className="flex items-center border border-gray-300 rounded-md shadow-sm overflow-hidden">
@@ -163,7 +155,6 @@ export default function ProductDetails({
             </div>
           </div>
 
-          {/* Botón Agregar al carrito */}
           <Button
             variant="default"
             size="lg"

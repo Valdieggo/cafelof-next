@@ -156,7 +156,6 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Address */}
       <div>
         <label htmlFor="address" className="block text-sm font-medium text-gray-700">
           Dirección
@@ -171,7 +170,6 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
         />
       </div>
 
-      {/* Country */}
       <div>
         <label htmlFor="country" className="block text-sm font-medium text-gray-700">
           País
@@ -191,7 +189,6 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
         </select>
       </div>
 
-      {/* Region */}
       <div>
         <label htmlFor="region" className="block text-sm font-medium text-gray-700">
           Región
@@ -212,7 +209,6 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
         </select>
       </div>
 
-      {/* City */}
       <div>
         <label htmlFor="city" className="block text-sm font-medium text-gray-700">
           Ciudad
@@ -233,7 +229,6 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
         </select>
       </div>
 
-      {/* Submit Button */}
       <Button type="submit" className="w-full">
         {existingAddress ? "Actualizar Dirección" : "Guardar Dirección"}
       </Button>

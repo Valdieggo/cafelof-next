@@ -11,14 +11,17 @@ import {
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Link from 'next/link';
 
 type Order = {
-  order_id: string
-  user_id: string
-  order_total_price: number
-  transaction_status: string | null
-  order_date: string
-}
+  order_id: string;
+  user_id: string;
+  user_email: string;
+  user_name: string;
+  order_total_price: number;
+  transaction_status: string | null;
+  order_date: string;
+};
 
 type OrdersTableProps = {
   initialOrders: Order[]
@@ -38,7 +41,7 @@ export default function OrdersTable({ initialOrders }: OrdersTableProps) {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between gap-4">
         <Input
-          placeholder="Search by User ID"
+          placeholder="Buscar por ID de usuario"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="max-w-sm"
@@ -48,10 +51,10 @@ export default function OrdersTable({ initialOrders }: OrdersTableProps) {
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="AUTHORIZED">Authorized</SelectItem>
-            <SelectItem value="FAILED">Failed</SelectItem>
-            <SelectItem value="CREATED">Created</SelectItem>
+            <SelectItem value="all">Todos los estados</SelectItem>
+            <SelectItem value="AUTHORIZED">Pagada</SelectItem>
+            <SelectItem value="FAILED">Sin pagar</SelectItem>
+            <SelectItem value="CREATED">Creada</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -59,21 +62,29 @@ export default function OrdersTable({ initialOrders }: OrdersTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Order ID</TableHead>
-              <TableHead>User ID</TableHead>
+              <TableHead>ID Órden</TableHead>
+              <TableHead>Usuario</TableHead>
               <TableHead>Total</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead>Estado</TableHead>
+              <TableHead>Fecha</TableHead>
+              <TableHead>Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredOrders.map((order) => (
               <TableRow key={order.order_id}>
                 <TableCell>{order.order_id}</TableCell>
-                <TableCell>{order.user_id}</TableCell>
-                <TableCell>${order.order_total_price.toFixed(2)}</TableCell>
+                <TableCell>{order.user_name} ({order.user_email})</TableCell>
+                <TableCell>${order.order_total_price.toLocaleString("es-CL")}</TableCell>
                 <TableCell>{order.transaction_status || 'N/A'}</TableCell>
                 <TableCell>{new Date(order.order_date).toLocaleString()}</TableCell>
+<TableCell>
+  <Link href={`/admin/orders/${order.order_id}`}>
+    <button className="bg-blue-600 text-white px-4 py-2 rounded">
+      Ver Detalles
+    </button>
+  </Link>
+</TableCell>
               </TableRow>
             ))}
           </TableBody>

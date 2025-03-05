@@ -42,7 +42,6 @@ export default function Products({ initialProducts = [], categories = [], sortOp
   return (
     <div className="min-h-screen p-8">
       <div className="container mx-auto px-6 grid lg:grid-cols-[250px_1fr] lg:gap-6">
-        {/* Sidebar for large screens */}
         <aside className="hidden lg:block bg-white p-4 rounded-lg shadow-md sticky top-8 h-fit pt-2">
           <h2 className="text-lg font-semibold mb-4">Filtros</h2>
           <CategoryFilter
@@ -58,9 +57,7 @@ export default function Products({ initialProducts = [], categories = [], sortOp
           />
         </aside>
 
-        {/* Main content */}
         <main className="lg:col-start-2 lg:col-span-1">
-          {/* Filters and sorting options for small screens */}
           <div className="block lg:hidden bg-white p-4 rounded-lg shadow-md mb-6">
             <h3 className="text-lg font-semibold mb-4">Filtros</h3>
             <CategoryFilter
@@ -76,7 +73,6 @@ export default function Products({ initialProducts = [], categories = [], sortOp
             />
           </div>
 
-          {/* Product List */}
           {filteredProducts.length ? (
             <ProductList products={filteredProducts} />
           ) : (

@@ -10,11 +10,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import CoffeeLoader from "@/lib/CoffeeLoader";
+import { redirect } from "next/navigation";
 
 export default function CheckoutClient() {
   const { data: session, status } = useSession();
   const { cartItems, getTotalPrice, isCartLoaded } = useCart();
-  console.log("cart items: ", cartItems);
 
   const [currentStep, setCurrentStep] = useState("details");
   const [cartIsValid, setCartIsValid] = useState(false);
@@ -30,6 +30,21 @@ export default function CheckoutClient() {
   }
 
   const handleGuestContinue = async (formData: any) => {
+
+    const response = await fetch(`/api/auth/user/get/${formData.email}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },  
+    });
+    const userGuestExists = await response.json();
+
+    if(!userGuestExists.message){
+      setGuestUserId(userGuestExists.id);
+      alert("Información guardada exitosamente.");
+      return;
+    }
+
     try {
       const response = await fetch("/api/auth/user/create-guest", {
         method: "POST",
@@ -168,8 +183,8 @@ export default function CheckoutClient() {
                 <div className="flex flex-col gap-4 mx-12">
                   <p>Elige una opción para continuar:</p>
                   <Button onClick={() => setGuestMode(true)}>Seguir como invitado</Button>
-                  <Button>
-                    <Link href="/login?redirectTo=/checkout">Iniciar sesión</Link>
+                  <Button onClick={() => redirect("/login?redirectTo=/checkout")}>
+                    Iniciar sesión
                   </Button>
                 </div>
               )}

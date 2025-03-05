@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import OrdersTable from "@/components/orders/OrdersTable";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { cookies } from 'next/headers'; // Import cookies utility for server-side cookies
+import { cookies } from 'next/headers'; 
 
 export const metadata: Metadata = {
   title: 'Admin: All Orders',
@@ -10,23 +10,21 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-// Obtener órdenes desde el endpoint
 async function getOrders() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL;
     
-    // Get token from cookies
     const cookieStore = cookies();
     const sessionToken = process.env.NODE_ENV === 'production' ? '__Secure-authjs.session-token' : 'authjs.session-token';
-    const token = cookieStore.get(sessionToken)?.value; // Use the correct cookie key based on your auth setup
+    const token = cookieStore.get(sessionToken)?.value; 
 
     const response = await fetch(`${baseUrl}/order`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Include token in the Authorization header
+        'Authorization': `Bearer ${token}`, 
       },
-      cache: 'no-store', // Avoid caching to fetch updated data
+      cache: 'no-store', 
     });
 
     if (!response.ok) {
@@ -48,13 +46,13 @@ export default async function AdminOrdersPage() {
     <div className="container mx-auto py-10">
       <Card>
         <CardHeader>
-          <CardTitle>All Orders</CardTitle>
+          <CardTitle>Órdenes</CardTitle>
         </CardHeader>
         <CardContent>
           {orders.length > 0 ? (
             <OrdersTable initialOrders={orders} />
           ) : (
-            <p className="text-gray-500 text-center">No orders found.</p>
+            <p className="text-gray-500 text-center">No se encuentran órdenes</p>
           )}
         </CardContent>
       </Card>

@@ -17,12 +17,24 @@ export async function GET(request: Request) {
       });
     }
 
-    // Fetch all orders if the user is an admin
-    const allOrders = await prisma.order.findMany();
-    const formattedOrders = allOrders.map(order => ({
+    // Fetch all orders with user information
+    const allOrders = await prisma.order.findMany({
+      include: {
+        user: {
+          select: {
+            email: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    const formattedOrders = allOrders.map((order) => ({
       ...order,
-      createdAt: order.created_at ? new Date(order.created_at).toISOString() : null, // Handle null case
-      updatedAt: order.updated_at ? new Date(order.updated_at).toISOString() : null, // Handle null case
+      user_email: order.user.email,
+      user_name: order.user.name,
+      createdAt: order.created_at ? new Date(order.created_at).toISOString() : null,
+      updatedAt: order.updated_at ? new Date(order.updated_at).toISOString() : null,
     }));
 
     return new Response(JSON.stringify(formattedOrders), {

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 
 export default function CreateCategoryAndProduct() {
   const [categories, setCategories] = useState([]);
+  const [attributes, setAttributes] = useState([]); // Estado para almacenar los atributos
+  const [selectedAttributes, setSelectedAttributes] = useState([]); // Estado para los atributos seleccionados
   const [categoryData, setCategoryData] = useState({
     product_category_name: '',
     product_category_description: '',
@@ -13,13 +15,15 @@ export default function CreateCategoryAndProduct() {
     product_price: '',
     product_image_url: '',
     product_category_id: '',
+    product_description: '',
   });
   const [categoryMessage, setCategoryMessage] = useState('');
   const [productMessage, setProductMessage] = useState('');
 
-  // Fetch existing categories
+  // Fetch existing categories and attributes
   useEffect(() => {
     fetchCategories();
+    fetchAttributes();
   }, []);
 
   const fetchCategories = async () => {
@@ -36,8 +40,22 @@ export default function CreateCategoryAndProduct() {
     }
   };
 
+  const fetchAttributes = async () => {
+    try {
+      const response = await fetch('/api/product/attributes');
+      const data = await response.json();
+      if (response.ok) {
+        setAttributes(data.data);
+      } else {
+        console.error(data.message || 'Failed to fetch attributes');
+      }
+    } catch (err) {
+      console.error('Error fetching attributes:', err);
+    }
+  };
+
   // Handle category form change
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCategoryChange = (e) => {
     setCategoryData({
       ...categoryData,
       [e.target.name]: e.target.value,
@@ -45,7 +63,7 @@ export default function CreateCategoryAndProduct() {
   };
 
   // Handle category submission
-  const handleCategorySubmit = async (e: React.FormEvent) => {
+  const handleCategorySubmit = async (e) => {
     e.preventDefault();
     setCategoryMessage('');
 
@@ -70,15 +88,26 @@ export default function CreateCategoryAndProduct() {
   };
 
   // Handle product form change
-  const handleProductChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleProductChange = (e) => {
     setProductData({
       ...productData,
       [e.target.name]: e.target.value,
     });
   };
 
+  // Handle attribute selection
+  const handleAttributeSelection = (attributeId) => {
+    setSelectedAttributes((prev) => {
+      if (prev.includes(attributeId)) {
+        return prev.filter((id) => id !== attributeId); // Deseleccionar el atributo
+      } else {
+        return [...prev, attributeId]; // Seleccionar el atributo
+      }
+    });
+  };
+
   // Handle product submission
-  const handleProductSubmit = async (e: React.FormEvent) => {
+  const handleProductSubmit = async (e) => {
     e.preventDefault();
     setProductMessage('');
 
@@ -91,6 +120,8 @@ export default function CreateCategoryAndProduct() {
           product_price: parseFloat(productData.product_price),
           product_image_url: productData.product_image_url || null,
           product_category_id: parseInt(productData.product_category_id),
+          product_description: productData.product_description || null,
+          attributes: selectedAttributes, // Enviar los atributos seleccionados
         }),
       });
       const data = await response.json();
@@ -102,7 +133,9 @@ export default function CreateCategoryAndProduct() {
           product_price: '',
           product_image_url: '',
           product_category_id: '',
+          product_description: '',
         });
+        setSelectedAttributes([]); // Limpiar atributos seleccionados
       } else {
         setProductMessage(data.message || 'Failed to create product.');
       }
@@ -215,6 +248,20 @@ export default function CreateCategoryAndProduct() {
           </div>
 
           <div>
+            <label htmlFor="product_description" className="block text-sm font-medium">
+              Product Description
+            </label>
+            <textarea
+              name="product_description"
+              id="product_description"
+              value={productData.product_description}
+              onChange={handleProductChange}
+              placeholder="Enter product description"
+              className="w-full mt-1 p-2 border rounded"
+            />
+          </div>
+
+          <div>
             <label htmlFor="product_category_id" className="block text-sm font-medium">
               Product Category
             </label>
@@ -227,12 +274,35 @@ export default function CreateCategoryAndProduct() {
               className="w-full mt-1 p-2 border rounded"
             >
               <option value="">Select a category</option>
-              {categories.map((category: any) => (
+              {categories.map((category) => (
                 <option key={category.product_category_id} value={category.product_category_id}>
                   {category.product_category_name}
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Selector de Atributos */}
+          <div>
+            <label htmlFor="attributes" className="block text-sm font-medium">
+              Product Attributes
+            </label>
+            {attributes.map((attribute) => (
+              <div key={attribute.attribute_id} className="mb-4">
+                <label htmlFor={`attribute_${attribute.attribute_id}`} className="block text-sm font-medium">
+                  {attribute.attribute_name}
+                </label>
+                <input
+                  type="checkbox"
+                  name={`attribute_${attribute.attribute_id}`}
+                  id={`attribute_${attribute.attribute_id}`}
+                  checked={selectedAttributes.includes(attribute.attribute_id)}
+                  onChange={() => handleAttributeSelection(attribute.attribute_id)}
+                  className="mr-2"
+                />
+                <span>{attribute.attribute_name}</span>
+              </div>
+            ))}
           </div>
 
           <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
