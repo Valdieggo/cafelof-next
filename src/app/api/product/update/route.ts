@@ -1,12 +1,22 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { NextRequest } from 'next/server';
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function PUT(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+
+  if (!id) {
+    return NextResponse.json(
+      { message: 'Missing product ID' },
+      { status: 400 }
+    );
+  }
 
   try {
     const body = await request.json();
-    const { product_name, product_price, product_image_url, product_category_id } = body;
+    const { product_name, product_price, product_image_url, product_category_id, product_description } = body;
+    console.log(body);
 
     if (!product_name || !product_price || !product_category_id) {
       return NextResponse.json(
@@ -22,6 +32,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         product_price: parseFloat(product_price),
         product_image_url,
         product_category_id: Number(product_category_id),
+        product_description,
       },
     });
 
