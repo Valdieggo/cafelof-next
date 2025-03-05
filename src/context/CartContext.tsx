@@ -23,6 +23,7 @@ interface CartContextProps {
   isCartOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
+  clearCart: () => Promise<void>;
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -239,6 +240,23 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const clearCart = async () => {
+    if (status === "authenticated" && session?.user?.id) {
+      try {
+        await fetch(`/api/cart/clear`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
+        setCartItems([]);
+      } catch (error) {
+        console.error("Error clearing cart:", error);
+      }
+    } else {
+      setCartItems([]);
+      localStorage.removeItem("cart");
+    }
+  };
+
   const getTotalItems = () => cartItems.reduce((total, item) => total + item.quantity, 0);
   const getTotalPrice = () =>
     cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -259,6 +277,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         isCartOpen,
         openCart,
         closeCart,
+        clearCart,
       }}
     >
       {children}

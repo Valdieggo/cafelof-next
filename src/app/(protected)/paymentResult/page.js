@@ -7,12 +7,14 @@ import UnsuccessfulPayment from "@/components/checkout/UnsuccessfulPayment";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import CoffeeLoader from "@/lib/CoffeeLoader";
+import { useCart } from "@/context/CartContext"; // Importa el contexto del carrito
 
 export default function ResultadoTransaccion() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const { clearCart } = useCart(); // Obtén la función clearCart del contexto
 
   const mensajeFlujo2 = "El pago fue anulado por tiempo de espera.";
   const mensajeFlujo3 = "El pago fue anulado por el usuario.";
@@ -73,6 +75,7 @@ export default function ResultadoTransaccion() {
         })
         .then((updatedOrder) => {
           console.log("Orden actualizada:", updatedOrder);
+          clearCart(); // Vaciar el carrito después de una transacción exitosa
         })
         .catch((err) => {
           setError("Error al procesar la transacción o actualizar la orden");
@@ -85,10 +88,9 @@ export default function ResultadoTransaccion() {
     } else if (token_ws && TBK_TOKEN && TBK_ORDEN_COMPRA && TBK_ID_SESION) {
       setResult({ mensaje: mensajeFlujo4, status: "FAILED", data: { TBK_ORDEN_COMPRA, TBK_ID_SESION } });
     }
-  }, [searchParams]);
+  }, [searchParams, clearCart]);
 
   if (!result && !error) {
-    //if(true){
     return (
       <CoffeeLoader />
     );
