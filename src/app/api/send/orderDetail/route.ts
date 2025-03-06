@@ -72,9 +72,8 @@ export async function POST(request: Request) {
       .replace(/{{name}}/g, user?.name || 'Usuario')
       .replace(/{{link}}/g, `${process.env.NEXT_PUBLIC_URL}/profile`)
       .replace(/{{products}}/g, productsHtml)
-      .replace(/{{total}}/g, total.toLocaleString());
+      .replace(/{{total}}/g, total.toLocaleString("es-CL"));
 
-    // Enviar el correo electrónico
     const { data, error } = await resend.emails.send({
       from: 'soporte@cafelof.cl',
       to: email,
