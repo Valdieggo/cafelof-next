@@ -15,9 +15,18 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { product_name, product_price, product_image_url, product_category_id, product_description } = body;
-    console.log(body);
+    const {
+      product_name,
+      product_price,
+      product_image_url,
+      product_category_id,
+      product_description,
+      attributes, // Array de IDs de atributos seleccionados
+    } = body;
 
+    console.log('Received data:', body);
+
+    // Validar campos obligatorios
     if (!product_name || !product_price || !product_category_id) {
       return NextResponse.json(
         { message: 'Missing required fields' },
@@ -25,6 +34,15 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    // Validar que attributes sea un array y no contenga valores null
+    if (!Array.isArray(attributes) || attributes.some((attr) => attr === null)) {
+      return NextResponse.json(
+        { message: 'Invalid attributes provided' },
+        { status: 400 }
+      );
+    }
+
+    // Actualizar el producto
     const updatedProduct = await prisma.product.update({
       where: { product_id: Number(id) },
       data: {
@@ -36,7 +54,26 @@ export async function PUT(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(updatedProduct, { status: 200 });
+    // Actualizar los atributos del producto
+    if (attributes && Array.isArray(attributes)) {
+      // Eliminar todas las relaciones existentes entre el producto y sus atributos
+      await prisma.productAttribute.deleteMany({
+        where: { product_id: Number(id) },
+      });
+
+      // Crear nuevas relaciones con los atributos seleccionados
+      await prisma.productAttribute.createMany({
+        data: attributes.map((attributeId) => ({
+          product_id: Number(id),
+          attribute_id: attributeId,
+        })),
+      });
+    }
+
+    return NextResponse.json(
+      { message: 'Product updated successfully', product: updatedProduct },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Error updating product:', error);
     return NextResponse.json(

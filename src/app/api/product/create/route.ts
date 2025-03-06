@@ -8,7 +8,9 @@ function generateSlug(name: string): string {
 
 export async function POST(request: Request) {
     const body = await request.json();
-    const { product_name, product_price, product_category_id, product_image_url, product_description } = body;
+    const { product_name, product_price, product_category_id, product_image_url, product_description, attributes } = body;
+
+    const selectedAttributes = attributes;
 
     if (!product_name || !product_price || !product_category_id || !product_description) {
         return new Response(JSON.stringify({
@@ -21,7 +23,7 @@ export async function POST(request: Request) {
         });
     }
 
-    if(product_price <= 0 ) {
+    if (product_price <= 0) {
         return new Response(JSON.stringify({
             status: 400,
             message: 'El precio debe ser mayor a 0',
@@ -34,6 +36,18 @@ export async function POST(request: Request) {
     }
 
     try {
+        // ✅ Verificar si "selectedAttributes" es un array válido
+        if (!Array.isArray(selectedAttributes)) {
+            return new Response(JSON.stringify({
+                status: 400,
+                message: 'Invalid attributes format',
+            }), {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+        }
+
         const product = await prisma.product.create({
             data: {
                 product_name,
@@ -42,6 +56,11 @@ export async function POST(request: Request) {
                 product_category_id,
                 product_slug: generateSlug(product_name),
                 product_description,
+                attributes: {
+                    create: selectedAttributes.map((attributeId) => ({
+                        attribute_id: attributeId,
+                    })),
+                },
             },
         });
 
@@ -53,11 +72,11 @@ export async function POST(request: Request) {
                 'Content-Type': 'application/json',
             },
         });
-    } catch (error) {
-        console.error('Error creating product:', error);
+    } catch (error: any) {
+        console.error('Error creando producto:', error);
         return new Response(JSON.stringify({
             status: 500,
-            message: 'Failed to create product',
+            message: error.message || 'Failed to create product',
         }), {
             headers: {
                 'Content-Type': 'application/json',

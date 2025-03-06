@@ -127,7 +127,7 @@ export default function CreateCategoryAndProduct() {
   // Handle product submission
   const handleProductSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await fetch('/api/product/create', {
         method: 'POST',
@@ -142,7 +142,7 @@ export default function CreateCategoryAndProduct() {
         }),
       });
       const data = await response.json();
-
+  
       if (response.ok) {
         toast.success('Producto creado exitosamente', {
           duration: 4000,
