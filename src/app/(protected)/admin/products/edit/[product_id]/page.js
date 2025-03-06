@@ -252,6 +252,9 @@ export default function EditProductPage({ params }) {
         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
           Guardar cambios
         </button>
+        <button type="button" onClick={() => router.back()} className="bg-gray-600 text-white px-4 ml-4 py-2 rounded">
+          Regresar
+        </button>
       </form>
     </div>
   );

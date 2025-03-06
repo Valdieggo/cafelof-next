@@ -32,6 +32,9 @@ export default function ProductListPage() {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Productos actuales</h1>
+      <button type="button" onClick={() => router.back()} className="bg-gray-600 text-white px-4 py-2 mb-4 rounded">
+          Regresar
+      </button>
       <ul className="space-y-2">
         {isLoading ? (
           // Mostrar skeletons mientras se cargan los productos

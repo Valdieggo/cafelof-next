@@ -48,6 +48,7 @@ export default async function AdminOrdersPage() {
       <Card>
         <CardHeader>
           <CardTitle>Órdenes</CardTitle>
+          
         </CardHeader>
         <CardContent>
           {orders.length > 0 ? (

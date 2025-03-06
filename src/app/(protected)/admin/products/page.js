@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { toast } from 'nextjs-toast-notify';
+import { useRouter } from 'next/navigation';
 
 export default function CreateCategoryAndProduct() {
   const [categories, setCategories] = useState([]);
@@ -18,6 +19,7 @@ export default function CreateCategoryAndProduct() {
     product_category_id: '',
     product_description: '',
   });
+  const router = useRouter();
 
   useEffect(() => {
     fetchCategories();
@@ -185,6 +187,9 @@ export default function CreateCategoryAndProduct() {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Administración de productos y categorías</h1>
+      <button type="button" onClick={() => router.back()} className="bg-gray-600 text-white px-4 py-2 mb-4 rounded">
+          Regresar
+      </button>
 
       {/* Category Form */}
       <div className="mb-8">
