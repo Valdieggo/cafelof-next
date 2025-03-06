@@ -15,7 +15,8 @@ async function getOrders() {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL;
     
     const cookieStore = cookies();
-    const sessionToken = process.env.NODE_ENV === 'production' ? '__Secure-authjs.session-token' : 'authjs.session-token';
+    //const sessionToken = process.env.NODE_ENV === 'production' ? '__Secure-authjs.session-token' : 'authjs.session-token';
+    const sessionToken = 'authjs.session-token';
     const token = cookieStore.get(sessionToken)?.value; 
     console.log(sessionToken, token);
 
