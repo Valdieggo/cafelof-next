@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { toast } from 'nextjs-toast-notify';
 
 export default function CreateCategoryAndProduct() {
   const [categories, setCategories] = useState([]);
@@ -17,8 +18,6 @@ export default function CreateCategoryAndProduct() {
     product_category_id: '',
     product_description: '',
   });
-  const [categoryMessage, setCategoryMessage] = useState('');
-  const [productMessage, setProductMessage] = useState('');
 
   useEffect(() => {
     fetchCategories();
@@ -64,7 +63,6 @@ export default function CreateCategoryAndProduct() {
   // Handle category submission
   const handleCategorySubmit = async (e) => {
     e.preventDefault();
-    setCategoryMessage('');
 
     try {
       const response = await fetch('/api/product/category/create', {
@@ -75,14 +73,35 @@ export default function CreateCategoryAndProduct() {
       const data = await response.json();
 
       if (response.ok) {
-        setCategoryMessage('Category created successfully!');
+        toast.success('Categoría creada exitosamente', {
+          duration: 4000,
+          progress: false,
+          position: 'bottom-center',
+          transition: 'popUp',
+          icon: '',
+          sound: false,
+        });
         setCategoryData({ product_category_name: '', product_category_description: '' });
         fetchCategories(); // Refresh categories
       } else {
-        setCategoryMessage(data.message || 'Failed to create category.');
+        toast.error(data.message || 'Error al crear la categoría', {
+          duration: 4000,
+          progress: false,
+          position: 'bottom-center',
+          transition: 'popUp',
+          icon: '',
+          sound: false,
+        });
       }
     } catch (err) {
-      setCategoryMessage('Error occurred while creating category.');
+      toast.error('Error al crear la categoría', {
+        duration: 4000,
+        progress: false,
+        position: 'bottom-center',
+        transition: 'popUp',
+        icon: '',
+        sound: false,
+      });
     }
   };
 
@@ -108,7 +127,6 @@ export default function CreateCategoryAndProduct() {
   // Handle product submission
   const handleProductSubmit = async (e) => {
     e.preventDefault();
-    setProductMessage('');
 
     try {
       const response = await fetch('/api/product/create', {
@@ -126,7 +144,14 @@ export default function CreateCategoryAndProduct() {
       const data = await response.json();
 
       if (response.ok) {
-        setProductMessage('Product created successfully!');
+        toast.success('Producto creado exitosamente', {
+          duration: 4000,
+          progress: false,
+          position: 'bottom-center',
+          transition: 'popUp',
+          icon: '',
+          sound: false,
+        });
         setProductData({
           product_name: '',
           product_price: '',
@@ -136,10 +161,24 @@ export default function CreateCategoryAndProduct() {
         });
         setSelectedAttributes([]); // Limpiar atributos seleccionados
       } else {
-        setProductMessage(data.message || 'Failed to create product.');
+        toast.error(data.message || 'Error al crear el producto', {
+          duration: 4000,
+          progress: false,
+          position: 'bottom-center',
+          transition: 'popUp',
+          icon: '',
+          sound: false,
+        });
       }
     } catch (err) {
-      setProductMessage('Error occurred while creating product.');
+      toast.error('Error al crear el producto', {
+        duration: 4000,
+        progress: false,
+        position: 'bottom-center',
+        transition: 'popUp',
+        icon: '',
+        sound: false,
+      });
     }
   };
 
@@ -150,11 +189,6 @@ export default function CreateCategoryAndProduct() {
       {/* Category Form */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Crear nueva categoría</h2>
-        {categoryMessage && (
-          <div className={`p-2 rounded mb-4 ${categoryMessage.includes('successfully') ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'}`}>
-            {categoryMessage}
-          </div>
-        )}
         <form onSubmit={handleCategorySubmit} className="space-y-4">
           <div>
             <label htmlFor="product_category_name" className="block text-sm font-medium">
@@ -195,11 +229,6 @@ export default function CreateCategoryAndProduct() {
       {/* Product Form */}
       <div>
         <h2 className="text-xl font-semibold mb-2">Crear nuevo producto</h2>
-        {productMessage && (
-          <div className={`p-2 rounded mb-4 ${productMessage.includes('successfully') ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'}`}>
-            {productMessage}
-          </div>
-        )}
         <form onSubmit={handleProductSubmit} className="space-y-4">
           <div>
             <label htmlFor="product_name" className="block text-sm font-medium">
@@ -281,7 +310,6 @@ export default function CreateCategoryAndProduct() {
             </select>
           </div>
 
-          {/* Selector de Atributos */}
           <div>
             <label htmlFor="attributes" className="block text-sm font-medium">
               Atributos del producto
@@ -302,7 +330,7 @@ export default function CreateCategoryAndProduct() {
           </div>
 
           <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-            Create Product
+            Crear producto
           </button>
         </form>
       </div>
