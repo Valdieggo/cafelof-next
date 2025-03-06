@@ -6,8 +6,11 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   try {
-    // Extract and verify the JWT
-    const token = await getToken({ req: request, secret });
+    // Extract and verify the JWT token based on different name in different environments
+    const token = await getToken({ req: request, secret, cookieName: process.env.VERCEL_ENV === "production"
+      ? "authjs.session-token"
+      : "__Secure-authjs.session-token",
+    });
 
     // Check if the user has the ADMIN role
     if (!token || token.role !== "ADMIN") {
