@@ -1,26 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import SuccessfulPayment from "@/components/checkout/SuccessfulPayment";
 import UnsuccessfulPayment from "@/components/checkout/UnsuccessfulPayment";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import CoffeeLoader from "@/lib/CoffeeLoader";
-import { useCart } from "@/context/CartContext"; // Importa el contexto del carrito
+import { useCart } from "@/context/CartContext";
 
 export default function ResultadoTransaccion() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const { clearCart } = useCart(); // Obtén la función clearCart del contexto
+  const { clearCart } = useCart();
+  const isProcessed = useRef(false); // Bandera para evitar múltiples ejecuciones
 
   const mensajeFlujo2 = "El pago fue anulado por tiempo de espera.";
   const mensajeFlujo3 = "El pago fue anulado por el usuario.";
   const mensajeFlujo4 = "El pago es inválido.";
 
   useEffect(() => {
+    // Si ya se procesó la transacción, no hacer nada
+    if (isProcessed.current) return;
+    isProcessed.current = true; // Marcar como procesado
+
     const token_ws = searchParams.get("token_ws");
     const TBK_TOKEN = searchParams.get("TBK_TOKEN");
     const TBK_ORDEN_COMPRA = searchParams.get("TBK_ORDEN_COMPRA");
@@ -31,26 +36,49 @@ export default function ResultadoTransaccion() {
       return;
     }
 
-    if (token_ws && !TBK_TOKEN) {
-      fetch("/api/transaction/commit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token_ws }),
-      })
-        .then((response) => {
+    const processTransaction = async () => {
+      try {
+        if (token_ws && !TBK_TOKEN) {
+          const response = await fetch("/api/transaction/commit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token_ws }),
+          });
+
           if (!response.ok) {
             throw new Error("Error en la respuesta del servidor");
           }
-          return response.json();
-        })
-        .then((data) => {
+
+          const data = await response.json();
           console.log("data commit", data);
           setResult(data); // Guardar en el estado para la UI
 
-          // Usar directamente `data` para actualizar la orden
-          return fetch("/api/order/update", {
+          // Obtener el email del usuario asociado a la orden
+          const userResponse = await fetch(`/api/order/user/${data.buy_order}`);
+          const userData = await userResponse.json();
+
+          if (!userResponse.ok) {
+            throw new Error("Error al obtener el email del usuario");
+          }
+
+          const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+          // Enviar correo con los detalles de la orden
+          await fetch(`${baseUrl}/send/orderDetail`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              order_id: data.buy_order, // Usar el buy_order de la respuesta
+              email: userData.email, // Usar el email del usuario
+            }),
+          });
+
+          // Actualizar la orden en la base de datos
+          const updateResponse = await fetch("/api/order/update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -66,34 +94,44 @@ export default function ResultadoTransaccion() {
               cardLastFourDigits: data.card_detail.card_number,
             }),
           });
-        })
-        .then((response) => {
-          if (!response.ok) {
+
+          if (!updateResponse.ok) {
             throw new Error("Error al actualizar la orden");
           }
-          return response.json();
-        })
-        .then((updatedOrder) => {
+
+          const updatedOrder = await updateResponse.json();
           console.log("Orden actualizada:", updatedOrder);
           clearCart(); // Vaciar el carrito después de una transacción exitosa
-        })
-        .catch((err) => {
-          setError("Error al procesar la transacción o actualizar la orden");
-          console.error(err);
-        });
-    } else if (!token_ws && !TBK_TOKEN) {
-      setResult({ mensaje: mensajeFlujo2, status: "FAILED", data: { TBK_ORDEN_COMPRA, TBK_ID_SESION } });
-    } else if (!token_ws && TBK_TOKEN) {
-      setResult({ mensaje: mensajeFlujo3, status: "FAILED", data: { TBK_ORDEN_COMPRA, TBK_ID_SESION } });
-    } else if (token_ws && TBK_TOKEN && TBK_ORDEN_COMPRA && TBK_ID_SESION) {
-      setResult({ mensaje: mensajeFlujo4, status: "FAILED", data: { TBK_ORDEN_COMPRA, TBK_ID_SESION } });
-    }
-  }, [searchParams, clearCart]);
+        } else if (!token_ws && !TBK_TOKEN) {
+          setResult({
+            mensaje: mensajeFlujo2,
+            status: "FAILED",
+            data: { TBK_ORDEN_COMPRA, TBK_ID_SESION },
+          });
+        } else if (!token_ws && TBK_TOKEN) {
+          setResult({
+            mensaje: mensajeFlujo3,
+            status: "FAILED",
+            data: { TBK_ORDEN_COMPRA, TBK_ID_SESION },
+          });
+        } else if (token_ws && TBK_TOKEN && TBK_ORDEN_COMPRA && TBK_ID_SESION) {
+          setResult({
+            mensaje: mensajeFlujo4,
+            status: "FAILED",
+            data: { TBK_ORDEN_COMPRA, TBK_ID_SESION },
+          });
+        }
+      } catch (err) {
+        setError("Error al procesar la transacción o actualizar la orden");
+        console.error(err);
+      }
+    };
+
+    processTransaction();
+  }, [searchParams, clearCart, router]);
 
   if (!result && !error) {
-    return (
-      <CoffeeLoader />
-    );
+    return <CoffeeLoader />;
   }
 
   if (error) {
@@ -133,7 +171,9 @@ export default function ResultadoTransaccion() {
         />
       )}
       <div className="pt-4">
-        <Button><Link href="/profile">Ver mis compras</Link></Button>
+        <Button>
+          <Link href="/profile">Ver mis compras</Link>
+        </Button>
       </div>
     </div>
   );

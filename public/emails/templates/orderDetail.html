@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de tu pedido</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #D7C0A7;">
+    <table role="presentation" style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td align="center" style="padding: 40px 0;">
+                <table role="presentation" style="width: 600px; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+                    <tr>
+                        <td style="padding: 40px 30px; text-align: center; background-color: #8A6752;">
+                            <h1 style="color: #ffffff; font-size: 28px; margin: 0;">¡Gracias por tu compra en Café Lof!</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 40px 30px;">
+                            <p style="font-size: 16px; color: #000000;">Estimado {{name}},</p>
+                            <p style="font-size: 16px; color: #000000;">Aquí tienes los detalles de tu pedido:</p>
+
+                            <!-- Tabla de productos -->
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                                <thead>
+                                    <tr style="background-color: #934311; color: #ffffff;">
+                                        <th style="padding: 10px; text-align: left;">Producto</th>
+                                        <th style="padding: 10px; text-align: center;">Cantidad</th>
+                                        <th style="padding: 10px; text-align: right;">Precio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{products}}
+                                </tbody>
+                            </table>
+
+                            <!-- Total del pedido -->
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                                <tr>
+                                    <td style="text-align: right; font-size: 16px; color: #000000;">
+                                        <strong>Total:</strong> ${{total}}
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="font-size: 16px; color: #000000; margin-top: 20px;">
+                                Revisa el estado de tu pedido <a href="{{link}}">aquí</a>.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 30px; text-align: center; background-color: #45342a; color: #ffffff; font-size: 14px;">
+                            <p style="margin: 0;">© 2024 Café Lof. Todos los derechos reservados.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

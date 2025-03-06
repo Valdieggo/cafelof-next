@@ -11,6 +11,7 @@ export async function GET(request: Request, { params }: { params: { order_id: st
           select: {
             product_name: true,
             product_price: true,
+            product_image_url: true,
           },
         },
       },

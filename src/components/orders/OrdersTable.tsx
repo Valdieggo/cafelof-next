@@ -54,7 +54,7 @@ export default function OrdersTable({ initialOrders }: OrdersTableProps) {
             <SelectItem value="all">Todos los estados</SelectItem>
             <SelectItem value="AUTHORIZED">Pagada</SelectItem>
             <SelectItem value="FAILED">Sin pagar</SelectItem>
-            <SelectItem value="CREATED">Creada</SelectItem>
+            <SelectItem value="CREADA">Creada</SelectItem>
           </SelectContent>
         </Select>
       </div>

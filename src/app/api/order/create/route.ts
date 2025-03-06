@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         user_id: userId,
         order_total_price: totalAmount,
         order_date: new Date(),
-        transaction_status: 'CREADA', // Inicialmente marcada como "CREATED"
+        transaction_status: 'CREADA', 
       },
     });
 

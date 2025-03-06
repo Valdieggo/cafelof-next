@@ -20,7 +20,6 @@ export default function CreateCategoryAndProduct() {
   const [categoryMessage, setCategoryMessage] = useState('');
   const [productMessage, setProductMessage] = useState('');
 
-  // Fetch existing categories and attributes
   useEffect(() => {
     fetchCategories();
     fetchAttributes();
@@ -146,11 +145,11 @@ export default function CreateCategoryAndProduct() {
 
   return (
     <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Category and Product Management</h1>
+      <h1 className="text-2xl font-bold mb-4">Administración de productos y categorías</h1>
 
       {/* Category Form */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-2">Create New Category</h2>
+        <h2 className="text-xl font-semibold mb-2">Crear nueva categoría</h2>
         {categoryMessage && (
           <div className={`p-2 rounded mb-4 ${categoryMessage.includes('successfully') ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'}`}>
             {categoryMessage}
@@ -159,7 +158,7 @@ export default function CreateCategoryAndProduct() {
         <form onSubmit={handleCategorySubmit} className="space-y-4">
           <div>
             <label htmlFor="product_category_name" className="block text-sm font-medium">
-              Category Name
+              Nombre de la categoría
             </label>
             <input
               type="text"
@@ -174,7 +173,7 @@ export default function CreateCategoryAndProduct() {
 
           <div>
             <label htmlFor="product_category_description" className="block text-sm font-medium">
-              Category Description
+              Descripción de la categoría
             </label>
             <input
               type="text"
@@ -188,14 +187,14 @@ export default function CreateCategoryAndProduct() {
           </div>
 
           <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-            Create Category
+            Crear categoría
           </button>
         </form>
       </div>
 
       {/* Product Form */}
       <div>
-        <h2 className="text-xl font-semibold mb-2">Create New Product</h2>
+        <h2 className="text-xl font-semibold mb-2">Crear nuevo producto</h2>
         {productMessage && (
           <div className={`p-2 rounded mb-4 ${productMessage.includes('successfully') ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'}`}>
             {productMessage}
@@ -204,7 +203,7 @@ export default function CreateCategoryAndProduct() {
         <form onSubmit={handleProductSubmit} className="space-y-4">
           <div>
             <label htmlFor="product_name" className="block text-sm font-medium">
-              Product Name
+              Nombre del producto
             </label>
             <input
               type="text"
@@ -219,7 +218,7 @@ export default function CreateCategoryAndProduct() {
 
           <div>
             <label htmlFor="product_price" className="block text-sm font-medium">
-              Product Price
+              Precio
             </label>
             <input
               type="number"
@@ -235,7 +234,7 @@ export default function CreateCategoryAndProduct() {
 
           <div>
             <label htmlFor="product_image_url" className="block text-sm font-medium">
-              Product Image URL
+              URL de la imagen del producto
             </label>
             <input
               type="url"
@@ -249,21 +248,21 @@ export default function CreateCategoryAndProduct() {
 
           <div>
             <label htmlFor="product_description" className="block text-sm font-medium">
-              Product Description
+              Descripción del producto
             </label>
             <textarea
               name="product_description"
               id="product_description"
               value={productData.product_description}
               onChange={handleProductChange}
-              placeholder="Enter product description"
+              placeholder="Ingrese la descripción del producto"
               className="w-full mt-1 p-2 border rounded"
             />
           </div>
 
           <div>
             <label htmlFor="product_category_id" className="block text-sm font-medium">
-              Product Category
+              Categoría del producto
             </label>
             <select
               name="product_category_id"
@@ -273,7 +272,7 @@ export default function CreateCategoryAndProduct() {
               required
               className="w-full mt-1 p-2 border rounded"
             >
-              <option value="">Select a category</option>
+              <option value="">Seleccione una categoría</option>
               {categories.map((category) => (
                 <option key={category.product_category_id} value={category.product_category_id}>
                   {category.product_category_name}
@@ -285,13 +284,10 @@ export default function CreateCategoryAndProduct() {
           {/* Selector de Atributos */}
           <div>
             <label htmlFor="attributes" className="block text-sm font-medium">
-              Product Attributes
+              Atributos del producto
             </label>
             {attributes.map((attribute) => (
               <div key={attribute.attribute_id} className="mb-4">
-                <label htmlFor={`attribute_${attribute.attribute_id}`} className="block text-sm font-medium">
-                  {attribute.attribute_name}
-                </label>
                 <input
                   type="checkbox"
                   name={`attribute_${attribute.attribute_id}`}

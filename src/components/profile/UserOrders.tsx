@@ -78,11 +78,11 @@ export default function UserOrders({ userId }: UserOrdersProps) {
 
   const handleOrderClick = async (orderId: string) => {
     if (expandedOrderId === orderId) {
-      setExpandedOrderId(null); // Colapsar la orden si ya está expandida
-      setOrderDetails([]); // Limpiar los detalles de la orden
+      setExpandedOrderId(null); 
+      setOrderDetails([]); 
     } else {
-      setExpandedOrderId(orderId); // Expandir la orden
-      await fetchOrderDetails(orderId); // Obtener los detalles de la orden
+      setExpandedOrderId(orderId);
+      await fetchOrderDetails(orderId);
     }
   };
 
@@ -156,7 +156,7 @@ export default function UserOrders({ userId }: UserOrdersProps) {
                           <div className="flex items-center gap-4 col-span-1 sm:col-span-2">
                             <div className="w-16 h-16 relative flex-shrink-0">
                               <Image
-                                src={detail.product.product_image || "/placeholder.png"}
+                                src={detail.product.product_image || "https://images.dog.ceo/breeds/pyrenees/n02111500_6387.jpg"}
                                 alt={detail.product.product_name}
                                 fill
                                 className="object-cover rounded"

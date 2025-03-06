@@ -14,6 +14,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { toast } from "nextjs-toast-notify"
+
 const formSchema = z.object({"name":z.string().min(1).max(255),"email":z.string().email().min(1).max(9999),"message":z.string().min(1).max(255)})
 
 export function ContactoForm() {
@@ -35,10 +37,24 @@ export function ContactoForm() {
       body: JSON.stringify(values),
     }).then((response) => {
       if (response.ok) {
-        alert("Mensaje enviado con exito")
+        toast.success("Mensaje enviado", {
+          duration: 4000,
+          progress: false,
+          position: "bottom-center",
+          transition: "popUp",
+          icon: '',
+          sound: false,
+        });
         form.reset()
       } else {
-        alert("Error al enviar mensaje")
+        toast.error("No se pudo enviar el mensaje", {          
+          duration: 4000,
+          progress: false,
+          position: "bottom-center",
+          transition: "popUp",
+          icon: '',
+          sound: false,
+        })
       }
     }
     )
