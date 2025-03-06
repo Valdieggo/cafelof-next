@@ -8,9 +8,9 @@ function generateSlug(name: string): string {
 
 export async function POST(request: Request) {
     const body = await request.json();
-    const { product_name, product_price, product_category_id, product_image_url } = body;
+    const { product_name, product_price, product_category_id, product_image_url, product_description } = body;
 
-    if (!product_name || !product_price || !product_category_id) {
+    if (!product_name || !product_price || !product_category_id || !product_description) {
         return new Response(JSON.stringify({
             status: 400,
             message: 'Missing required fields',
@@ -41,6 +41,7 @@ export async function POST(request: Request) {
                 product_image_url: product_image_url || null,
                 product_category_id,
                 product_slug: generateSlug(product_name),
+                product_description,
             },
         });
 
