@@ -10,7 +10,7 @@ export async function middleware(req: any) {
   const isAdminRoute = pathname.startsWith(adminRoutePrefix);
   const isCookieSecured = process.env.NODE_ENV === "production";
 
-  const token = await getToken({ req, secret: process.env.AUTH_SECRET, secureCookie: false });
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET, secureCookie: isCookieSecured });
 
   const isLoggedIn = !!token;
   const userRole = token?.role;
