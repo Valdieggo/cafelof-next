@@ -77,7 +77,7 @@ export default function OrdersTable({ initialOrders }: OrdersTableProps) {
                 <TableCell>{order.user_name} ({order.user_email})</TableCell>
                 <TableCell>${order.order_total_price.toLocaleString("es-CL")}</TableCell>
                 <TableCell>{order.transaction_status || 'N/A'}</TableCell>
-                <TableCell>{new Date(order.order_date).toLocaleString()}</TableCell>
+                <TableCell>{new Date(order.order_date).toLocaleString("es-CL")}</TableCell>
 <TableCell>
   <Link href={`/admin/orders/${order.order_id}`}>
     <button className="bg-blue-600 text-white px-4 py-2 rounded">

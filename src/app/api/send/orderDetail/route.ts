@@ -60,7 +60,7 @@ export async function POST(request: Request) {
                 ${detail.product.product_name}
               </td>
               <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
-              <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: right;">$${detail.price}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: right;">$${(detail.price).toLocaleString("es-CL")}</td>
             </tr>
           `;
         }

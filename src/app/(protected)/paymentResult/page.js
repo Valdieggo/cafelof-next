@@ -157,7 +157,7 @@ export default function ResultadoTransaccion() {
           amount={result.amount}
           currency="CLP"
           authorizationCode={result.authorization_code}
-          transactionDate={new Date(result.transaction_date).toLocaleString()}
+          transactionDate={new Date(result.transaction_date).toLocaleString("es-CL")}
           paymentType={result.payment_type_code === "VD" ? "Débito" : "Crédito"}
           installmentAmount={result.installments_number || 0}
           cardLastFourDigits={result.card_detail.card_number}
