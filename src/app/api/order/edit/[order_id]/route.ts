@@ -7,7 +7,10 @@ const secret = process.env.AUTH_SECRET;
 export async function PUT(request: Request, { params }: { params: { order_id: string } }) {
   try {
     // Verificar el token JWT
-    const token = await getToken({ req: request, secret });
+    const token = await getToken({ req: request, secret, cookieName: process.env.VERCEL_ENV === "production"
+      ? "__Secure-authjs.session-token"
+      : "authjs.session-token",
+    });
 
     // Verificar si el usuario tiene el rol de ADMIN
     if (!token || token.role !== "ADMIN") {
