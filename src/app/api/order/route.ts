@@ -11,10 +11,15 @@ export async function GET(request: Request) {
 
     // Check if the user has the ADMIN role
     if (!token || token.role !== "ADMIN") {
+      console.log("not admin")
+      console.log("token: ", token);
       return new Response(JSON.stringify({ error: "Forbidden: Insufficient permissions" }), {
         status: 403,
         headers: { "Content-Type": "application/json" },
       });
+    }else{
+      console.log("admin");
+      console.log("token: ", token);
     }
 
     // Fetch all orders with user information
