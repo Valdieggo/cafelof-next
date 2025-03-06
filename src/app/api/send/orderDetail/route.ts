@@ -75,9 +75,9 @@ export async function POST(request: Request) {
       .replace(/{{total}}/g, total.toLocaleString("es-CL"));
 
     const { data, error } = await resend.emails.send({
-      from: 'soporte@cafelof.cl',
+      from: 'Café Lof <soporte@cafelof.cl>',
       to: email,
-      subject: '[Café Lof] Detalles de tu pedido',
+      subject: 'Detalles de tu pedido',
       html: htmlTemplate,
     });
 

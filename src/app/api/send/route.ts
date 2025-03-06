@@ -35,11 +35,11 @@ export async function POST(request: Request) {
       .replace(/{{link}}/g, link);
 
     const { data, error } = await resend.emails.send({
-      from: "noreply@cafelof.cl",
+      from: "Café Lof <noreply@cafelof.cl>",
       to: email,
       subject: type === 'verification' 
-        ? '[Café Lof] Confirma tu correo electrónico' 
-        : '[Café Lof] Recupera tu contraseña',
+        ? 'Confirma tu correo electrónico' 
+        : 'Recupera tu contraseña',
       html: htmlTemplate
     });
 
