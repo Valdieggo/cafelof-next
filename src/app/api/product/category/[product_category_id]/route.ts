@@ -25,11 +25,10 @@ export async function GET(request: Request, { params }: { params: { product_cate
       );
     }
 
-    const { products, ...categoryData } = category; // Desestructuramos los productos de la categoría
+    const categoryData = category;
 
     const flattenedCategory = {
       ...categoryData,
-      products: products || [], // Incluimos los productos de la categoría
     };
 
     return NextResponse.json(
