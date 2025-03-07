@@ -5,6 +5,7 @@ const adminFunctions = [
   { icon: FiPlus, title: 'Crear producto', description: 'Añadir nuevo producto a inventario', href: "/admin/products" },
   { icon: FiList, title: 'Gestionar ordenes', description: 'Ver y procesar órdenes de usuarios', href: "/admin/orders" },
   { icon: FiEdit, title: 'Editar producto', description: 'Modificar información de productos existentes', href: "/admin/products/edit" },
+  { icon: FiList, title: 'Gestionar categorías', description: 'Ver y editar las categorías de productos', href: "/admin/products/category" },
 ];
 
 export default function AdminDashboard() {
@@ -16,17 +17,16 @@ export default function AdminDashboard() {
             key={index}
             className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300"
           >
-              <Link href={func.href}>
-                <div className="flex justify-center">
-                  <func.icon className="w-12 h-12 text-blue-600 mb-4" />
-                </div>
-                <h2 className="text-xl font-semibold text-gray-800 mb-2">{func.title}</h2>
-                <p className="text-gray-600">{func.description}</p>
-              </Link>
+            <Link href={func.href}>
+              <div className="flex justify-center">
+                <func.icon className="w-12 h-12 text-blue-600 mb-4" />
+              </div>
+              <h2 className="text-xl font-semibold text-gray-800 mb-2">{func.title}</h2>
+              <p className="text-gray-600">{func.description}</p>
+            </Link>
           </div>
         ))}
       </div>
     </div>
   );
 }
-

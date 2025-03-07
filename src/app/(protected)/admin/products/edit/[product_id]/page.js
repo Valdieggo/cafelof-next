@@ -87,7 +87,7 @@ export default function EditProductPage({ params }) {
     // Filtrar valores null del array selectedAttributes
     const attributesToSend = selectedAttributes.length > 0
     ? selectedAttributes.filter((attr) => attr !== null)
-    : product.attributes.map((attr) => attr.attribute_id);
+    : [];
 
   
     try {

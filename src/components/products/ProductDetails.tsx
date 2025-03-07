@@ -74,7 +74,7 @@ export default function ProductDetails({
             <Image
               src={
                 product_image_url ||
-                "https://images.dog.ceo/breeds/ridgeback-rhodesian/n02087394_9891.jpg"
+                "/placeholder.webp"
               }
               alt={product_name}
               fill

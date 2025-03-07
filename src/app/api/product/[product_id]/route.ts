@@ -35,6 +35,7 @@ export async function GET(request: Request, { params }: { params: { product_id: 
             },
           },
         },
+        inventories: true,
       },
     });
 

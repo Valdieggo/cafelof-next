@@ -27,7 +27,7 @@ export default function CartItem({
           <Image
             src={
               image ||
-              "https://images.dog.ceo/breeds/ridgeback-rhodesian/n02087394_9891.jpg"
+              "/placeholder.webp"
             }
             alt={title}
             fill

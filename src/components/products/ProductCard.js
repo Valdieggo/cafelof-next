@@ -7,7 +7,7 @@ export default function ProductCard({ product }) {
         {/* Maintain a fixed aspect ratio */}
         <div className="relative w-full aspect-square">
           <Image
-            src={product.product_image_url || "https://images.dog.ceo/breeds/pyrenees/n02111500_6387.jpg"}
+            src={product.product_image_url || "/placeholder.webp"}
             alt={product.product_name}
             fill
             className="object-contain"

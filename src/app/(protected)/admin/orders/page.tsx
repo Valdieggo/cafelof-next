@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import OrdersTable from "@/components/orders/OrdersTable";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { cookies } from 'next/headers'; 
+import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Admin: All Orders',
@@ -17,7 +17,6 @@ async function getOrders() {
     const cookieStore = cookies();
     const sessionToken = process.env.NODE_ENV === 'production' ? '__Secure-authjs.session-token' : 'authjs.session-token';
     const token = cookieStore.get(sessionToken)?.value; 
-    console.log(sessionToken, token);
 
     const response = await fetch(`${baseUrl}/order`, {
       method: 'GET',
@@ -48,7 +47,6 @@ export default async function AdminOrdersPage() {
       <Card>
         <CardHeader>
           <CardTitle>Órdenes</CardTitle>
-          
         </CardHeader>
         <CardContent>
           {orders.length > 0 ? (

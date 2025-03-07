@@ -25,7 +25,7 @@ export default function CheckoutDetails({ setFormIsValid }) {
             >
               <div className="w-16 h-16 relative flex-shrink-0">
                 <Image
-                  src={item.image || "https://images.dog.ceo/breeds/pyrenees/n02111500_6387.jpg"}
+                  src={item.image || "/placeholder.webp"}
                   alt={item.title}
                   fill
                   className="object-cover rounded"

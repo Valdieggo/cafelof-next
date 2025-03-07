@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'nextjs-toast-notify';
 import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react'; // Iconos de lucide-react
+import { Button } from '@/components/ui/button';
 
 export default function CreateCategoryAndProduct() {
   const [categories, setCategories] = useState([]);
-  const [attributes, setAttributes] = useState([]); // Estado para almacenar los atributos
-  const [selectedAttributes, setSelectedAttributes] = useState([]); // Estado para los atributos seleccionados
+  const [attributes, setAttributes] = useState([]);
+  const [selectedAttributes, setSelectedAttributes] = useState([]);
   const [categoryData, setCategoryData] = useState({
     product_category_name: '',
     product_category_description: '',
@@ -18,6 +20,7 @@ export default function CreateCategoryAndProduct() {
     product_image_url: '',
     product_category_id: '',
     product_description: '',
+    inventory_quantity: 0,
   });
   const router = useRouter();
 
@@ -54,7 +57,6 @@ export default function CreateCategoryAndProduct() {
     }
   };
 
-  // Handle category form change
   const handleCategoryChange = (e) => {
     setCategoryData({
       ...categoryData,
@@ -62,7 +64,6 @@ export default function CreateCategoryAndProduct() {
     });
   };
 
-  // Handle category submission
   const handleCategorySubmit = async (e) => {
     e.preventDefault();
 
@@ -107,7 +108,6 @@ export default function CreateCategoryAndProduct() {
     }
   };
 
-  // Handle product form change
   const handleProductChange = (e) => {
     setProductData({
       ...productData,
@@ -115,7 +115,6 @@ export default function CreateCategoryAndProduct() {
     });
   };
 
-  // Handle attribute selection
   const handleAttributeSelection = (attributeId) => {
     setSelectedAttributes((prev) => {
       if (prev.includes(attributeId)) {
@@ -126,11 +125,11 @@ export default function CreateCategoryAndProduct() {
     });
   };
 
-  // Handle product submission
   const handleProductSubmit = async (e) => {
     e.preventDefault();
   
     try {
+      // Crear el producto
       const response = await fetch('/api/product/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -143,25 +142,52 @@ export default function CreateCategoryAndProduct() {
           attributes: selectedAttributes, // Enviar los atributos seleccionados
         }),
       });
-      const data = await response.json();
+      const data = await response.json(); // Aquí se obtiene la respuesta del producto creado
   
       if (response.ok) {
-        toast.success('Producto creado exitosamente', {
-          duration: 4000,
-          progress: false,
-          position: 'bottom-center',
-          transition: 'popUp',
-          icon: '',
-          sound: false,
+        const productId = data.data.product_id; // Usar `data` en lugar de `productDataResponse`
+  
+        // Crear el inventario para el producto
+        const inventoryResponse = await fetch('/api/inventory/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            product_id: productId,
+            inventory_quantity: Number(productData.inventory_quantity),
+          }),
         });
-        setProductData({
-          product_name: '',
-          product_price: '',
-          product_image_url: '',
-          product_category_id: '',
-          product_description: '',
-        });
-        setSelectedAttributes([]); // Limpiar atributos seleccionados
+  
+        if (inventoryResponse.ok) {
+          toast.success('Producto e inventario creados exitosamente', {
+            duration: 4000,
+            progress: false,
+            position: 'bottom-center',
+            transition: 'popUp',
+            icon: '',
+            sound: false,
+          });
+  
+          setProductData({
+            product_name: '',
+            product_price: '',
+            product_image_url: '',
+            product_category_id: '',
+            product_description: '',
+            inventory_quantity: 0,
+          });
+          setSelectedAttributes([]); // Limpiar atributos seleccionados
+        } else {
+          console.log('Error al crear el inventario');
+          const inventoryError = await inventoryResponse.json();
+          toast.error(inventoryError.message || 'Error al crear el inventario', {
+            duration: 4000,
+            progress: false,
+            position: 'bottom-center',
+            transition: 'popUp',
+            icon: '',
+            sound: false,
+          });
+        }
       } else {
         toast.error(data.message || 'Error al crear el producto', {
           duration: 4000,
@@ -173,6 +199,7 @@ export default function CreateCategoryAndProduct() {
         });
       }
     } catch (err) {
+      console.error('Error al crear el producto:', err);
       toast.error('Error al crear el producto', {
         duration: 4000,
         progress: false,
@@ -187,9 +214,10 @@ export default function CreateCategoryAndProduct() {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Administración de productos y categorías</h1>
-      <button type="button" onClick={() => router.back()} className="bg-gray-600 text-white px-4 py-2 mb-4 rounded">
+      <Button variant="outline" onClick={() => router.push("/admin")}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
           Regresar
-      </button>
+        </Button>
 
       {/* Category Form */}
       <div className="mb-8">
@@ -313,6 +341,22 @@ export default function CreateCategoryAndProduct() {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label htmlFor="inventory_quantity" className="block text-sm font-medium">
+              Cantidad en inventario
+            </label>
+            <input
+              type="number"
+              name="inventory_quantity"
+              id="inventory_quantity"
+              step="0.01"
+              value={productData.inventory_quantity}
+              onChange={handleProductChange}
+              required
+              className="w-full mt-1 p-2 border rounded"
+            />
           </div>
 
           <div>

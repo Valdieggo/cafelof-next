@@ -6,35 +6,35 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Edit } from "lucide-react"; // Iconos de lucide-react
 
-export default function ProductListPage() {
-  const [products, setProducts] = useState([]);
+export default function CategoryListPage() {
+  const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/product")
+    fetch("/api/product/category")
       .then((response) => response.json())
       .then((data) => {
         if (data.status === 200) {
-          setProducts(data.data);
+          setCategories(data.data);
         }
       })
       .catch((error) => {
-        console.error("Error fetching products:", error);
+        console.error("Error fetching categories:", error);
       })
       .finally(() => {
         setIsLoading(false);
       });
   }, []);
 
-  const handleEdit = (product_id) => {
-    router.push(`/admin/products/edit/${product_id}`);
+  const handleEdit = (product_category_id) => {
+    router.push(`/admin/products/category/edit/${product_category_id}`);
   };
 
   return (
     <div className="max-w-3xl mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Productos actuales</h1>
+        <h1 className="text-2xl font-bold">Categorías actuales</h1>
         <Button variant="outline" onClick={() => router.push("/admin")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Regresar
@@ -51,16 +51,16 @@ export default function ProductListPage() {
             </Card>
           ))
         ) : (
-          products.map((product) => (
-            <Card key={product.product_id}>
+          categories.map((category) => (
+            <Card key={category.product_category_id}>
               <CardHeader>
-                <CardTitle>{product.product_name}</CardTitle>
+                <CardTitle>{category.product_category_name}</CardTitle>
               </CardHeader>
               <CardContent className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">
-                  {product.description || "Sin descripción"}
+                  {category.product_category_description || "Sin descripción"}
                 </span>
-                <Button variant="default" onClick={() => handleEdit(product.product_id)}>
+                <Button variant="default" onClick={() => handleEdit(category.product_category_id)}>
                   <Edit className="mr-2 h-4 w-4" />
                   Editar
                 </Button>

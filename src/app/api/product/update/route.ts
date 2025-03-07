@@ -34,8 +34,8 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Validar que attributes sea un array y no contenga valores null
-    if (!Array.isArray(attributes) || attributes.some((attr) => attr === null)) {
+    // Validar que attributes sea un array (puede estar vacío)
+    if (!Array.isArray(attributes)) {
       return NextResponse.json(
         { message: 'Invalid attributes provided' },
         { status: 400 }
@@ -55,13 +55,13 @@ export async function PUT(request: NextRequest) {
     });
 
     // Actualizar los atributos del producto
-    if (attributes && Array.isArray(attributes)) {
-      // Eliminar todas las relaciones existentes entre el producto y sus atributos
-      await prisma.productAttribute.deleteMany({
-        where: { product_id: Number(id) },
-      });
+    // Eliminar todas las relaciones existentes entre el producto y sus atributos
+    await prisma.productAttribute.deleteMany({
+      where: { product_id: Number(id) },
+    });
 
-      // Crear nuevas relaciones con los atributos seleccionados
+    // Si hay atributos seleccionados, crear nuevas relaciones
+    if (attributes.length > 0) {
       await prisma.productAttribute.createMany({
         data: attributes.map((attributeId) => ({
           product_id: Number(id),
