@@ -10,10 +10,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import CoffeeLoader from "@/lib/CoffeeLoader";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "nextjs-toast-notify";
 
 export default function CheckoutClient() {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const { cartItems, getTotalPrice, isCartLoaded } = useCart();
 
@@ -205,7 +206,7 @@ export default function CheckoutClient() {
                 <div className="flex flex-col gap-4 mx-12">
                   <p>Elige una opción para continuar:</p>
                   <Button onClick={() => setGuestMode(true)}>Seguir como invitado</Button>
-                  <Button onClick={() => redirect("/login?redirectTo=/checkout")}>
+                  <Button onClick={() => router.push("/login?redirectTo=/checkout")}>
                     Iniciar sesión
                   </Button>
                 </div>
