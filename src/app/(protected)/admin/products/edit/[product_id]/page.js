@@ -2,7 +2,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'nextjs-toast-notify';
-import { Skeleton } from '@/components/ui/skeleton'; // Importa el componente Skeleton
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
 import CoffeeLoader from "@/lib/CoffeeLoader"; // Importa el componente CoffeeLoader
 
 export default function EditProductPage({ params }) {
@@ -26,7 +32,7 @@ export default function EditProductPage({ params }) {
       .catch((error) => {
         console.error('Error fetching product:', error);
       });
-  
+
     // Fetch categories
     fetch('/api/product/category')
       .then((response) => response.json())
@@ -38,7 +44,7 @@ export default function EditProductPage({ params }) {
       .catch((error) => {
         console.error('Error fetching categories:', error);
       });
-  
+
     // Fetch attributes
     fetch('/api/product/attributes')
       .then((response) => response.json())
@@ -54,18 +60,18 @@ export default function EditProductPage({ params }) {
         setIsLoading(false);
       });
   }, [product_id]);
-  
+
   // Efecto adicional para inicializar selectedAttributes cuando tanto product como attributes estén disponibles
   useEffect(() => {
     if (product && attributes.length > 0) {
       // Obtener los nombres de los atributos del producto
       const productAttributeNames = product.attributes.map(attr => attr.attribute_name);
-  
+
       // Filtrar los atributos completos para obtener los attribute_id correspondientes
       const selectedAttributeIds = attributes
         .filter(attr => productAttributeNames.includes(attr.attribute_name))
         .map(attr => attr.attribute_id);
-  
+
       // Actualizar selectedAttributes
       setSelectedAttributes(selectedAttributeIds);
     }
@@ -80,16 +86,15 @@ export default function EditProductPage({ params }) {
       }
     });
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Filtrar valores null del array selectedAttributes
     const attributesToSend = selectedAttributes.length > 0
-    ? selectedAttributes.filter((attr) => attr !== null)
-    : [];
+      ? selectedAttributes.filter((attr) => attr !== null)
+      : [];
 
-  
     try {
       const response = await fetch(`/api/product/update?id=${product_id}`, {
         method: 'PUT',
@@ -104,7 +109,7 @@ export default function EditProductPage({ params }) {
         }),
       });
       const data = await response.json();
-  
+
       if (response.ok) {
         toast.success('Producto actualizado exitosamente', {
           duration: 4000,
@@ -146,116 +151,112 @@ export default function EditProductPage({ params }) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Editar producto</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="product_name" className="block text-sm font-medium">
-            Nombre del producto
-          </label>
-          <input
-            type="text"
-            name="product_name"
-            id="product_name"
-            value={product.product_name}
-            onChange={(e) => setProduct({ ...product, product_name: e.target.value })}
-            required
-            className="w-full mt-1 p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="product_price" className="block text-sm font-medium">
-            Precio
-          </label>
-          <input
-            type="number"
-            name="product_price"
-            id="product_price"
-            step="0.01"
-            value={product.product_price}
-            onChange={(e) => setProduct({ ...product, product_price: e.target.value })}
-            required
-            className="w-full mt-1 p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="product_image_url" className="block text-sm font-medium">
-            URL de la imagen del producto
-          </label>
-          <input
-            type="text" // Cambiado de "url" a "text"
-            name="product_image_url"
-            id="product_image_url"
-            value={product.product_image_url}
-            onChange={(e) => setProduct({ ...product, product_image_url: e.target.value })}
-            placeholder="Ej: /imagenes_cafe/arabica_caturra.webp"
-            className="w-full mt-1 p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="product_description" className="block text-sm font-medium">
-            Descripción del producto
-          </label>
-          <textarea
-            name="product_description"
-            id="product_description"
-            value={product.product_description}
-            onChange={(e) => setProduct({ ...product, product_description: e.target.value })}
-            placeholder="Ingrese la descripción del producto"
-            className="w-full mt-1 p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="product_category_id" className="block text-sm font-medium">
-            Categoría del producto
-          </label>
-          <select
-            name="product_category_id"
-            id="product_category_id"
-            value={product.product_category_id}
-            onChange={(e) => setProduct({ ...product, product_category_id: e.target.value })}
-            required
-            className="w-full mt-1 p-2 border rounded"
-          >
-            <option value="">Seleccione una categoría</option>
-            {categories.map((category) => (
-              <option key={category.product_category_id} value={category.product_category_id}>
-                {category.product_category_name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label htmlFor="attributes" className="block text-sm font-medium">
-            Atributos del producto
-          </label>
-          {attributes.map((attribute) => (
-            <div key={attribute.attribute_id} className="mb-4">
-              <input
-                type="checkbox"
-                name={`attribute_${attribute.attribute_id}`}
-                id={`attribute_${attribute.attribute_id}`}
-                checked={selectedAttributes.includes(attribute.attribute_id)} // Establecer correctamente el valor del checkbox
-                onChange={() => handleAttributeSelection(attribute.attribute_id)}
-                className="mr-2"
+    <div className="max-w-4xl mx-auto p-6 space-y-8">
+      <h1 className="text-2xl font-bold">Editar producto</h1>
+      <Card>
+        <CardHeader>
+          <CardTitle>Información del producto</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="product_name">Nombre del producto</Label>
+              <Input
+                type="text"
+                name="product_name"
+                id="product_name"
+                value={product.product_name}
+                onChange={(e) => setProduct({ ...product, product_name: e.target.value })}
+                required
               />
-              <span>{attribute.attribute_name}</span>
             </div>
-          ))}
-        </div>
 
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          Guardar cambios
-        </button>
-        <button type="button" onClick={() => router.back()} className="bg-gray-600 text-white px-4 ml-4 py-2 rounded">
-          Regresar
-        </button>
-      </form>
+            <div className="space-y-2">
+              <Label htmlFor="product_price">Precio</Label>
+              <Input
+                type="number"
+                name="product_price"
+                id="product_price"
+                step="0.01"
+                value={product.product_price}
+                onChange={(e) => setProduct({ ...product, product_price: e.target.value })}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="product_image_url">URL de la imagen del producto</Label>
+              <Input
+                type="text"
+                name="product_image_url"
+                id="product_image_url"
+                value={product.product_image_url}
+                onChange={(e) => setProduct({ ...product, product_image_url: e.target.value })}
+                placeholder="Ej: /imagenes_cafe/arabica_caturra.webp"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="product_description">Descripción del producto</Label>
+              <Textarea
+                name="product_description"
+                id="product_description"
+                value={product.product_description}
+                onChange={(e) => setProduct({ ...product, product_description: e.target.value })}
+                placeholder="Ingrese la descripción del producto"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="product_category_id">Categoría del producto</Label>
+              <Select
+                name="product_category_id"
+                value={product.product_category_id}
+                onValueChange={(value) =>
+                  setProduct({ ...product, product_category_id: value })
+                }
+                required
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccione una categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category.product_category_id} value={category.product_category_id}>
+                      {category.product_category_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Atributos del producto</Label>
+              <div className="grid grid-cols-2 gap-4">
+                {attributes.map((attribute) => (
+                  <div key={attribute.attribute_id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`attribute_${attribute.attribute_id}`}
+                      checked={selectedAttributes.includes(attribute.attribute_id)}
+                      onCheckedChange={() => handleAttributeSelection(attribute.attribute_id)}
+                    />
+                    <label htmlFor={`attribute_${attribute.attribute_id}`} className="text-sm">
+                      {attribute.attribute_name}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <CardFooter className="flex justify-end space-x-4">
+              <Button type="button" variant="outline" onClick={() => router.back()}>
+                Regresar
+              </Button>
+              <Button type="submit">Guardar cambios</Button>
+            </CardFooter>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

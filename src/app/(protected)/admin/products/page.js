@@ -5,6 +5,12 @@ import { toast } from 'nextjs-toast-notify';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react'; // Iconos de lucide-react
 import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function CreateCategoryAndProduct() {
   const [categories, setCategories] = useState([]);
@@ -127,9 +133,8 @@ export default function CreateCategoryAndProduct() {
 
   const handleProductSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
-      // Crear el producto
       const response = await fetch('/api/product/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -139,15 +144,14 @@ export default function CreateCategoryAndProduct() {
           product_image_url: productData.product_image_url || null,
           product_category_id: parseInt(productData.product_category_id),
           product_description: productData.product_description || null,
-          attributes: selectedAttributes, // Enviar los atributos seleccionados
+          attributes: selectedAttributes,
         }),
       });
-      const data = await response.json(); // Aquí se obtiene la respuesta del producto creado
-  
+      const data = await response.json();
+
       if (response.ok) {
-        const productId = data.data.product_id; // Usar `data` en lugar de `productDataResponse`
-  
-        // Crear el inventario para el producto
+        const productId = data.data.product_id;
+
         const inventoryResponse = await fetch('/api/inventory/create', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -156,7 +160,7 @@ export default function CreateCategoryAndProduct() {
             inventory_quantity: Number(productData.inventory_quantity),
           }),
         });
-  
+
         if (inventoryResponse.ok) {
           toast.success('Producto e inventario creados exitosamente', {
             duration: 4000,
@@ -166,7 +170,7 @@ export default function CreateCategoryAndProduct() {
             icon: '',
             sound: false,
           });
-  
+
           setProductData({
             product_name: '',
             product_price: '',
@@ -175,7 +179,7 @@ export default function CreateCategoryAndProduct() {
             product_description: '',
             inventory_quantity: 0,
           });
-          setSelectedAttributes([]); // Limpiar atributos seleccionados
+          setSelectedAttributes([]);
         } else {
           console.log('Error al crear el inventario');
           const inventoryError = await inventoryResponse.json();
@@ -212,177 +216,163 @@ export default function CreateCategoryAndProduct() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Administración de productos y categorías</h1>
-      <Button variant="outline" onClick={() => router.push("/admin")}>
+    <div className="max-w-4xl mx-auto p-6 space-y-8">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Administración de productos y categorías</h1>
+        <Button variant="outline" onClick={() => router.push("/admin")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Regresar
         </Button>
+      </div>
 
       {/* Category Form */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-2">Crear nueva categoría</h2>
-        <form onSubmit={handleCategorySubmit} className="space-y-4">
-          <div>
-            <label htmlFor="product_category_name" className="block text-sm font-medium">
-              Nombre de la categoría
-            </label>
-            <input
-              type="text"
-              name="product_category_name"
-              id="product_category_name"
-              value={categoryData.product_category_name}
-              onChange={handleCategoryChange}
-              required
-              className="w-full mt-1 p-2 border rounded"
-            />
-          </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Crear nueva categoría</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleCategorySubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="product_category_name">Nombre de la categoría</Label>
+              <Input
+                type="text"
+                name="product_category_name"
+                id="product_category_name"
+                value={categoryData.product_category_name}
+                onChange={handleCategoryChange}
+                required
+              />
+            </div>
 
-          <div>
-            <label htmlFor="product_category_description" className="block text-sm font-medium">
-              Descripción de la categoría
-            </label>
-            <input
-              type="text"
-              name="product_category_description"
-              id="product_category_description"
-              value={categoryData.product_category_description}
-              onChange={handleCategoryChange}
-              required
-              className="w-full mt-1 p-2 border rounded"
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="product_category_description">Descripción de la categoría</Label>
+              <Input
+                type="text"
+                name="product_category_description"
+                id="product_category_description"
+                value={categoryData.product_category_description}
+                onChange={handleCategoryChange}
+                required
+              />
+            </div>
 
-          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-            Crear categoría
-          </button>
-        </form>
-      </div>
+            <Button type="submit">Crear categoría</Button>
+          </form>
+        </CardContent>
+      </Card>
 
       {/* Product Form */}
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Crear nuevo producto</h2>
-        <form onSubmit={handleProductSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="product_name" className="block text-sm font-medium">
-              Nombre del producto
-            </label>
-            <input
-              type="text"
-              name="product_name"
-              id="product_name"
-              value={productData.product_name}
-              onChange={handleProductChange}
-              required
-              className="w-full mt-1 p-2 border rounded"
-            />
-          </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Crear nuevo producto</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleProductSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="product_name">Nombre del producto</Label>
+              <Input
+                type="text"
+                name="product_name"
+                id="product_name"
+                value={productData.product_name}
+                onChange={handleProductChange}
+                required
+              />
+            </div>
 
-          <div>
-            <label htmlFor="product_price" className="block text-sm font-medium">
-              Precio
-            </label>
-            <input
-              type="number"
-              name="product_price"
-              id="product_price"
-              step="0.01"
-              value={productData.product_price}
-              onChange={handleProductChange}
-              required
-              className="w-full mt-1 p-2 border rounded"
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="product_price">Precio</Label>
+              <Input
+                type="number"
+                name="product_price"
+                id="product_price"
+                step="0.01"
+                value={productData.product_price}
+                onChange={handleProductChange}
+                required
+              />
+            </div>
 
-          <div>
-            <label htmlFor="product_image_url" className="block text-sm font-medium">
-              URL de la imagen del producto
-            </label>
-            <input
-              type="url"
-              name="product_image_url"
-              id="product_image_url"
-              value={productData.product_image_url}
-              onChange={handleProductChange}
-              className="w-full mt-1 p-2 border rounded"
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="product_image_url">URL de la imagen del producto</Label>
+              <Input
+                type="url"
+                name="product_image_url"
+                id="product_image_url"
+                value={productData.product_image_url}
+                onChange={handleProductChange}
+              />
+            </div>
 
-          <div>
-            <label htmlFor="product_description" className="block text-sm font-medium">
-              Descripción del producto
-            </label>
-            <textarea
-              name="product_description"
-              id="product_description"
-              value={productData.product_description}
-              onChange={handleProductChange}
-              placeholder="Ingrese la descripción del producto"
-              className="w-full mt-1 p-2 border rounded"
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="product_description">Descripción del producto</Label>
+              <Textarea
+                name="product_description"
+                id="product_description"
+                value={productData.product_description}
+                onChange={handleProductChange}
+                placeholder="Ingrese la descripción del producto"
+              />
+            </div>
 
-          <div>
-            <label htmlFor="product_category_id" className="block text-sm font-medium">
-              Categoría del producto
-            </label>
-            <select
-              name="product_category_id"
-              id="product_category_id"
-              value={productData.product_category_id}
-              onChange={handleProductChange}
-              required
-              className="w-full mt-1 p-2 border rounded"
-            >
-              <option value="">Seleccione una categoría</option>
-              {categories.map((category) => (
-                <option key={category.product_category_id} value={category.product_category_id}>
-                  {category.product_category_name}
-                </option>
-              ))}
-            </select>
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="product_category_id">Categoría del producto</Label>
+              <Select
+                name="product_category_id"
+                value={productData.product_category_id}
+                onValueChange={(value) =>
+                  setProductData({ ...productData, product_category_id: value })
+                }
+                required
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccione una categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category.product_category_id} value={category.product_category_id}>
+                      {category.product_category_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div>
-            <label htmlFor="inventory_quantity" className="block text-sm font-medium">
-              Cantidad en inventario
-            </label>
-            <input
-              type="number"
-              name="inventory_quantity"
-              id="inventory_quantity"
-              step="0.01"
-              value={productData.inventory_quantity}
-              onChange={handleProductChange}
-              required
-              className="w-full mt-1 p-2 border rounded"
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="inventory_quantity">Cantidad en inventario</Label>
+              <Input
+                type="number"
+                name="inventory_quantity"
+                id="inventory_quantity"
+                step="0.01"
+                value={productData.inventory_quantity}
+                onChange={handleProductChange}
+                required
+              />
+            </div>
 
-          <div>
-            <label htmlFor="attributes" className="block text-sm font-medium">
-              Atributos del producto
-            </label>
-            {attributes.map((attribute) => (
-              <div key={attribute.attribute_id} className="mb-4">
-                <input
-                  type="checkbox"
-                  name={`attribute_${attribute.attribute_id}`}
-                  id={`attribute_${attribute.attribute_id}`}
-                  checked={selectedAttributes.includes(attribute.attribute_id)}
-                  onChange={() => handleAttributeSelection(attribute.attribute_id)}
-                  className="mr-2"
-                />
-                <span>{attribute.attribute_name}</span>
+            <div className="space-y-2">
+              <Label>Atributos del producto</Label>
+              <div className="grid grid-cols-2 gap-4">
+                {attributes.map((attribute) => (
+                  <div key={attribute.attribute_id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`attribute_${attribute.attribute_id}`}
+                      checked={selectedAttributes.includes(attribute.attribute_id)}
+                      onCheckedChange={() => handleAttributeSelection(attribute.attribute_id)}
+                    />
+                    <label htmlFor={`attribute_${attribute.attribute_id}`} className="text-sm">
+                      {attribute.attribute_name}
+                    </label>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
 
-          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-            Crear producto
-          </button>
-        </form>
-      </div>
+            <Button type="submit">Crear producto</Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
