@@ -296,7 +296,7 @@ export default function CreateCategoryAndProduct() {
             <div className="space-y-2">
               <Label htmlFor="product_image_url">URL de la imagen del producto</Label>
               <Input
-                type="url"
+                type="text"
                 name="product_image_url"
                 id="product_image_url"
                 value={productData.product_image_url}
@@ -318,24 +318,24 @@ export default function CreateCategoryAndProduct() {
             <div className="space-y-2">
               <Label htmlFor="product_category_id">Categoría del producto</Label>
               <Select
-                name="product_category_id"
-                value={productData.product_category_id}
-                onValueChange={(value) =>
-                  setProductData({ ...productData, product_category_id: value })
-                }
-                required
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccione una categoría" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.product_category_id} value={category.product_category_id}>
-                      {category.product_category_name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+  name="product_category_id"
+  value={String(productData.product_category_id)} // Asegúrate de que el valor sea una cadena
+  onValueChange={(value) =>
+    setProductData({ ...productData, product_category_id: parseInt(value, 10) })
+  }
+  required
+>
+  <SelectTrigger>
+    <SelectValue placeholder="Seleccione una categoría" />
+  </SelectTrigger>
+  <SelectContent>
+    {categories.map((category) => (
+      <SelectItem key={category.product_category_id} value={String(category.product_category_id)}>
+        {category.product_category_name}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
             </div>
 
             <div className="space-y-2">
