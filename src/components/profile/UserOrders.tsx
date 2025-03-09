@@ -156,7 +156,7 @@ export default function UserOrders({ userId }: UserOrdersProps) {
                           <div className="flex items-center gap-4 col-span-1 sm:col-span-2">
                             <div className="w-16 h-16 relative flex-shrink-0">
                               <Image
-                                src={detail.product.product_image || "/placeholder.webp"}
+                                src={detail.product.product_image_url || "/placeholder.webp"}
                                 alt={detail.product.product_name}
                                 fill
                                 className="object-cover rounded"

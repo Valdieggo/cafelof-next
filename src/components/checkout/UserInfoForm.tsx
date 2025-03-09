@@ -262,7 +262,7 @@ export default function UserInfoForm({
             )}
           </p>
           <div className="flex justify-between mt-4">
-            <Button onClick={onBack} type="button" className="bg-gray-300 text-black">
+            <Button onClick={onBack} type="button" className="bg-gray-300 text-black" disabled={isGuest && isValid}>
               Regresar
             </Button>
             <Button onClick={() => setIsEditing(true)} className="bg-black text-white">
