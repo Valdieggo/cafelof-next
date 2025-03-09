@@ -19,7 +19,7 @@ interface OrderDetail {
   product: {
     product_name: string;
     product_price: number;
-    product_image: string; // Asegúrate de que el endpoint devuelva la imagen del producto
+    product_image_url: string; 
   };
 }
 
