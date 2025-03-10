@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "nextjs-toast-notify";
 
 interface Country {
   country_id: number;
@@ -95,7 +96,14 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
     e.preventDefault();
 
     if (!selectedCountry || !selectedRegion || !selectedCity || !address) {
-      alert("Por favor, completa todos los campos");
+      toast.error("Por favor, completa todos los campos", {
+        duration: 4000,
+        progress: false,
+        position: "bottom-center",
+        transition: "popUp",
+        icon: "",
+        sound: false,
+      });
       return;
     }
 
@@ -120,14 +128,35 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
         });
 
         if (response.ok) {
-          alert("Dirección actualizada exitosamente");
+          toast.success("Dirección actualizada exitosamente", {
+            duration: 4000,
+            progress: false,
+            position: "bottom-center",
+            transition: "popUp",
+            icon: "",
+            sound: false,
+          });
           router.refresh();
         } else {
-          alert("Hubo un error al actualizar la dirección");
+          toast.error("Hubo un error al actualizar la dirección", {
+            duration: 4000,
+            progress: false,
+            position: "bottom-center",
+            transition: "popUp",
+            icon: "",
+            sound: false,
+          });
         }
       } catch (error) {
         console.error("Error en la solicitud:", error);
-        alert("Hubo un error al enviar los datos");
+        toast.error("Hubo un error al enviar los datos", {
+          duration: 4000,
+          progress: false,
+          position: "bottom-center",
+          transition: "popUp",
+          icon: "",
+          sound: false,
+        });
       }
     } else {
       payload.userId = session?.user.id;
@@ -142,14 +171,35 @@ const AddressForm: React.FC<AddressFormProps> = ({ existingAddress }) => {
         });
 
         if (response.ok) {
-          alert("Dirección creada exitosamente");
+          toast.success("Dirección creada exitosamente", {
+            duration: 4000,
+            progress: false,
+            position: "bottom-center",
+            transition: "popUp",
+            icon: "",
+            sound: false,
+          });
           router.refresh();
         } else {
-          alert("Hubo un error al crear la dirección");
+          toast.error("Hubo un error al crear la dirección", {
+            duration: 4000,
+            progress: false,
+            position: "bottom-center",
+            transition: "popUp",
+            icon: "",
+            sound: false,
+          });
         }
       } catch (error) {
         console.error("Error en la solicitud:", error);
-        alert("Hubo un error al enviar los datos");
+        toast.error("Hubo un error al enviar los datos", {
+          duration: 4000,
+          progress: false,
+          position: "bottom-center",
+          transition: "popUp",
+          icon: "",
+          sound: false,
+        });
       }
     }
   };

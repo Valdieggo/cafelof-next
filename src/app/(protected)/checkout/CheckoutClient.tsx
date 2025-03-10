@@ -26,29 +26,26 @@ export default function CheckoutClient() {
   const [isLoading, setIsLoading] = useState(false);
 
   if (isLoading) {
-    return (
-      <CoffeeLoader />
-    );
+    return <CoffeeLoader />;
   }
 
   const handleGuestContinue = async (formData: any) => {
-
     const response = await fetch(`/api/auth/user/get/${formData.email}`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
-      },  
+        "Content-Type": "application/json",
+      },
     });
     const userGuestExists = await response.json();
 
-    if(!userGuestExists.message){
+    if (!userGuestExists.message) {
       setGuestUserId(userGuestExists.id);
       toast.info("Información guardada exitosamente", {
         duration: 4000,
         progress: false,
         position: "bottom-center",
         transition: "popUp",
-        icon: '',
+        icon: "",
         sound: false,
       });
       return;
@@ -71,7 +68,7 @@ export default function CheckoutClient() {
           progress: false,
           position: "bottom-center",
           transition: "popUp",
-          icon: '',
+          icon: "",
           sound: false,
         });
         return;
@@ -84,17 +81,32 @@ export default function CheckoutClient() {
         progress: false,
         position: "bottom-center",
         transition: "popUp",
-        icon: '',
+        icon: "",
         sound: false,
       });
     } catch (error) {
       console.error("Error interno", error);
+      toast.error("Hubo un error interno. Por favor, inténtalo de nuevo.", {
+        duration: 4000,
+        progress: false,
+        position: "bottom-center",
+        transition: "popUp",
+        icon: "",
+        sound: false,
+      });
     }
   };
 
   const createOrderAndTransaction = async (userId: string) => {
     if (!userId) {
-      alert("Error: No se pudo obtener el ID del usuario.");
+      toast.error("Error: No se pudo obtener el ID del usuario.", {
+        duration: 4000,
+        progress: false,
+        position: "bottom-center",
+        transition: "popUp",
+        icon: "",
+        sound: false,
+      });
       console.error("Error: userId no está definido.");
       return;
     }
@@ -133,7 +145,14 @@ export default function CheckoutClient() {
       window.location.href = `${transaction.url}?token_ws=${transaction.token}`;
     } catch (error) {
       console.error("Error durante el checkout:", error);
-      alert("Hubo un problema al procesar tu solicitud.");
+      toast.error("Hubo un problema al procesar tu solicitud.", {
+        duration: 4000,
+        progress: false,
+        position: "bottom-center",
+        transition: "popUp",
+        icon: "",
+        sound: false,
+      });
     }
   };
 
@@ -142,14 +161,28 @@ export default function CheckoutClient() {
       setCurrentStep("userInfo");
     } else if (currentStep === "userInfo") {
       if (!userInfoValid) {
-        alert("Por favor completa toda la información requerida antes de continuar.");
+        toast.error("Por favor completa toda la información requerida antes de continuar.", {
+          duration: 4000,
+          progress: false,
+          position: "bottom-center",
+          transition: "popUp",
+          icon: "",
+          sound: false,
+        });
         return;
       }
 
       const userId = guestMode ? guestUserId : session?.user?.id;
 
       if (!userId) {
-        alert("No se pudo completar la operación: usuario no identificado.");
+        toast.error("No se pudo completar la operación: usuario no identificado.", {
+          duration: 4000,
+          progress: false,
+          position: "bottom-center",
+          transition: "popUp",
+          icon: "",
+          sound: false,
+        });
         console.error("Error: userId no está definido.");
         return;
       }
@@ -167,9 +200,7 @@ export default function CheckoutClient() {
   };
 
   if (status === "loading" || !isCartLoaded) {
-    return (
-      <CoffeeLoader />
-    );
+    return <CoffeeLoader />;
   }
 
   if (cartItems.length === 0) {
@@ -182,9 +213,7 @@ export default function CheckoutClient() {
           <CardContent>
             <p>Tu carro está vacío.</p>
             <Link href="/productos">
-              <Button>
-                Ver productos
-              </Button>
+              <Button>Ver productos</Button>
             </Link>
           </CardContent>
         </Card>
@@ -235,9 +264,23 @@ export default function CheckoutClient() {
                     });
 
                     if (response.ok) {
-                      alert("Información actualizada exitosamente.");
+                      toast.success("Información actualizada exitosamente.", {
+                        duration: 4000,
+                        progress: false,
+                        position: "bottom-center",
+                        transition: "popUp",
+                        icon: "",
+                        sound: false,
+                      });
                     } else {
-                      alert("Error al actualizar la información.");
+                      toast.error("Error al actualizar la información.", {
+                        duration: 4000,
+                        progress: false,
+                        position: "bottom-center",
+                        transition: "popUp",
+                        icon: "",
+                        sound: false,
+                      });
                     }
                   }}
                 />

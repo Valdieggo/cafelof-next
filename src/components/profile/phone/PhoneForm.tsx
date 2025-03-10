@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { toast } from "nextjs-toast-notify";
 
 type PhoneFormProps = {
   userId: number;
@@ -32,15 +33,36 @@ export default function PhoneForm({ userId, existingPhoneNumber }: PhoneFormProp
       });
 
       if (response.ok) {
-        alert("Número de teléfono actualizado con éxito");
+        toast.success("Número de teléfono actualizado con éxito", {
+          duration: 4000,
+          progress: false,
+          position: "bottom-center",
+          transition: "popUp",
+          icon: "",
+          sound: false,
+        });
         form.reset({ phone: values.phone });
         router.refresh();
       } else {
-        alert("Error al actualizar número de teléfono");
+        toast.error("Error al actualizar número de teléfono", {
+          duration: 4000,
+          progress: false,
+          position: "bottom-center",
+          transition: "popUp",
+          icon: "",
+          sound: false,
+        });
       }
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
-      alert("Ocurrió un error. Por favor, inténtalo de nuevo.");
+      toast.error("Ocurrió un error. Por favor, inténtalo de nuevo.", {
+        duration: 4000,
+        progress: false,
+        position: "bottom-center",
+        transition: "popUp",
+        icon: "",
+        sound: false,
+      });
     }
   }
 
