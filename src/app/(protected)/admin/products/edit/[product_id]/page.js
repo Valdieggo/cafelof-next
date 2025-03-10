@@ -147,7 +147,7 @@ export default function EditProductPage({ params }) {
   }
 
   if (!product) {
-    return <div>No se encontró el producto</div>;
+    return <div></div>;
   }
 
   return (
